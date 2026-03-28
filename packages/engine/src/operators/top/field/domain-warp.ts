@@ -1,4 +1,5 @@
 import type { Operator, Field2D } from "../../../kernel/types";
+import { createField, getFieldExpr, warpExpr, u } from "../../../kernel/field-expr";
 
 type Inputs = { field: Field2D; warp: Field2D };
 type Outputs = { field: Field2D };
@@ -32,6 +33,19 @@ export const domainWarp: Operator<Inputs, Outputs> = {
     const amt = params.amount ?? 50;
     const ox = params.offsetX ?? 100;
     const oy = params.offsetY ?? 100;
+
+    const inputExpr = getFieldExpr(input);
+    const warpExprNode = getFieldExpr(warp);
+    if (inputExpr && warpExprNode) {
+      const expr = warpExpr(
+        inputExpr,
+        warpExprNode,
+        u("warpAmount", amt),
+        u("warpOffsetX", ox),
+        u("warpOffsetY", oy),
+      );
+      return { field: createField(expr) };
+    }
 
     const field: Field2D = (x, y) => {
       const wx = (warp(x, y) - 0.5) * 2 * amt;

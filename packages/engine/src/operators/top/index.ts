@@ -1,6 +1,7 @@
 export { perlinNoise, pnoise } from "./perlin-noise";
-export { simplexNoise } from "./simplex-noise";
+export { simplexNoise, simplex2 } from "./simplex-noise";
 export { gridSampler } from "./grid-sampler";
+export { fieldRender } from "./field-render";
 
 // Field algebra
 export { fbm } from "./field/fbm";

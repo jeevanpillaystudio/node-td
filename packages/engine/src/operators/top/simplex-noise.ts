@@ -1,5 +1,6 @@
 import type { Operator, Field2D } from "../../kernel/types";
 import { P } from "../../noise-utils";
+import { createField, X, Y, c, u, mul, add, simplex as sn } from "../../kernel/field-expr";
 
 type Inputs = Record<string, never>;
 type Outputs = { field: Field2D };
@@ -12,7 +13,7 @@ const GRAD2: readonly [number, number][] = [
   [1, 0], [-1, 0], [0, 1], [0, -1],
 ];
 
-function simplex2(x: number, y: number): number {
+export function simplex2(x: number, y: number): number {
   const s = (x + y) * F2;
   const i = Math.floor(x + s);
   const j = Math.floor(y + s);
@@ -74,9 +75,11 @@ export const simplexNoise: Operator<Inputs, Outputs> = {
   ],
   evaluate(_inputs, params) {
     const scale = params.noiseScale ?? 0.03;
-    const field: Field2D = (x, y) => {
-      return (simplex2(x * scale, y * scale) + 1) * 0.5;
-    };
-    return { field };
+
+    // (simplex2(x*scale, y*scale) + 1) * 0.5
+    const s = u("noiseScale", scale);
+    const expr = mul(add(sn(mul(X, s), mul(Y, s)), c(1)), c(0.5));
+
+    return { field: createField(expr) };
   },
 };

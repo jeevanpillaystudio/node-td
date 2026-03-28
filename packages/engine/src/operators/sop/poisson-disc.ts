@@ -1,8 +1,11 @@
-import type { Operator, Geometry } from "../../kernel/types";
+import type { Operator, Geometry, GraphEnv } from "../../kernel/types";
 import { pointsGeometry } from "../../kernel/types";
 
 type Inputs = { width: number; height: number };
 type Outputs = { geometry: Geometry<2> };
+
+/** Random source — reads from env.rng when available, falls back to Math.random */
+type RandFn = () => number;
 
 /**
  * Bridson's algorithm for Poisson-disc sampling.
@@ -12,6 +15,7 @@ function poissonDiscSample(
   w: number,
   h: number,
   minRadius: number,
+  rand: RandFn,
   k: number = 30,
 ): [number, number][] {
   const r = minRadius;
@@ -45,21 +49,21 @@ function poissonDiscSample(
     return false;
   }
 
-  const x0 = Math.random() * w;
-  const y0 = Math.random() * h;
+  const x0 = rand() * w;
+  const y0 = rand() * h;
   const p0: [number, number] = [x0, y0];
   points.push(p0);
   grid[gridIndex(x0, y0)] = p0;
   active.push(0);
 
   while (active.length > 0) {
-    const idx = Math.floor(Math.random() * active.length);
+    const idx = Math.floor(rand() * active.length);
     const base = points[active[idx]!]!;
     let found = false;
 
     for (let attempt = 0; attempt < k; attempt++) {
-      const angle = Math.random() * Math.PI * 2;
-      const dist = r + Math.random() * r;
+      const angle = rand() * Math.PI * 2;
+      const dist = r + rand() * r;
       const nx = base[0] + Math.cos(angle) * dist;
       const ny = base[1] + Math.sin(angle) * dist;
 
@@ -95,11 +99,12 @@ export const poissonDisc: Operator<Inputs, Outputs> = {
     { key: "minRadius", label: "Min Seed Radius", min: 10, max: 150, step: 5, default: 40 },
     { key: "margin", label: "Edge Margin", min: 0, max: 300, step: 10, default: 100 },
   ],
-  evaluate({ width, height }, params) {
+  evaluate({ width, height }, params, env?: GraphEnv) {
     const minRadius = params.minRadius ?? 40;
     const margin = params.margin ?? 100;
+    const rand: RandFn = env?.rng ? () => env.rng!.random() : Math.random;
     // Sample in an extended area so seeds reach all canvas edges
-    const raw = poissonDiscSample(width + 2 * margin, height + 2 * margin, minRadius);
+    const raw = poissonDiscSample(width + 2 * margin, height + 2 * margin, minRadius, rand);
     const shifted = raw.map(([x, y]): [number, number] => [x - margin, y - margin]);
     return { geometry: pointsGeometry(shifted) };
   },

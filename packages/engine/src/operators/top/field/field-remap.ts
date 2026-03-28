@@ -1,4 +1,8 @@
 import type { Operator, Field2D } from "../../../kernel/types";
+import {
+  createField, getFieldExpr, clamp as fClamp, abs as fAbs,
+  mul, sub, add, c, u, div, round as fRound, fpow, smoothstep as fSmooth,
+} from "../../../kernel/field-expr";
 
 type Inputs = { field: Field2D };
 type Outputs = { field: Field2D };
@@ -55,6 +59,37 @@ export const fieldRemap: Operator<Inputs, Outputs> = {
     const power = params.power ?? 1.5;
     const lo = params.lo ?? 0;
     const hi = params.hi ?? 1;
+
+    const inputExpr = getFieldExpr(input);
+    if (inputExpr) {
+      let expr;
+      switch (mode) {
+        case 0: // clamp
+          expr = fClamp(inputExpr, u("lo", lo), u("hi", hi));
+          break;
+        case 1: // quantize: round(v * steps) / steps
+          expr = div(fRound(mul(inputExpr, u("steps", steps))), u("stepsDiv", steps));
+          break;
+        case 2: // ridge: abs(2v - 1)
+          expr = fAbs(sub(mul(c(2), inputExpr), c(1)));
+          break;
+        case 3: // smoothstep
+          expr = fSmooth(u("lo", lo), u("hi", hi), inputExpr);
+          break;
+        case 4: // power
+          expr = fpow(fClamp(inputExpr, c(0), c(1)), u("power", power));
+          break;
+        case 5: // invert
+          expr = sub(c(1), inputExpr);
+          break;
+        case 6: // abs
+          expr = fAbs(inputExpr);
+          break;
+        default:
+          expr = inputExpr;
+      }
+      return { field: createField(expr) };
+    }
 
     const field: Field2D = (x, y) => {
       const v = input(x, y);

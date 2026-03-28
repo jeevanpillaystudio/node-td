@@ -11,3 +11,5 @@ export { geometricNormal } from "./geometric-normal";
 export { visibilityCull } from "./visibility-cull";
 export { baseOutline } from "./base-outline";
 export { contourRing } from "./contour-ring";
+export { surfaceRaymarch } from "./surface-raymarch";
+export { pointOrient } from "./point-orient";

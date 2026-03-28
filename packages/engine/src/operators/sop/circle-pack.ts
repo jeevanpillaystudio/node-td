@@ -1,20 +1,22 @@
-import type { Operator, Geometry } from "../../kernel/types";
+import type { Operator, Geometry, GraphEnv } from "../../kernel/types";
 import { pointsGeometry } from "../../kernel/types";
 
 type Inputs = { width: number; height: number };
 type Outputs = { geometry: Geometry<2> };
+type RandFn = () => number;
 
 function packSeeds(
   w: number,
   h: number,
   minRadius: number,
   maxAttempts: number,
+  rand: RandFn,
 ): [number, number][] {
   const seeds: [number, number][] = [];
   const r2 = minRadius * minRadius;
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
-    const x = Math.random() * w;
-    const y = Math.random() * h;
+    const x = rand() * w;
+    const y = rand() * h;
     let ok = true;
     for (const [sx, sy] of seeds) {
       const dx = x - sx;
@@ -42,10 +44,11 @@ export const circlePack: Operator<Inputs, Outputs> = {
     { key: "minRadius", label: "Min Seed Radius", min: 10, max: 150, step: 5, default: 50 },
     { key: "margin", label: "Edge Margin", min: 0, max: 300, step: 10, default: 100 },
   ],
-  evaluate({ width, height }, params) {
+  evaluate({ width, height }, params, env?: GraphEnv) {
     const minRadius = params.minRadius ?? 50;
     const margin = params.margin ?? 100;
-    const raw = packSeeds(width + 2 * margin, height + 2 * margin, minRadius, 3000);
+    const rand: RandFn = env?.rng ? () => env.rng!.random() : Math.random;
+    const raw = packSeeds(width + 2 * margin, height + 2 * margin, minRadius, 3000, rand);
     const shifted = raw.map(([x, y]): [number, number] => [x - margin, y - margin]);
     return { geometry: pointsGeometry(shifted) };
   },

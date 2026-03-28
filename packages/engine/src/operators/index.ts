@@ -1,7 +1,8 @@
 // TOP — Texture Operators
 export { perlinNoise, pnoise } from "./top/perlin-noise";
-export { simplexNoise } from "./top/simplex-noise";
+export { simplexNoise, simplex2 } from "./top/simplex-noise";
 export { gridSampler } from "./top/grid-sampler";
+export { fieldRender } from "./top/field-render";
 
 // TOP — Field Algebra
 export { fbm } from "./top/field/fbm";
@@ -22,6 +23,8 @@ export { quadtreeSubdivide } from "./sop/quadtree-subdivide";
 
 // MAT — Material Operators
 export { proceduralPalette } from "./mat/procedural-palette";
+export { oklabPalette } from "./mat/oklab-palette";
+export { contrastFilter } from "./mat/contrast-filter";
 
 // SOP — transforms & 3D pipeline
 export { transform2d } from "./sop/transform-2d";
@@ -32,6 +35,10 @@ export { geometricNormal } from "./sop/geometric-normal";
 export { visibilityCull } from "./sop/visibility-cull";
 export { baseOutline } from "./sop/base-outline";
 export { contourRing } from "./sop/contour-ring";
+
+// SOP — implicit surface / raymarching
+export { surfaceRaymarch } from "./sop/surface-raymarch";
+export { pointOrient } from "./sop/point-orient";
 
 // MAT — shading
 export { diffuseShade } from "./mat/diffuse-shade";

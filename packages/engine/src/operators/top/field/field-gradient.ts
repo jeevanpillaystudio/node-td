@@ -1,4 +1,7 @@
 import type { Operator, Field2D } from "../../../kernel/types";
+import {
+  createField, getFieldExpr, apply, sub, mul, add, u, X, Y,
+} from "../../../kernel/field-expr";
 
 type Inputs = { field: Field2D };
 type Outputs = { dx: Field2D; dy: Field2D };
@@ -31,6 +34,32 @@ export const fieldGradient: Operator<Inputs, Outputs> = {
   evaluate({ field: input }, params) {
     const eps = params.epsilon ?? 1.0;
     const invEps2 = 1 / (2 * eps);
+
+    const inputExpr = getFieldExpr(input);
+    if (inputExpr) {
+      const uEps = u("gradEps", eps);
+      const uInvEps2 = u("gradInvEps2", invEps2);
+
+      // dx = (input(x+eps, y) - input(x-eps, y)) / (2*eps)
+      const dxExpr = mul(
+        sub(
+          apply(inputExpr, add(X, uEps), Y),
+          apply(inputExpr, sub(X, uEps), Y),
+        ),
+        uInvEps2,
+      );
+
+      // dy = (input(x, y+eps) - input(x, y-eps)) / (2*eps)
+      const dyExpr = mul(
+        sub(
+          apply(inputExpr, X, add(Y, uEps)),
+          apply(inputExpr, X, sub(Y, uEps)),
+        ),
+        uInvEps2,
+      );
+
+      return { dx: createField(dxExpr), dy: createField(dyExpr) };
+    }
 
     const dx: Field2D = (x, y) => (input(x + eps, y) - input(x - eps, y)) * invEps2;
     const dy: Field2D = (x, y) => (input(x, y + eps) - input(x, y - eps)) * invEps2;

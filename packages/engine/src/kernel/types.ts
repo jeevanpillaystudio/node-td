@@ -115,6 +115,13 @@ export interface Geometry<D extends 2 | 3 = 2> {
   indices?: Uint32Array;
   /** Per-vertex normals (3D geometry) */
   normals?: Float32Array;
+  /**
+   * Arbitrary per-vertex attributes — one Float32Array per named channel.
+   * Each array has exactly `vertexCount` elements (1 scalar per vertex).
+   *
+   * Convention: depth, ao, worldX/Y/Z, normalX/Y/Z, angle, length
+   */
+  attributes?: Record<string, Float32Array>;
 }
 
 /**
@@ -167,6 +174,14 @@ export interface Camera2D {
 export interface Camera3D {
   /** Project [x, y, z] → [screenX, screenY, depth] */
   project: (point: [number, number, number]) => [number, number, number];
+  /**
+   * Unproject a screen pixel to a world-space ray.
+   * Returns the ray origin and normalized direction for sphere-tracing.
+   */
+  unproject: (screenX: number, screenY: number) => {
+    origin: [number, number, number];
+    dir: [number, number, number];
+  };
   /** Viewport dimensions [width, height] */
   viewport: [number, number];
 }
@@ -175,10 +190,13 @@ export interface Camera3D {
  * Graph evaluation environment — passed through to all evaluate() calls.
  *
  * Carries env values ($env wires: width, height) plus injected
- * capabilities like a canvas factory for ROP operators.
+ * capabilities like a canvas factory for ROP operators and a
+ * seeded PRNG for deterministic randomness.
  */
 export type GraphEnv = Record<string, unknown> & {
   createCanvas?: (w: number, h: number) => OffscreenCanvas;
+  /** Seeded PRNG — operators read from this for deterministic output. */
+  rng?: { random(): number };
 };
 
 // ─── Operator Protocol ───────────────────────────────────────────

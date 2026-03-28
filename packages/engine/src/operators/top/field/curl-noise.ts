@@ -1,5 +1,8 @@
 import type { Operator, Field2D } from "../../../kernel/types";
-
+import {
+  createField, getFieldExpr, apply, sub, mul, add, div, c, u, X, Y,
+  fatan2, neg,
+} from "../../../kernel/field-expr";
 type Inputs = { field: Field2D };
 type Outputs = { field: Field2D };
 
@@ -33,6 +36,38 @@ export const curlNoise: Operator<Inputs, Outputs> = {
     const eps = params.epsilon ?? 1.0;
     const scale = params.scale ?? 1.0;
 
+    const inputExpr = getFieldExpr(input);
+    if (inputExpr) {
+      // Scaled coordinates
+      const uScale = u("curlScale", scale);
+      const uEps = u("curlEps", eps);
+      const uInvEps2 = u("curlInvEps2", 1 / (2 * eps));
+      const sx = mul(X, uScale);
+      const sy = mul(Y, uScale);
+
+      // Central differences for gradient
+      const dfdx = mul(
+        sub(
+          apply(inputExpr, add(sx, uEps), sy),
+          apply(inputExpr, sub(sx, uEps), sy),
+        ),
+        uInvEps2,
+      );
+      const dfdy = mul(
+        sub(
+          apply(inputExpr, sx, add(sy, uEps)),
+          apply(inputExpr, sx, sub(sy, uEps)),
+        ),
+        uInvEps2,
+      );
+
+      // Curl: atan2(-dfdx, dfdy), normalized to [0, 1]
+      const angle = fatan2(neg(dfdx), dfdy);
+      const expr = div(add(angle, c(Math.PI)), c(2 * Math.PI));
+
+      return { field: createField(expr) };
+    }
+
     const field: Field2D = (x, y) => {
       const sx = x * scale;
       const sy = y * scale;
@@ -42,7 +77,6 @@ export const curlNoise: Operator<Inputs, Outputs> = {
       const dfdy = (input(sx, sy + eps) - input(sx, sy - eps)) / (2 * eps);
 
       // Curl: rotate gradient 90 degrees
-      // curl_x = dfdy, curl_y = -dfdx
       const angle = Math.atan2(-dfdx, dfdy);
 
       // Normalize from [-pi, pi] to [0, 1]

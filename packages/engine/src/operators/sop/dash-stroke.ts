@@ -1,4 +1,4 @@
-import type { Operator, Geometry } from "../../kernel/types";
+import type { Operator, Geometry, GraphEnv } from "../../kernel/types";
 import { geometryToPaths, pathsGeometry } from "../../kernel/types";
 
 type Inputs = { geometry: Geometry<2> };
@@ -12,15 +12,16 @@ export const dashStroke: Operator<Inputs, Outputs> = {
   inputs: [{ name: "geometry", type: "geometry" }],
   outputs: [{ name: "geometry", type: "geometry" }],
   params: [],
-  evaluate({ geometry }) {
+  evaluate({ geometry }, _params, env?: GraphEnv) {
+    const rand = env?.rng ? () => env.rng!.random() : Math.random;
     const paths = geometryToPaths(geometry);
     const segments: [number, number][][] = [];
 
     for (const pts of paths) {
       let i = 0;
       while (i + 1 < pts.length) {
-        const seg = 2 + Math.floor(Math.random() * 6);
-        const gap = 1 + Math.floor(Math.random() * 5);
+        const seg = 2 + Math.floor(rand() * 6);
+        const gap = 1 + Math.floor(rand() * 5);
         const end = Math.min(i + seg, pts.length);
         const dash: [number, number][] = [];
         for (let j = i; j < end; j++) dash.push(pts[j]!);
