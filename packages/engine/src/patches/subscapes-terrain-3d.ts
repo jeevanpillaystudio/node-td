@@ -1,51 +1,48 @@
 import type { Graph } from "../kernel/graph";
 
 /**
- * Subscapes Terrain 3D patch -- full recreation of the Subscapes algorithm
- * with occlusion culling, diffuse lighting, base outline, and contour rings.
+ * Subscapes Terrain 3D patch — recreation of the Subscapes algorithm
+ * targeting Style 0 ("Dark-on-light") variant.
+ *
+ * Parameters reverse-engineered from algorithm.js (token #53) and
+ * calibrated against the actual Subscapes coordinate conventions:
+ *
+ *   - Terrain: [-1,1]² XZ domain, noise scale ≈ 0.005/px (≈2-unit traverse)
+ *   - Height: pow(fbm, 4.5) — power shaping, not ridge folding
+ *   - Flow: independent simplex at scale 0.003 (slow-varying angles)
+ *   - Strokes: 4+4 steps × 8px ≈ 64px total per seed
+ *   - Projection: exact isometric from direction (1,1,1)/√3
+ *   - Render: monochrome dark strokes on light bg, source-over, opacity 1
  *
  * Signal flow:
  *
- *   simplex-noise → fbm (6 octaves) → field-remap (ridge) ──┐
- *                                                             │
- *   ┌── FLOW BRANCH ─────────────────────────────────────────┤
- *   │   flow-noise (independent simplex) → grid-sampler      │
- *   │       ↓                                                 │
- *   │   poisson-disc → flow-tracer → continuous-stroke        │
- *   │       ↓                                                 │
- *   │   surface-lift → geometric-normal ──┐                   │
- *   │                                     │                   │
- *   ├── COLLISION MESH ──────────────────┤                   │
- *   │   parametric-surface → surface-lift → visibility-cull   │
- *   │                                     │   ↑               │
- *   │                               camera-3d ─┘              │
- *   │                                     │                   │
- *   │   visibility-cull → project-3d → stroke-renderer        │
- *   │                  → diffuse-shade → ↑ (palette)          │
- *   │                                                         │
- *   ├── CONTOUR RINGS ───────────────────────────────────────┤
- *   │   contour-ring → project-3d → stroke-renderer (overlay) │
- *   │                                                         │
- *   └── BASE OUTLINE ────────────────────────────────────────┘
- *       base-outline (geometry available, rendering in Phase 3)
+ *   simplex-noise → fbm (6 oct) → field-remap (power 4.5) ─┐
+ *                                                            │
+ *   ┌── FLOW BRANCH ────────────────────────────────────────┤
+ *   │   flow-noise (independent simplex) → grid-sampler     │
+ *   │       ↓                                                │
+ *   │   poisson-disc → flow-tracer → continuous-stroke       │
+ *   │       ↓                                                │
+ *   │   surface-lift → geometric-normal ──┐                  │
+ *   │                                     │                  │
+ *   ├── COLLISION MESH ──────────────────┤                  │
+ *   │   parametric-surface → surface-lift → visibility-cull  │
+ *   │                                     │   ↑              │
+ *   │                               camera-3d ─┘             │
+ *   │                                     │                  │
+ *   │   visibility-cull → project-3d → stroke-renderer       │
+ *   │                  → diffuse-shade → ↑ (per-strip color) │
+ *   │                                                        │
+ *   ├── BASE OUTLINE ───────────────────────────────────────┤
+ *   │   base-outline → project-3d → stroke-renderer (fill)   │
+ *   │                                                        │
+ *   ├── CONTOUR RINGS ──────────────────────────────────────┤
+ *   │   contour-ring → project-3d → stroke-renderer (overlay)│
+ *   │                                                        │
+ *   └── PALETTE ────────────────────────────────────────────┘
+ *       oklab-palette (single dark color for Style 0)
  *
- *   composite: [stroke render, contour render]
- *
- * Phase 2 changes from original ad-hoc graph:
- *
- * 1. **Independent flow noise** — The actual Subscapes algorithm uses a
- *    separate simplex noise source (scale 0.05 in normalized UV) for flow
- *    field angles, NOT the curl of the terrain noise. This produces stroke
- *    motion that is organic but independent of terrain contours.
- *
- * 2. **Base outline** — Samples the height field along the visible boundary
- *    edges (back + right for isometric view), adds base-level corners to
- *    form a closed polygon. When filled, this occludes strokes behind the
- *    terrain base. (Fill rendering deferred to Phase 3.)
- *
- * 3. **Contour rings** — Elevation contour lines at progressively lower
- *    heights between terrain surface and base level, with exponential
- *    ease-out spacing. Plus vertical edge lines at the two visible corners.
+ *   composite: [strokes, base fill, contour lines]
  *
  * Terminal output: "comp" node, port "buffer" (Buffer2D, RGBA).
  */
@@ -54,60 +51,86 @@ export const subscapesTerrain3dGraph: Graph = {
   name: "Subscapes Terrain 3D",
   nodes: {
     // ── Field algebra chain ─────────────────────────────────────
-    noise:   { type: "simplex-noise", params: { noiseScale: 0.025 } },
+    // noiseScale 0.005 → terrain traverses ~2 units of simplex space
+    // across a 400px canvas, matching actual's [-1,1] × Re=1.0
+    noise:   { type: "simplex-noise", params: { noiseScale: 0.012 } },
     terrain: { type: "fbm", params: { octaves: 6, lacunarity: 2.0, gain: 0.5, amplitude: 1.0 } },
-    ridge:   { type: "field-remap", params: { mode: 2, power: 1.5 } },
+    // Power mode (4) — actual uses $e ∈ [3, 5], typ. 4.5
+    // Lower power shows more terrain height for visual debugging
+    ridge:   { type: "field-remap", params: { mode: 4, power: 2.0 } },
 
     // ── Flow field: INDEPENDENT simplex noise ──────────────────
-    // The actual Subscapes uses a separate noise source for flow angles,
-    // not the curl of the terrain field. At pixel scale ~500, noiseScale
-    // 0.003 gives a similar effective frequency to the original's 0.05
-    // in normalized [-1,1] space.
+    // noiseScale 0.003 → grid indices 0–22 span ~0.07 simplex units
+    // (actual spans ~0.1 units; both produce gentle slowly-varying flow)
     flow:    { type: "simplex-noise", params: { noiseScale: 0.003 } },
     grid:    { type: "grid-sampler", params: { resolution: 18 } },
-    seeds:   { type: "poisson-disc", params: { minRadius: 14 } },
-    trace:   { type: "flow-tracer", params: { numSteps: 40, stepLength: 3.5 } },
+    // minRadius 5px ≈ actual's 0.01 in UV × 400px + tighter k=10 packing
+    seeds:   { type: "poisson-disc", params: { minRadius: 5 } },
+    // 4 steps × 8px per direction = 64px total stroke (actual: R=4, U=0.02)
+    trace:   { type: "flow-tracer", params: { numSteps: 4, stepLength: 8, exitMargin: 10 } },
     stroke:  { type: "continuous-stroke" },
 
     // ── 3D projection + occlusion ──────────────────────────────
-    lift:    { type: "surface-lift", params: { amplitude: 80, baseY: 0 } },
-    normals: { type: "geometric-normal", params: { epsilon: 0.00001, amplitude: 80 } },
+    // amplitude 120 ≈ 30% of scene extent (actual: height 0–0.5 in [-1,1])
+    // baseY 6 ≈ actual's ve ≈ 0.05 constant offset
+    lift:    { type: "surface-lift", params: { amplitude: 120, baseY: 6 } },
+    normals: { type: "geometric-normal", params: { epsilon: 0.00001, amplitude: 120 } },
     colmesh: { type: "parametric-surface", params: { uSegments: 42, vSegments: 42, amplitude: 0 } },
-    liftmesh:{ type: "surface-lift", params: { amplitude: 80, baseY: 0 } },
+    liftmesh:{ type: "surface-lift", params: { amplitude: 120, baseY: 6 } },
     cull:    { type: "visibility-cull" },
+    // Isometric camera derived from algorithm.js hardcoded matrix:
+    //   eye direction (1,1,1)/√3, orthoSize = 2√3/1.075 ≈ 1.61 (scene-relative)
+    //   Eye/target offsets are now relative to sceneSize (1.0 = sceneSize)
     cam3d:   { type: "camera-3d", params: {
       projection: 0, // orthographic (isometric)
-      eyeX: 200, eyeY: 300, eyeZ: -200,
+      eyeX: 1.0, eyeY: 1.0, eyeZ: 1.0,
       targetX: 0, targetY: 0, targetZ: 0,
-      orthoSize: 350,
+      orthoSize: 1.2,
     }},
     proj:    { type: "project-3d" },
 
     // ── Shading ────────────────────────────────────────────────
+    // Style 0: ambient=1.0 → uniform shading (no diffuse variation)
+    // All strokes use the single palette color
     shade:   { type: "diffuse-shade", params: {
       lightX: 0, lightY: -0.707, lightZ: -0.707,
-      steps: 4, ambient: 0.1,
+      steps: 4, ambient: 1.0,
     }},
 
-    // ── Base outline (geometry only, fill rendering in Phase 3) ─
-    base:    { type: "base-outline", params: { samples: 150, amplitude: 80, baseY: 0 } },
+    // ── Base outline (filled polygon for depth occlusion) ──────
+    base:      { type: "base-outline", params: { samples: 150, amplitude: 120, baseY: 6 } },
+    "proj-base": { type: "project-3d" },
+    "render-base": { type: "stroke-renderer", params: {
+      renderMode: 1, // fill mode
+      fillR: 249, fillG: 249, fillB: 249, // match light bg (Style 0)
+      strokeAlpha: 1, // opaque fill
+      bgR: 0, bgG: 0, bgB: 0, bgAlpha: 0, // transparent canvas
+    }},
 
     // ── Contour rings ──────────────────────────────────────────
-    contour: { type: "contour-ring", params: { levels: 5, samples: 150, amplitude: 80, baseY: 0 } },
+    contour: { type: "contour-ring", params: { levels: 5, samples: 150, amplitude: 120, baseY: 6 } },
     "proj-cont": { type: "project-3d" },
     "render-cont": { type: "stroke-renderer", params: {
-      lineWidth: 0.5, strokeAlpha: 0.33,
+      lineWidth: 0.8, strokeAlpha: 0.5,
       bgR: 0, bgG: 0, bgB: 0, bgAlpha: 0, // transparent overlay
     }},
 
     // ── Terminal render ────────────────────────────────────────
-    palette: { type: "procedural-palette", params: { count: 5, saturation: 0.55, lightness: 0.6, hueOffset: 200 } },
+    // Style 0: single near-black color on light background
+    palette: { type: "oklab-palette", params: {
+      count: 1, lightness: 0.05, chroma: 0, hueOffset: 0, hueSpread: 0,
+    }},
     camera:  { type: "camera-2d" },
-    render:  { type: "stroke-renderer", params: { lineWidth: 1.0, strokeAlpha: 0.65, bgR: 12, bgG: 14, bgB: 18 } },
+    // lineWidth 1.8 ≈ min(400,400) × 0.0045
+    // bgR/G/B 249 = Style 0 light background
+    render:  { type: "stroke-renderer", params: {
+      lineWidth: 1.8, strokeAlpha: 1.0,
+      bgR: 249, bgG: 249, bgB: 249,
+    }},
     comp:    { type: "composite", params: { mode: 0 } }, // Porter-Duff "over"
   },
   wires: [
-    // ── Field algebra: noise → fbm → ridge ────────────────────
+    // ── Field algebra: noise → fbm → power ────────────────────
     { from: "noise",   output: "field", to: "terrain", input: "field" },
     { from: "terrain", output: "field", to: "ridge",   input: "field" },
 
@@ -128,7 +151,7 @@ export const subscapesTerrain3dGraph: Graph = {
 
     { from: "trace", output: "geometry", to: "stroke", input: "geometry" },
 
-    // ── Fan-out: ridge → surface-lift (for stroke height) ─────
+    // ── Fan-out: power-field → surface-lift (for stroke height)
     { from: "ridge",  output: "field",    to: "lift", input: "field" },
     { from: "stroke", output: "geometry", to: "lift", input: "geometry" },
 
@@ -164,32 +187,38 @@ export const subscapesTerrain3dGraph: Graph = {
     { from: "$env", output: "width",  to: "camera", input: "width" },
     { from: "$env", output: "height", to: "camera", input: "height" },
 
-    // ── Main stroke render ────────────────────────────────────
+    // ── Main stroke render (per-strip coloring from shade) ────
     { from: "proj",   output: "geometry", to: "render", input: "geometry" },
     { from: "camera", output: "camera",   to: "render", input: "camera" },
     { from: "shade",  output: "palette",  to: "render", input: "palette" },
 
-    // ── Base outline (wired but not rendered yet) ─────────────
+    // ── Base outline: project + fill render ───────────────────
     { from: "ridge", output: "field",  to: "base", input: "field" },
     { from: "$env",  output: "height", to: "base", input: "width" },
     { from: "$env",  output: "height", to: "base", input: "height" },
+
+    { from: "base",  output: "geometry",  to: "proj-base", input: "geometry" },
+    { from: "cam3d", output: "camera3d",  to: "proj-base", input: "camera3d" },
+
+    { from: "proj-base", output: "geometry", to: "render-base", input: "geometry" },
+    { from: "camera",    output: "camera",   to: "render-base", input: "camera" },
 
     // ── Contour ring pipeline ─────────────────────────────────
     { from: "ridge", output: "field",  to: "contour", input: "field" },
     { from: "$env",  output: "height", to: "contour", input: "width" },
     { from: "$env",  output: "height", to: "contour", input: "height" },
 
-    // Project contour 3D → 2D (shares camera with main pipeline)
     { from: "contour", output: "geometry",  to: "proj-cont", input: "geometry" },
     { from: "cam3d",   output: "camera3d",  to: "proj-cont", input: "camera3d" },
 
-    // Render contour overlay (transparent background)
     { from: "proj-cont", output: "geometry", to: "render-cont", input: "geometry" },
     { from: "camera",    output: "camera",   to: "render-cont", input: "camera" },
     { from: "palette",   output: "palette",  to: "render-cont", input: "palette" },
 
-    // ── Composite: strokes (bottom) + contours (top) ──────────
+    // ── Composite: strokes (bottom) → base fill → contours (top)
+    // Wire order determines layer order in variadic input
     { from: "render",      output: "buffer", to: "comp", input: "layers" },
+    { from: "render-base", output: "buffer", to: "comp", input: "layers" },
     { from: "render-cont", output: "buffer", to: "comp", input: "layers" },
   ],
 };
