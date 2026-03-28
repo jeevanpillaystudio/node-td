@@ -2,7 +2,8 @@
 
 import dynamic from "next/dynamic";
 import type { DevTuner as DevTunerComponent } from "~/components/dev-tuner";
-import { ManifestoShader, FLOW_FIELD_PARAMS } from "./manifesto-shader";
+import { flowFieldPatch } from "../../_lib/generative/patches";
+import { ManifestoShader } from "./manifesto-shader";
 
 type DevTunerProps = React.ComponentProps<typeof DevTunerComponent>;
 
@@ -14,15 +15,17 @@ const DevTuner =
       )
     : null;
 
+const patch = flowFieldPatch;
+
 export function ShaderSection() {
-  if (!DevTuner) return <ManifestoShader />;
+  if (!DevTuner) return <ManifestoShader patch={patch} />;
   return (
     <DevTuner
-      name="FlowField"
-      params={FLOW_FIELD_PARAMS}
+      name={patch.name}
+      params={patch.params}
       className="absolute inset-0"
     >
-      {(values) => <ManifestoShader config={values} />}
+      {(values) => <ManifestoShader patch={patch} config={values} />}
     </DevTuner>
   );
 }

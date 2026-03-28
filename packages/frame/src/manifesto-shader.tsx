@@ -1,39 +1,20 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import {
-  perlinNoiseGrid,
-  circlePackSeeds,
-  flowTracer,
-  dashStroke,
-  canvasRenderer,
-} from "../../_lib/generative/nodes";
-import type { ParamDef, GenNode } from "../../_lib/generative/types";
-
-/** All nodes in evaluation order */
-export const FLOW_FIELD_NODES: GenNode[] = [
-  perlinNoiseGrid,
-  circlePackSeeds,
-  flowTracer,
-  dashStroke,
-  canvasRenderer,
-];
-
-/** Flattened params for the DevTuner */
-export const FLOW_FIELD_PARAMS: ParamDef[] = FLOW_FIELD_NODES.flatMap(
-  (n) => n.params,
-);
-
-const DEFAULTS: Record<string, number> = Object.fromEntries(
-  FLOW_FIELD_PARAMS.map((p) => [p.key, p.default]),
-);
+import type { Patch } from "../../_lib/generative/patch";
+import { flowFieldPatch } from "../../_lib/generative/patches";
 
 export function ManifestoShader({
+  patch = flowFieldPatch,
   config,
 }: {
+  patch?: Patch;
   config?: Record<string, number>;
 }) {
-  const params = config ? { ...DEFAULTS, ...config } : DEFAULTS;
+  const defaults = Object.fromEntries(
+    patch.params.map((p) => [p.key, p.default]),
+  );
+  const params = config ? { ...defaults, ...config } : defaults;
   const paramsKey = JSON.stringify(params);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -60,12 +41,7 @@ export function ManifestoShader({
       canvas.height = h * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      // Evaluate the node graph
-      const grid = perlinNoiseGrid.evaluate({ width: w, height: h }, params);
-      const seeds = circlePackSeeds.evaluate({ width: w, height: h }, params);
-      const paths = flowTracer.evaluate({ grid, points: seeds }, params);
-      const segments = dashStroke.evaluate({ paths }, params);
-      canvasRenderer.evaluate({ segments, ctx, width: w, height: h }, params);
+      patch.evaluate({ width: w, height: h, ctx }, params);
     }
 
     draw();
@@ -78,7 +54,7 @@ export function ManifestoShader({
       ro.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paramsKey]);
+  }, [paramsKey, patch]);
 
   return (
     <div
