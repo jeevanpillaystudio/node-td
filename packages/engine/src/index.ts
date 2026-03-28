@@ -30,24 +30,18 @@ export {
 export type { Wire, Graph } from "./kernel/graph";
 export {
   validateGraph,
-  evaluateGraph,
   collectParams,
   topoSort,
   terminalOutputs,
   findTerminalOutput,
 } from "./kernel/graph";
 
+// ─── Cook engine ─────────────────────────────────────────────────
+export type { CookStats } from "./kernel/cook";
+export { CookEngine } from "./kernel/cook";
+
 // ─── Registry ────────────────────────────────────────────────────
 export { OperatorRegistry } from "./kernel/registry";
-
-// ─── Composition ────────────────────────────────────────────────
-export type { Composition, PatchEntry, BlendMode } from "./kernel/composition";
-export {
-  graphToComposition,
-  createPatch,
-  evaluateComposition,
-  collectCompositionParams,
-} from "./kernel/composition";
 
 // ─── All built-in operators ──────────────────────────────────────
 import { perlinNoise } from "./operators/top/perlin-noise";
@@ -71,6 +65,9 @@ import { transform2d } from "./operators/sop/transform-2d";
 import { merge } from "./operators/sop/merge";
 import { surfaceLift } from "./operators/sop/surface-lift";
 import { project3d } from "./operators/sop/project-3d";
+import { geometricNormal } from "./operators/sop/geometric-normal";
+import { visibilityCull } from "./operators/sop/visibility-cull";
+import { diffuseShade } from "./operators/mat/diffuse-shade";
 import { camera2d } from "./operators/rop/camera-2d";
 import { camera3d } from "./operators/rop/camera-3d";
 import { strokeRenderer } from "./operators/rop/stroke-renderer";
@@ -105,8 +102,11 @@ export const allOperators: Operator[] = [
   merge,
   surfaceLift,
   project3d,
+  geometricNormal,
+  visibilityCull,
   // MAT
   proceduralPalette,
+  diffuseShade,
   // ROP
   camera2d,
   camera3d,

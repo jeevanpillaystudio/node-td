@@ -23,11 +23,16 @@ export { quadtreeSubdivide } from "./sop/quadtree-subdivide";
 // MAT — Material Operators
 export { proceduralPalette } from "./mat/procedural-palette";
 
-// SOP — transforms
+// SOP — transforms & 3D pipeline
 export { transform2d } from "./sop/transform-2d";
 export { merge } from "./sop/merge";
 export { surfaceLift } from "./sop/surface-lift";
 export { project3d } from "./sop/project-3d";
+export { geometricNormal } from "./sop/geometric-normal";
+export { visibilityCull } from "./sop/visibility-cull";
+
+// MAT — shading
+export { diffuseShade } from "./mat/diffuse-shade";
 
 // ROP
 export { camera2d } from "./rop/camera-2d";

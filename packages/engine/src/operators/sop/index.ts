@@ -7,3 +7,5 @@ export { parametricSurface } from "./parametric-surface";
 export { quadtreeSubdivide } from "./quadtree-subdivide";
 export { transform2d } from "./transform-2d";
 export { merge } from "./merge";
+export { geometricNormal } from "./geometric-normal";
+export { visibilityCull } from "./visibility-cull";
