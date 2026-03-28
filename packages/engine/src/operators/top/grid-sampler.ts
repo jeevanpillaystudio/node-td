@@ -1,4 +1,4 @@
-import type { Operator, Field2D, Buffer2D } from "../../core/types";
+import type { Operator, Field2D, Buffer2D } from "../../kernel/types";
 
 type Inputs = { field: Field2D; width: number; height: number };
 type Outputs = { buffer: Buffer2D };

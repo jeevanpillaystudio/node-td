@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { Graph, Geometry } from "@repo/generative";
+import type { Graph, Geometry, Buffer2D } from "@repo/generative";
 import { evaluateGraph, createDefaultRegistry, findTerminalOutput } from "@repo/generative";
-import { drawCanvas2D } from "@repo/generative/render";
+import { drawCanvas2D, blitBuffer2D } from "@repo/generative/render";
 
 const registry = createDefaultRegistry();
 
@@ -37,10 +37,33 @@ export function EditorPreview({ graph, values }: EditorPreviewProps) {
       canvas.height = displayH * dpr;
       ctx.setTransform(dpr / scale, 0, 0, dpr / scale, 0, 0);
 
-      const outputs = evaluateGraph(graph, registry, { width: virtualW, height: virtualH }, values);
-      const geo = findTerminalOutput<Geometry<2>>(graph, registry, outputs, "geometry");
-      if (geo) {
-        drawCanvas2D(ctx, virtualW, virtualH, geo);
+      const outputs = evaluateGraph(
+        graph,
+        registry,
+        {
+          width: virtualW,
+          height: virtualH,
+          dpr: 1, // Preview handles its own scaling via canvas transform
+          createCanvas: (cw: number, ch: number) => new OffscreenCanvas(cw, ch),
+        },
+        values,
+      );
+
+      // ROP path: graph terminates with Buffer2D
+      const buf = findTerminalOutput<Buffer2D>(graph, registry, outputs, "buffer");
+      if (buf) {
+        // putImageData ignores canvas transforms, so we blit to a temp canvas
+        // then drawImage it through the current transform (dpr/scale)
+        const tmp = new OffscreenCanvas(buf.width, buf.height);
+        const tmpCtx = tmp.getContext("2d")!;
+        blitBuffer2D(tmpCtx, buf);
+        ctx.drawImage(tmp, 0, 0);
+      } else {
+        // Legacy fallback: graph terminates with Geometry
+        const geo = findTerminalOutput<Geometry<2>>(graph, registry, outputs, "geometry");
+        if (geo) {
+          drawCanvas2D(ctx, virtualW, virtualH, geo);
+        }
       }
     }
 

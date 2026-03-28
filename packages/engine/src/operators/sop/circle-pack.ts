@@ -1,5 +1,5 @@
-import type { Operator, Geometry } from "../../core/types";
-import { pointsGeometry } from "../../core/types";
+import type { Operator, Geometry } from "../../kernel/types";
+import { pointsGeometry } from "../../kernel/types";
 
 type Inputs = { width: number; height: number };
 type Outputs = { geometry: Geometry<2> };

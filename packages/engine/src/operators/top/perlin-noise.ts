@@ -1,4 +1,4 @@
-import type { Operator, Field2D } from "../../core/types";
+import type { Operator, Field2D } from "../../kernel/types";
 import { P } from "../../noise-utils";
 
 type Inputs = Record<string, never>;

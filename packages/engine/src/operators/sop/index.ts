@@ -5,3 +5,5 @@ export { dashStroke } from "./dash-stroke";
 export { continuousStroke } from "./continuous-stroke";
 export { parametricSurface } from "./parametric-surface";
 export { quadtreeSubdivide } from "./quadtree-subdivide";
+export { transform2d } from "./transform-2d";
+export { merge } from "./merge";

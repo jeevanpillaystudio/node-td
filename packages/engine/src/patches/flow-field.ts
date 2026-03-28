@@ -1,10 +1,10 @@
-import type { Graph } from "../core/graph";
+import type { Graph } from "../kernel/graph";
 
 /**
  * Flow Field patch — Perlin noise → angle grid → circle-pack seeds →
- * flow tracing → dash strokes.
+ * flow tracing → dash strokes → stroke renderer.
  *
- * Terminal output: "stroke" node, port "geometry" (Geometry<2>, line-strip).
+ * Terminal output: "render" node, port "buffer" (Buffer2D, RGBA).
  */
 export const flowFieldGraph: Graph = {
   id: "flow-field",
@@ -15,6 +15,8 @@ export const flowFieldGraph: Graph = {
     seeds: { type: "circle-pack" },
     trace: { type: "flow-tracer" },
     stroke: { type: "dash-stroke" },
+    camera: { type: "camera-2d" },
+    render: { type: "stroke-renderer" },
   },
   wires: [
     // noise → grid
@@ -31,5 +33,11 @@ export const flowFieldGraph: Graph = {
     { from: "$env", output: "height", to: "trace", input: "height" },
     // trace → stroke
     { from: "trace", output: "geometry", to: "stroke", input: "geometry" },
+    // env → camera
+    { from: "$env", output: "width", to: "camera", input: "width" },
+    { from: "$env", output: "height", to: "camera", input: "height" },
+    // stroke + camera → render
+    { from: "stroke", output: "geometry", to: "render", input: "geometry" },
+    { from: "camera", output: "camera", to: "render", input: "camera" },
   ],
 };

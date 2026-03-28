@@ -9,19 +9,21 @@ export type {
   Geometry,
   Palette,
   Signal,
+  Camera2D,
+  GraphEnv,
   Operator,
   NodeInstance,
-} from "./core/types";
+} from "./kernel/types";
 
 export {
   pointsGeometry,
   pathsGeometry,
   geometryToPaths,
   vertexAt,
-} from "./core/types";
+} from "./kernel/types";
 
 // ─── Graph engine ────────────────────────────────────────────────
-export type { Wire, Graph } from "./core/graph";
+export type { Wire, Graph } from "./kernel/graph";
 export {
   validateGraph,
   evaluateGraph,
@@ -29,10 +31,10 @@ export {
   topoSort,
   terminalOutputs,
   findTerminalOutput,
-} from "./core/graph";
+} from "./kernel/graph";
 
 // ─── Registry ────────────────────────────────────────────────────
-export { OperatorRegistry } from "./core/registry";
+export { OperatorRegistry } from "./kernel/registry";
 
 // ─── All built-in operators ──────────────────────────────────────
 import { perlinNoise } from "./operators/top/perlin-noise";
@@ -46,9 +48,15 @@ import { continuousStroke } from "./operators/sop/continuous-stroke";
 import { parametricSurface } from "./operators/sop/parametric-surface";
 import { quadtreeSubdivide } from "./operators/sop/quadtree-subdivide";
 import { proceduralPalette } from "./operators/mat/procedural-palette";
-import { OperatorRegistry } from "./core/registry";
+import { transform2d } from "./operators/sop/transform-2d";
+import { merge } from "./operators/sop/merge";
+import { camera2d } from "./operators/rop/camera-2d";
+import { strokeRenderer } from "./operators/rop/stroke-renderer";
+import { pointRenderer } from "./operators/rop/point-renderer";
+import { composite } from "./operators/rop/composite";
+import { OperatorRegistry } from "./kernel/registry";
 
-import type { Operator } from "./core/types";
+import type { Operator } from "./kernel/types";
 
 /** All built-in operators */
 export const allOperators: Operator[] = [
@@ -64,8 +72,15 @@ export const allOperators: Operator[] = [
   continuousStroke,
   parametricSurface,
   quadtreeSubdivide,
+  transform2d,
+  merge,
   // MAT
   proceduralPalette,
+  // ROP
+  camera2d,
+  strokeRenderer,
+  pointRenderer,
+  composite,
 ];
 
 /** Create a registry pre-loaded with all built-in operators */

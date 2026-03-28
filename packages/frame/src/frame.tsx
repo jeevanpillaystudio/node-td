@@ -2,9 +2,9 @@
 
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { cn } from "@repo/ui/lib/utils";
-import type { Graph, Geometry } from "@repo/generative";
+import type { Graph, Geometry, Buffer2D } from "@repo/generative";
 import { collectParams, evaluateGraph, createDefaultRegistry, findTerminalOutput } from "@repo/generative";
-import { drawCanvas2D } from "@repo/generative/render";
+import { drawCanvas2D, blitBuffer2D } from "@repo/generative/render";
 import { useOptionalFrameContext } from "./frame-provider";
 
 const registry = createDefaultRegistry();
@@ -81,15 +81,32 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
 
       canvas.width = w * dpr;
       canvas.height = h * dpr;
-      canvasCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       // Evaluate graph — pure computation, no side effects
-      const outputs = evaluateGraph(graph, registry, { width: w, height: h }, values);
+      // DPR is passed via env so ROPs can render at full pixel resolution
+      const outputs = evaluateGraph(
+        graph,
+        registry,
+        {
+          width: w,
+          height: h,
+          dpr,
+          createCanvas: (cw: number, ch: number) => new OffscreenCanvas(cw, ch),
+        },
+        values,
+      );
 
-      // Find terminal geometry and render it
-      const geo = findTerminalOutput<Geometry<2>>(graph, registry, outputs, "geometry");
-      if (geo) {
-        drawCanvas2D(canvasCtx, w, h, geo);
+      // ROP path: buffer is already at full pixel resolution (DPR-aware)
+      const buf = findTerminalOutput<Buffer2D>(graph, registry, outputs, "buffer");
+      if (buf) {
+        blitBuffer2D(canvasCtx, buf);
+      } else {
+        // Legacy fallback: apply DPR transform for direct geometry drawing
+        canvasCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        const geo = findTerminalOutput<Geometry<2>>(graph, registry, outputs, "geometry");
+        if (geo) {
+          drawCanvas2D(canvasCtx, w, h, geo);
+        }
       }
     }
 

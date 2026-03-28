@@ -1,7 +1,7 @@
-import type { Graph, Wire } from "../core/graph";
-import type { Operator, PortDef } from "../core/types";
-import type { OperatorRegistry } from "../core/registry";
-import { topoSort } from "../core/graph";
+import type { Graph, Wire } from "../kernel/graph";
+import type { Operator, PortDef } from "../kernel/types";
+import type { OperatorRegistry } from "../kernel/registry";
+import { topoSort } from "../kernel/graph";
 
 /** Position of a node in the visual editor. */
 export interface NodeLayout {

@@ -1,4 +1,4 @@
-import type { Operator, NodeInstance, ParamDef, PortType } from "./types";
+import type { Operator, NodeInstance, ParamDef, PortType, GraphEnv } from "./types";
 
 // ─── Graph Types ─────────────────────────────────────────────────
 
@@ -61,9 +61,9 @@ export function validateGraph(graph: Graph, registry: RegistryLike): void {
       continue;
     }
 
-    // No duplicate wiring to the same slot
+    // No duplicate wiring to the same slot (unless variadic)
     const slot = `${w.to}.${w.input}`;
-    if (wired.has(slot)) {
+    if (wired.has(slot) && !targetPort.variadic) {
       errors.push(`Wire: duplicate wire to ${slot}`);
       continue;
     }
@@ -161,7 +161,7 @@ export function topoSort(nodeKeys: string[], wires: Wire[]): string[] {
 export function evaluateGraph(
   graph: Graph,
   registry: RegistryLike,
-  env: Record<string, unknown>,
+  env: GraphEnv,
   params: Record<string, number> = {},
 ): Map<string, Record<string, unknown>> {
   const order = topoSort(Object.keys(graph.nodes), graph.wires);
@@ -173,15 +173,33 @@ export function evaluateGraph(
 
     if (!op.evaluate) continue;
 
+    // Build a set of variadic port names for this operator
+    const variadicPorts = new Set<string>();
+    for (const port of op.inputs) {
+      if (port.variadic) variadicPorts.add(port.name);
+    }
+
     // Gather inputs from wires
     const inputs: Record<string, unknown> = {};
     for (const w of graph.wires) {
       if (w.to !== key) continue;
+
+      let value: unknown;
       if (w.from === "$env") {
-        inputs[w.input] = env[w.output];
+        value = env[w.output];
       } else {
         const src = outputs.get(w.from);
-        if (src) inputs[w.input] = src[w.output];
+        if (src) value = src[w.output];
+      }
+
+      if (variadicPorts.has(w.input)) {
+        // Variadic: collect into array
+        if (!Array.isArray(inputs[w.input])) {
+          inputs[w.input] = [];
+        }
+        (inputs[w.input] as unknown[]).push(value);
+      } else {
+        inputs[w.input] = value;
       }
     }
 
@@ -202,7 +220,7 @@ export function evaluateGraph(
       }
     }
 
-    outputs.set(key, op.evaluate(inputs, resolved) as Record<string, unknown>);
+    outputs.set(key, op.evaluate(inputs, resolved, env) as Record<string, unknown>);
   }
 
   return outputs;

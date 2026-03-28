@@ -1,5 +1,5 @@
-import type { Operator, Buffer2D, Geometry } from "../../core/types";
-import { pathsGeometry } from "../../core/types";
+import type { Operator, Buffer2D, Geometry } from "../../kernel/types";
+import { pathsGeometry } from "../../kernel/types";
 
 type Inputs = { buffer: Buffer2D; geometry: Geometry<2>; width: number; height: number };
 type Outputs = { geometry: Geometry<2> };

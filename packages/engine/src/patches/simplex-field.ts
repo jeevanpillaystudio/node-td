@@ -1,10 +1,10 @@
-import type { Graph } from "../core/graph";
+import type { Graph } from "../kernel/graph";
 
 /**
  * Simplex Field patch — Simplex noise → coarser angle grid →
- * Poisson-disc seeds → flow tracing → continuous strokes.
+ * Poisson-disc seeds → flow tracing → continuous strokes → stroke renderer.
  *
- * Terminal output: "stroke" node, port "geometry" (Geometry<2>, line-strip).
+ * Terminal output: "render" node, port "buffer" (Buffer2D, RGBA).
  */
 export const simplexFieldGraph: Graph = {
   id: "simplex-field",
@@ -15,6 +15,8 @@ export const simplexFieldGraph: Graph = {
     seeds: { type: "poisson-disc" },
     trace: { type: "flow-tracer" },
     stroke: { type: "continuous-stroke" },
+    camera: { type: "camera-2d" },
+    render: { type: "stroke-renderer" },
   },
   wires: [
     // noise → grid
@@ -31,5 +33,11 @@ export const simplexFieldGraph: Graph = {
     { from: "$env", output: "height", to: "trace", input: "height" },
     // trace → stroke
     { from: "trace", output: "geometry", to: "stroke", input: "geometry" },
+    // env → camera
+    { from: "$env", output: "width", to: "camera", input: "width" },
+    { from: "$env", output: "height", to: "camera", input: "height" },
+    // stroke + camera → render
+    { from: "stroke", output: "geometry", to: "render", input: "geometry" },
+    { from: "camera", output: "camera", to: "render", input: "camera" },
   ],
 };

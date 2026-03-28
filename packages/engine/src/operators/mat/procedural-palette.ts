@@ -1,4 +1,4 @@
-import type { Operator, Palette } from "../../core/types";
+import type { Operator, Palette } from "../../kernel/types";
 
 type Inputs = Record<string, never>;
 type Outputs = { palette: Palette };

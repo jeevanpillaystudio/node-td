@@ -1,5 +1,5 @@
-import type { Operator, Geometry } from "../../core/types";
-import { geometryToPaths, pathsGeometry } from "../../core/types";
+import type { Operator, Geometry } from "../../kernel/types";
+import { geometryToPaths, pathsGeometry } from "../../kernel/types";
 
 type Inputs = { geometry: Geometry<2> };
 type Outputs = { geometry: Geometry<2> };

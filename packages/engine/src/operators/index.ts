@@ -14,3 +14,13 @@ export { quadtreeSubdivide } from "./sop/quadtree-subdivide";
 
 // MAT — Material Operators
 export { proceduralPalette } from "./mat/procedural-palette";
+
+// SOP — new
+export { transform2d } from "./sop/transform-2d";
+export { merge } from "./sop/merge";
+
+// ROP
+export { camera2d } from "./rop/camera-2d";
+export { strokeRenderer } from "./rop/stroke-renderer";
+export { pointRenderer } from "./rop/point-renderer";
+export { composite } from "./rop/composite";

@@ -1,7 +1,15 @@
 // ─── Operator Categories ─────────────────────────────────────────
 
-/** Operator categories — mirrors TouchDesigner's taxonomy */
-export type OperatorCategory = "top" | "sop" | "mat" | "chop";
+/**
+ * Operator categories — mirrors TouchDesigner's taxonomy.
+ *
+ * TOP  — Texture operators (field/buffer)
+ * SOP  — Surface operators (geometry)
+ * MAT  — Material operators (palette)
+ * CHOP — Channel operators (signal, future)
+ * ROP  — Render operators (geometry + camera + material → buffer)
+ */
+export type OperatorCategory = "top" | "sop" | "mat" | "chop" | "rop";
 
 // ─── Port Types ──────────────────────────────────────────────────
 
@@ -12,13 +20,15 @@ export type OperatorCategory = "top" | "sop" | "mat" | "chop";
  * SOP outputs:  geometry
  * MAT outputs:  palette
  * CHOP outputs: signal (future)
+ * ROP inputs:   camera (+ geometry, palette, buffer)
  */
 export type PortType =
   | "field" //    Field2D — continuous scalar function
-  | "buffer" //   Buffer2D — discretized 2D data (angles, heights, colors)
+  | "buffer" //   Buffer2D — discretized 2D data (angles, heights, colors, rendered frames)
   | "geometry" // Geometry — vertices + topology
   | "palette" //  Palette — color set with weights
   | "signal" //   Signal — time-series (future)
+  | "camera" //   Camera2D — viewport + transform
   | "number"; //  scalar value (width, height, etc.)
 
 /** Port definition — describes an input or output slot */
@@ -27,6 +37,8 @@ export interface PortDef {
   type: PortType;
   /** If true, this input need not be wired */
   optional?: boolean;
+  /** If true, multiple wires may connect to this input — evaluate receives an array */
+  variadic?: boolean;
 }
 
 /** Parameter definition for a tunable numeric value */
@@ -105,6 +117,31 @@ export interface Signal {
   channels: number;
 }
 
+/**
+ * Camera2D — the ROP input currency for 2D viewport transforms.
+ *
+ * `center` is the world-space point at screen center.
+ * `zoom`   scales the scene (>1 zooms in).
+ * `rotation` rotates the scene in radians.
+ * `viewport` is the output pixel dimensions [width, height].
+ */
+export interface Camera2D {
+  center: [number, number];
+  zoom: number;
+  rotation: number;
+  viewport: [number, number];
+}
+
+/**
+ * Graph evaluation environment — passed through to all evaluate() calls.
+ *
+ * Carries env values ($env wires: width, height) plus injected
+ * capabilities like a canvas factory for ROP operators.
+ */
+export type GraphEnv = Record<string, unknown> & {
+  createCanvas?: (w: number, h: number) => OffscreenCanvas;
+};
+
 // ─── Operator Protocol ───────────────────────────────────────────
 
 /**
@@ -133,7 +170,7 @@ export interface Operator<TInputs = any, TOutputs = any> {
   /** Tunable parameters */
   params: ParamDef[];
   /** CPU evaluation — returns a record keyed by output port name */
-  evaluate?: (inputs: TInputs, params: Record<string, number>) => TOutputs;
+  evaluate?: (inputs: TInputs, params: Record<string, number>, env?: GraphEnv) => TOutputs;
   /** GPU shader source (reserved for future WebGL/WebGPU backend) */
   shader?: { vert?: string; frag: string };
 }
