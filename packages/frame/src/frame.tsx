@@ -1,0 +1,132 @@
+"use client";
+
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { cn } from "@repo/ui/lib/utils";
+import type { Graph } from "../../_lib/generative/graph";
+import { collectParams, evaluateGraph } from "../../_lib/generative/graph";
+import { defaultRegistry } from "../../_lib/generative/registry";
+import { useOptionalFrameContext } from "./frame-provider";
+
+interface FrameProps {
+  graph: Graph;
+  id?: string;
+  className?: string;
+}
+
+export function Frame({ graph, id: explicitId, className }: FrameProps) {
+  const autoId = useId();
+  const frameId = explicitId ?? `frame-${autoId}`;
+  const ctx = useOptionalFrameContext();
+
+  const ctxRegister = ctx?.register;
+  const ctxUnregister = ctx?.unregister;
+  const ctxSetActive = ctx?.setActive;
+  const isActive = ctx?.activeId === frameId;
+
+  const params = useMemo(() => collectParams(graph, defaultRegistry), [graph]);
+  const [values, setValues] = useState<Record<string, number>>(() =>
+    Object.fromEntries(params.map((p) => [p.key, p.default])),
+  );
+
+  const set = useCallback(
+    (key: string, v: number) => setValues((prev) => ({ ...prev, [key]: v })),
+    [],
+  );
+
+  const setRef = useRef(set);
+  setRef.current = set;
+
+  // Register with inspector context when available (dev only)
+  useEffect(() => {
+    if (!ctxRegister) return;
+    ctxRegister({
+      id: frameId,
+      name: graph.name,
+      params,
+      values,
+      set: (k, v) => setRef.current(k, v),
+    });
+  }, [ctxRegister, frameId, graph.name, params, values]);
+
+  useEffect(() => {
+    if (!ctxUnregister) return;
+    return () => ctxUnregister(frameId);
+  }, [ctxUnregister, frameId]);
+
+  // Canvas rendering
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const valuesKey = JSON.stringify(values);
+
+  useEffect(() => {
+    const canvas = canvasRef.current!;
+    const wrapper = wrapperRef.current!;
+    const overlay = overlayRef.current!;
+    const canvasCtx = canvas.getContext("2d")!;
+
+    const revealTimer = setTimeout(() => {
+      overlay.style.transition = "opacity 2s ease-in-out";
+      overlay.style.opacity = "0";
+    }, 300);
+
+    function draw() {
+      const dpr = window.devicePixelRatio || 1;
+      const w = wrapper.clientWidth;
+      const h = wrapper.clientHeight;
+
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      canvasCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      evaluateGraph(graph, defaultRegistry, { width: w, height: h, ctx: canvasCtx }, values);
+    }
+
+    draw();
+
+    const ro = new ResizeObserver(draw);
+    ro.observe(wrapper);
+
+    return () => {
+      clearTimeout(revealTimer);
+      ro.disconnect();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [valuesKey, graph]);
+
+  const canvas = (
+    <div
+      ref={wrapperRef}
+      style={{ position: "absolute", inset: 0, overflow: "clip", pointerEvents: "none" }}
+    >
+      <canvas ref={canvasRef} style={{ display: "block", width: "100%", height: "100%" }} />
+      <div
+        aria-hidden="true"
+        ref={overlayRef}
+        style={{ position: "absolute", inset: 0, background: "#1a1a1a", pointerEvents: "none", zIndex: 3 }}
+      />
+    </div>
+  );
+
+  if (!ctx) {
+    return <div className={className}>{canvas}</div>;
+  }
+
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={() => ctxSetActive?.(frameId)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") ctxSetActive?.(frameId);
+      }}
+      className={cn(
+        "relative cursor-pointer outline-2 outline-dashed outline-transparent transition-[outline-color]",
+        isActive ? "outline-ring" : "hover:outline-ring/50",
+        className,
+      )}
+    >
+      {canvas}
+    </div>
+  );
+}
