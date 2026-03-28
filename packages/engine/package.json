@@ -1,0 +1,35 @@
+{
+  "name": "@repo/generative",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "FSL-1.1-Apache-2.0",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./nodes": {
+      "types": "./src/nodes/index.ts",
+      "default": "./src/nodes/index.ts"
+    },
+    "./patches": {
+      "types": "./src/patches/index.ts",
+      "default": "./src/patches/index.ts"
+    },
+    "./editor": {
+      "types": "./src/editor/index.ts",
+      "default": "./src/editor/index.ts"
+    }
+  },
+  "scripts": {
+    "clean": "git clean -xdf .cache .turbo node_modules",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "catalog:",
+    "typescript": "catalog:"
+  }
+}

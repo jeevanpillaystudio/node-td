@@ -2,10 +2,11 @@
 
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { cn } from "@repo/ui/lib/utils";
-import type { Graph } from "../../_lib/generative/graph";
-import { collectParams, evaluateGraph } from "../../_lib/generative/graph";
-import { defaultRegistry } from "../../_lib/generative/registry";
+import type { Graph } from "@repo/generative";
+import { collectParams, evaluateGraph, createDefaultRegistry } from "@repo/generative";
 import { useOptionalFrameContext } from "./frame-provider";
+
+const registry = createDefaultRegistry();
 
 interface FrameProps {
   graph: Graph;
@@ -23,7 +24,7 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
   const ctxSetActive = ctx?.setActive;
   const isActive = ctx?.activeId === frameId;
 
-  const params = useMemo(() => collectParams(graph, defaultRegistry), [graph]);
+  const params = useMemo(() => collectParams(graph, registry), [graph]);
   const [values, setValues] = useState<Record<string, number>>(() =>
     Object.fromEntries(params.map((p) => [p.key, p.default])),
   );
@@ -79,7 +80,7 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
       canvas.height = h * dpr;
       canvasCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      evaluateGraph(graph, defaultRegistry, { width: w, height: h, ctx: canvasCtx }, values);
+      evaluateGraph(graph, registry, { width: w, height: h, ctx: canvasCtx }, values);
     }
 
     draw();

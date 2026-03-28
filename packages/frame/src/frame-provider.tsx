@@ -8,7 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
-import type { ParamDef } from "../../_lib/generative/types";
+import type { ParamDef } from "@repo/generative";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
