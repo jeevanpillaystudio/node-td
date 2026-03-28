@@ -102,6 +102,20 @@ export const diffuseShade: Operator<Inputs, Outputs> = {
         colors[base + 2] = pc[b0 + 2]! * (1 - frac) + pc[b1 + 2]! * frac;
         colors[base + 3] = 1;
       }
+    } else if (inputPalette && inputPalette.count === 1) {
+      // Single-color palette: use that color for all vertices.
+      // When ambient=1 (Style 0), intensity is uniform so no modulation needed.
+      // With actual diffuse lighting, intensity modulates brightness.
+      const pr = inputPalette.colors[0]!;
+      const pg = inputPalette.colors[1]!;
+      const pb = inputPalette.colors[2]!;
+      for (let i = 0; i < count; i++) {
+        const base = i * 4;
+        colors[base] = pr;
+        colors[base + 1] = pg;
+        colors[base + 2] = pb;
+        colors[base + 3] = 1;
+      }
     } else {
       // Grayscale fallback
       for (let i = 0; i < count; i++) {

@@ -182,7 +182,12 @@ export const visibilityCull: Operator<Inputs, Outputs> = {
       const pvz = dx * e2y - dy * e2x;
 
       const det = e1x * pvx + e1y * pvy + e1z * pvz;
-      if (Math.abs(det) < 1e-10) return -1;
+      // One-sided test: only count front-face hits as occlusions.
+      // For our mesh winding (cross(e1,e2) points down on upward terrain),
+      // det > 0 means the occluding triangle faces the camera.
+      // Reject det <= 0 (back-face hits / parallel) to avoid false occlusions
+      // on rolling terrain where the ray clips through neighbors' back faces.
+      if (det < 1e-10) return -1;
       const invDet = 1 / det;
 
       const tvx = ox - v[0]!, tvy = oy - v[1]!, tvz = oz - v[2]!;
