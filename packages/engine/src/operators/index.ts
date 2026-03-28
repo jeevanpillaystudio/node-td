@@ -3,6 +3,14 @@ export { perlinNoise, pnoise } from "./top/perlin-noise";
 export { simplexNoise } from "./top/simplex-noise";
 export { gridSampler } from "./top/grid-sampler";
 
+// TOP — Field Algebra
+export { fbm } from "./top/field/fbm";
+export { domainWarp } from "./top/field/domain-warp";
+export { fieldMath } from "./top/field/field-math";
+export { fieldRemap } from "./top/field/field-remap";
+export { fieldGradient } from "./top/field/field-gradient";
+export { curlNoise } from "./top/field/curl-noise";
+
 // SOP — Surface Operators
 export { circlePack } from "./sop/circle-pack";
 export { poissonDisc } from "./sop/poisson-disc";

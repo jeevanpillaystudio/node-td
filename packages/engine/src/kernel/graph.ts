@@ -241,11 +241,9 @@ export function collectParams(
     const op = registry.resolve(instance.type);
     for (const p of op.params) {
       result.push({
+        ...p,
         key: `${key}.${p.key}`,
         label: `${key} / ${p.label}`,
-        min: p.min,
-        max: p.max,
-        step: p.step,
         default: instance.params?.[p.key] ?? p.default,
       });
     }

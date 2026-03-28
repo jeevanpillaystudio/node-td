@@ -4,6 +4,8 @@ export type {
   PortType,
   PortDef,
   ParamDef,
+  NumericParamDef,
+  EnumParamDef,
   Field2D,
   Buffer2D,
   Geometry,
@@ -16,6 +18,7 @@ export type {
 } from "./kernel/types";
 
 export {
+  isEnumParam,
   pointsGeometry,
   pathsGeometry,
   geometryToPaths,
@@ -40,6 +43,12 @@ export { OperatorRegistry } from "./kernel/registry";
 import { perlinNoise } from "./operators/top/perlin-noise";
 import { simplexNoise } from "./operators/top/simplex-noise";
 import { gridSampler } from "./operators/top/grid-sampler";
+import { fbm } from "./operators/top/field/fbm";
+import { domainWarp } from "./operators/top/field/domain-warp";
+import { fieldMath } from "./operators/top/field/field-math";
+import { fieldRemap } from "./operators/top/field/field-remap";
+import { fieldGradient } from "./operators/top/field/field-gradient";
+import { curlNoise } from "./operators/top/field/curl-noise";
 import { circlePack } from "./operators/sop/circle-pack";
 import { poissonDisc } from "./operators/sop/poisson-disc";
 import { flowTracer } from "./operators/sop/flow-tracer";
@@ -60,10 +69,17 @@ import type { Operator } from "./kernel/types";
 
 /** All built-in operators */
 export const allOperators: Operator[] = [
-  // TOP
+  // TOP — sources
   perlinNoise,
   simplexNoise,
   gridSampler,
+  // TOP — field algebra
+  fbm,
+  domainWarp,
+  fieldMath,
+  fieldRemap,
+  fieldGradient,
+  curlNoise,
   // SOP
   circlePack,
   poissonDisc,

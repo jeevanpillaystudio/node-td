@@ -2,6 +2,7 @@
 
 import { Slider } from "@repo/ui/components/ui/slider";
 import { Label } from "@repo/ui/components/ui/label";
+import { isEnumParam } from "@repo/generative";
 import type { FrameEntry } from "../frame-provider";
 
 interface EditorInspectorProps {
@@ -43,16 +44,32 @@ export function EditorInspector({ entry, selectedNode, onClose }: EditorInspecto
                     {p.label.split(" / ").pop()}
                   </Label>
                   <span className="font-mono text-xs text-muted-foreground">
-                    {entry.values[p.key]}
+                    {isEnumParam(p)
+                      ? p.options.find((o) => o.value === entry.values[p.key])?.label
+                      : entry.values[p.key]}
                   </span>
                 </div>
-                <Slider
-                  min={p.min}
-                  max={p.max}
-                  step={p.step}
-                  value={[entry.values[p.key]!]}
-                  onValueChange={([v]) => entry.set(p.key, v!)}
-                />
+                {isEnumParam(p) ? (
+                  <select
+                    value={entry.values[p.key]}
+                    onChange={(e) => entry.set(p.key, Number(e.target.value))}
+                    className="w-full rounded-md border border-border/50 bg-background px-2 py-1 font-mono text-xs text-foreground"
+                  >
+                    {p.options.map((o) => (
+                      <option key={o.value} value={o.value}>
+                        {o.label}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <Slider
+                    min={p.min}
+                    max={p.max}
+                    step={p.step}
+                    value={[entry.values[p.key]!]}
+                    onValueChange={([v]) => entry.set(p.key, v!)}
+                  />
+                )}
               </div>
             ))}
           </div>

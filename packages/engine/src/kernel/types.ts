@@ -41,14 +41,34 @@ export interface PortDef {
   variadic?: boolean;
 }
 
-/** Parameter definition for a tunable numeric value */
-export interface ParamDef {
+// ─── Parameter Definitions ──────────────────────────────────────
+
+/** Numeric parameter — slider with min/max/step */
+export interface NumericParamDef {
   key: string;
   label: string;
+  kind?: "number";
   min: number;
   max: number;
   step: number;
   default: number;
+}
+
+/** Enum parameter — dropdown with labeled options */
+export interface EnumParamDef {
+  key: string;
+  label: string;
+  kind: "enum";
+  options: { label: string; value: number }[];
+  default: number;
+}
+
+/** Parameter definition — numeric slider or enum dropdown */
+export type ParamDef = NumericParamDef | EnumParamDef;
+
+/** Type guard: true when the param is an enum dropdown */
+export function isEnumParam(p: ParamDef): p is EnumParamDef {
+  return "kind" in p && p.kind === "enum";
 }
 
 // ─── Data Currencies ─────────────────────────────────────────────
