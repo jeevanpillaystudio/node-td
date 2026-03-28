@@ -2,7 +2,8 @@
 
 import dynamic from "next/dynamic";
 import type { DevTuner as DevTunerComponent } from "~/components/dev-tuner";
-import { flowFieldPatch } from "../../_lib/generative/patches";
+import { collectParams } from "../../_lib/generative/graph";
+import { simplexFieldGraph } from "../../_lib/generative/patches";
 import { ManifestoShader } from "./manifesto-shader";
 
 type DevTunerProps = React.ComponentProps<typeof DevTunerComponent>;
@@ -15,17 +16,17 @@ const DevTuner =
       )
     : null;
 
-const patch = flowFieldPatch;
+const graph = simplexFieldGraph;
 
 export function ShaderSection() {
-  if (!DevTuner) return <ManifestoShader patch={patch} />;
+  if (!DevTuner) return <ManifestoShader graph={graph} />;
   return (
     <DevTuner
-      name={patch.name}
-      params={patch.params}
+      name={graph.name}
+      params={collectParams(graph)}
       className="absolute inset-0"
     >
-      {(values) => <ManifestoShader patch={patch} config={values} />}
+      {(values) => <ManifestoShader graph={graph} config={values} />}
     </DevTuner>
   );
 }

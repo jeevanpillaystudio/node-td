@@ -1,18 +1,19 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { Patch } from "../../_lib/generative/patch";
-import { flowFieldPatch } from "../../_lib/generative/patches";
+import type { Graph } from "../../_lib/generative/graph";
+import { collectParams, evaluateGraph } from "../../_lib/generative/graph";
+import { flowFieldGraph } from "../../_lib/generative/patches";
 
 export function ManifestoShader({
-  patch = flowFieldPatch,
+  graph = flowFieldGraph,
   config,
 }: {
-  patch?: Patch;
+  graph?: Graph;
   config?: Record<string, number>;
 }) {
   const defaults = Object.fromEntries(
-    patch.params.map((p) => [p.key, p.default]),
+    collectParams(graph).map((p) => [p.key, p.default]),
   );
   const params = config ? { ...defaults, ...config } : defaults;
   const paramsKey = JSON.stringify(params);
@@ -41,7 +42,7 @@ export function ManifestoShader({
       canvas.height = h * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      patch.evaluate({ width: w, height: h, ctx }, params);
+      evaluateGraph(graph, { width: w, height: h, ctx }, params);
     }
 
     draw();
@@ -54,7 +55,7 @@ export function ManifestoShader({
       ro.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paramsKey, patch]);
+  }, [paramsKey, graph]);
 
   return (
     <div
