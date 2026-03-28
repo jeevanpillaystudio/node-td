@@ -1,18 +1,15 @@
-import type { GenNode, Sampler2D } from "../types";
-import { P } from "../noise-utils";
+import type { Operator, Field2D } from "../../core/types";
+import { P } from "../../noise-utils";
+
+type Inputs = Record<string, never>;
+type Outputs = { field: Field2D };
 
 const F2 = 0.5 * (Math.sqrt(3) - 1);
 const G2 = (3 - Math.sqrt(3)) / 6;
 
 const GRAD2: readonly [number, number][] = [
-  [1, 1],
-  [-1, 1],
-  [1, -1],
-  [-1, -1],
-  [1, 0],
-  [-1, 0],
-  [0, 1],
-  [0, -1],
+  [1, 1], [-1, 1], [1, -1], [-1, -1],
+  [1, 0], [-1, 0], [0, 1], [0, -1],
 ];
 
 function simplex2(x: number, y: number): number {
@@ -66,19 +63,20 @@ function simplex2(x: number, y: number): number {
   return 70 * (n0 + n1 + n2);
 }
 
-export const simplexNoise: GenNode<Record<string, never>, Sampler2D> = {
+export const simplexNoise: Operator<Inputs, Outputs> = {
   id: "simplex-noise",
-  family: "sampler",
+  category: "top",
+  label: "Simplex Noise",
   inputs: [],
-  output: { name: "sampler", type: "sampler" },
+  outputs: [{ name: "field", type: "field" }],
   params: [
     { key: "noiseScale", label: "Noise Scale", min: 0.005, max: 0.1, step: 0.001, default: 0.03 },
   ],
   evaluate(_inputs, params) {
     const scale = params.noiseScale ?? 0.03;
-    return (x: number, y: number): number => {
-      const n = simplex2(x * scale, y * scale);
-      return (n + 1) * 0.5;
+    const field: Field2D = (x, y) => {
+      return (simplex2(x * scale, y * scale) + 1) * 0.5;
     };
+    return { field };
   },
 };

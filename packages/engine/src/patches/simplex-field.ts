@@ -1,28 +1,35 @@
-import type { Graph } from "../graph";
+import type { Graph } from "../core/graph";
 
+/**
+ * Simplex Field patch — Simplex noise → coarser angle grid →
+ * Poisson-disc seeds → flow tracing → continuous strokes.
+ *
+ * Terminal output: "stroke" node, port "geometry" (Geometry<2>, line-strip).
+ */
 export const simplexFieldGraph: Graph = {
   id: "simplex-field",
   name: "Simplex Field",
   nodes: {
-    noise:  { type: "simplex-noise" },
-    field:  { type: "grid-sampler", params: { resolution: 25 } },
-    seeds:  { type: "poisson-disc-seeds" },
-    trace:  { type: "flow-tracer" },
+    noise: { type: "simplex-noise" },
+    grid: { type: "grid-sampler", params: { resolution: 25 } },
+    seeds: { type: "poisson-disc" },
+    trace: { type: "flow-tracer" },
     stroke: { type: "continuous-stroke" },
-    render: { type: "canvas-renderer" },
   },
   wires: [
-    { from: "noise",  output: "sampler",  to: "field",  input: "sampler" },
-    { from: "$env",   output: "width",    to: "field",  input: "width" },
-    { from: "$env",   output: "height",   to: "field",  input: "height" },
-    { from: "$env",   output: "width",    to: "seeds",  input: "width" },
-    { from: "$env",   output: "height",   to: "seeds",  input: "height" },
-    { from: "field",  output: "field",    to: "trace",  input: "field" },
-    { from: "seeds",  output: "geometry", to: "trace",  input: "geometry" },
-    { from: "trace",  output: "geometry", to: "stroke", input: "geometry" },
-    { from: "stroke", output: "geometry", to: "render", input: "geometry" },
-    { from: "$env",   output: "ctx",      to: "render", input: "ctx" },
-    { from: "$env",   output: "width",    to: "render", input: "width" },
-    { from: "$env",   output: "height",   to: "render", input: "height" },
+    // noise → grid
+    { from: "noise", output: "field", to: "grid", input: "field" },
+    { from: "$env", output: "width", to: "grid", input: "width" },
+    { from: "$env", output: "height", to: "grid", input: "height" },
+    // env → seeds
+    { from: "$env", output: "width", to: "seeds", input: "width" },
+    { from: "$env", output: "height", to: "seeds", input: "height" },
+    // grid + seeds + env → trace
+    { from: "grid", output: "buffer", to: "trace", input: "buffer" },
+    { from: "seeds", output: "geometry", to: "trace", input: "geometry" },
+    { from: "$env", output: "width", to: "trace", input: "width" },
+    { from: "$env", output: "height", to: "trace", input: "height" },
+    // trace → stroke
+    { from: "trace", output: "geometry", to: "stroke", input: "geometry" },
   ],
 };

@@ -1,12 +1,16 @@
-import type { GenNode, Path, Point } from "../types";
+import type { Operator, Geometry } from "../../core/types";
+import { pointsGeometry } from "../../core/types";
+
+type Inputs = { width: number; height: number };
+type Outputs = { geometry: Geometry<2> };
 
 function packSeeds(
   w: number,
   h: number,
   minRadius: number,
   maxAttempts: number,
-): Point[] {
-  const seeds: Point[] = [];
+): [number, number][] {
+  const seeds: [number, number][] = [];
   const r2 = minRadius * minRadius;
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
     const x = Math.random() * w;
@@ -25,22 +29,24 @@ function packSeeds(
   return seeds;
 }
 
-export const circlePackSeeds: GenNode<
-  { width: number; height: number },
-  Path[]
-> = {
-  id: "circle-pack-seeds",
-  family: "geometry",
+export const circlePack: Operator<Inputs, Outputs> = {
+  id: "circle-pack",
+  category: "sop",
+  label: "Circle Pack Seeds",
   inputs: [
     { name: "width", type: "number" },
     { name: "height", type: "number" },
   ],
-  output: { name: "geometry", type: "geometry" },
+  outputs: [{ name: "geometry", type: "geometry" }],
   params: [
     { key: "minRadius", label: "Min Seed Radius", min: 10, max: 150, step: 5, default: 50 },
+    { key: "margin", label: "Edge Margin", min: 0, max: 300, step: 10, default: 100 },
   ],
   evaluate({ width, height }, params) {
     const minRadius = params.minRadius ?? 50;
-    return packSeeds(width, height, minRadius, 3000).map((p): Path => [p]);
+    const margin = params.margin ?? 100;
+    const raw = packSeeds(width + 2 * margin, height + 2 * margin, minRadius, 3000);
+    const shifted = raw.map(([x, y]): [number, number] => [x - margin, y - margin]);
+    return { geometry: pointsGeometry(shifted) };
   },
 };

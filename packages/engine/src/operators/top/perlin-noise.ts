@@ -1,5 +1,8 @@
-import type { GenNode, Sampler2D } from "../types";
-import { P } from "../noise-utils";
+import type { Operator, Field2D } from "../../core/types";
+import { P } from "../../noise-utils";
+
+type Inputs = Record<string, never>;
+type Outputs = { field: Field2D };
 
 function fade(t: number) {
   return t * t * t * (t * (t * 6 - 15) + 10);
@@ -30,21 +33,23 @@ export function pnoise(x: number, y: number): number {
   );
 }
 
-export const perlinNoise: GenNode<Record<string, never>, Sampler2D> = {
+export const perlinNoise: Operator<Inputs, Outputs> = {
   id: "perlin-noise",
-  family: "sampler",
+  category: "top",
+  label: "Perlin Noise",
   inputs: [],
-  output: { name: "sampler", type: "sampler" },
+  outputs: [{ name: "field", type: "field" }],
   params: [
     { key: "noiseScale", label: "Noise Scale", min: 0.005, max: 0.1, step: 0.001, default: 0.035 },
   ],
   evaluate(_inputs, params) {
     const scale = params.noiseScale ?? 0.035;
     const scale2 = scale * 0.5;
-    return (x: number, y: number): number => {
+    const field: Field2D = (x, y) => {
       const n1 = pnoise(x * scale, y * scale) * 0.7;
       const n2 = pnoise(x * scale2, y * scale2) * 0.3;
       return (n1 + n2 + 1) * 0.5;
     };
+    return { field };
   },
 };

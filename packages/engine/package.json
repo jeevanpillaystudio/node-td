@@ -1,6 +1,6 @@
 {
   "name": "@repo/generative",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "license": "FSL-1.1-Apache-2.0",
@@ -10,9 +10,13 @@
       "types": "./src/index.ts",
       "default": "./src/index.ts"
     },
-    "./nodes": {
-      "types": "./src/nodes/index.ts",
-      "default": "./src/nodes/index.ts"
+    "./operators": {
+      "types": "./src/operators/index.ts",
+      "default": "./src/operators/index.ts"
+    },
+    "./render": {
+      "types": "./src/render/index.ts",
+      "default": "./src/render/index.ts"
     },
     "./patches": {
       "types": "./src/patches/index.ts",

@@ -1,22 +1,25 @@
-import type { GenNode, Path, Point } from "../types";
+import type { Operator, Geometry } from "../../core/types";
+import { pointsGeometry } from "../../core/types";
+
+type Inputs = { width: number; height: number };
+type Outputs = { geometry: Geometry<2> };
 
 /**
  * Bridson's algorithm for Poisson-disc sampling.
- * Produces more uniform coverage than rejection sampling
- * in O(n) time relative to output size.
+ * Produces more uniform coverage than rejection sampling in O(n) time.
  */
-function poissonDisc(
+function poissonDiscSample(
   w: number,
   h: number,
   minRadius: number,
   k: number = 30,
-): Point[] {
+): [number, number][] {
   const r = minRadius;
   const cellSize = r / Math.SQRT2;
   const gridW = Math.ceil(w / cellSize);
   const gridH = Math.ceil(h / cellSize);
-  const grid: (Point | null)[] = new Array(gridW * gridH).fill(null);
-  const points: Point[] = [];
+  const grid: ([number, number] | null)[] = new Array<null>(gridW * gridH).fill(null);
+  const points: [number, number][] = [];
   const active: number[] = [];
 
   function gridIndex(x: number, y: number): number {
@@ -44,7 +47,7 @@ function poissonDisc(
 
   const x0 = Math.random() * w;
   const y0 = Math.random() * h;
-  const p0: Point = [x0, y0];
+  const p0: [number, number] = [x0, y0];
   points.push(p0);
   grid[gridIndex(x0, y0)] = p0;
   active.push(0);
@@ -63,7 +66,7 @@ function poissonDisc(
       if (nx < 0 || nx >= w || ny < 0 || ny >= h) continue;
       if (tooClose(nx, ny)) continue;
 
-      const np: Point = [nx, ny];
+      const np: [number, number] = [nx, ny];
       points.push(np);
       grid[gridIndex(nx, ny)] = np;
       active.push(points.length - 1);
@@ -79,22 +82,25 @@ function poissonDisc(
   return points;
 }
 
-export const poissonDiscSeeds: GenNode<
-  { width: number; height: number },
-  Path[]
-> = {
-  id: "poisson-disc-seeds",
-  family: "geometry",
+export const poissonDisc: Operator<Inputs, Outputs> = {
+  id: "poisson-disc",
+  category: "sop",
+  label: "Poisson Disc Seeds",
   inputs: [
     { name: "width", type: "number" },
     { name: "height", type: "number" },
   ],
-  output: { name: "geometry", type: "geometry" },
+  outputs: [{ name: "geometry", type: "geometry" }],
   params: [
     { key: "minRadius", label: "Min Seed Radius", min: 10, max: 150, step: 5, default: 40 },
+    { key: "margin", label: "Edge Margin", min: 0, max: 300, step: 10, default: 100 },
   ],
   evaluate({ width, height }, params) {
     const minRadius = params.minRadius ?? 40;
-    return poissonDisc(width, height, minRadius).map((p): Path => [p]);
+    const margin = params.margin ?? 100;
+    // Sample in an extended area so seeds reach all canvas edges
+    const raw = poissonDiscSample(width + 2 * margin, height + 2 * margin, minRadius);
+    const shifted = raw.map(([x, y]): [number, number] => [x - margin, y - margin]);
+    return { geometry: pointsGeometry(shifted) };
   },
 };
