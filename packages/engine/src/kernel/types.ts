@@ -29,6 +29,7 @@ export type PortType =
   | "palette" //  Palette — color set with weights
   | "signal" //   Signal — time-series (future)
   | "camera" //   Camera2D — viewport + transform
+  | "camera3d" // Camera3D — 3D projection (lookAt + ortho/perspective)
   | "number"; //  scalar value (width, height, etc.)
 
 /** Port definition — describes an input or output slot */
@@ -149,6 +150,24 @@ export interface Camera2D {
   center: [number, number];
   zoom: number;
   rotation: number;
+  viewport: [number, number];
+}
+
+/**
+ * Camera3D — the ROP input currency for 3D → 2D projection.
+ *
+ * `project` takes a 3D world-space point and returns
+ * [screenX, screenY, depth]. depth is in normalized device
+ * coordinates (−1 near, +1 far) for future occlusion use.
+ *
+ * Supports orthographic (isometric) and perspective projection.
+ * The project function is a closure over the composed
+ * view-projection matrix — no gl-matrix dependency.
+ */
+export interface Camera3D {
+  /** Project [x, y, z] → [screenX, screenY, depth] */
+  project: (point: [number, number, number]) => [number, number, number];
+  /** Viewport dimensions [width, height] */
   viewport: [number, number];
 }
 

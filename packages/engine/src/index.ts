@@ -12,6 +12,7 @@ export type {
   Palette,
   Signal,
   Camera2D,
+  Camera3D,
   GraphEnv,
   Operator,
   NodeInstance,
@@ -39,6 +40,15 @@ export {
 // ─── Registry ────────────────────────────────────────────────────
 export { OperatorRegistry } from "./kernel/registry";
 
+// ─── Composition ────────────────────────────────────────────────
+export type { Composition, PatchEntry, BlendMode } from "./kernel/composition";
+export {
+  graphToComposition,
+  createPatch,
+  evaluateComposition,
+  collectCompositionParams,
+} from "./kernel/composition";
+
 // ─── All built-in operators ──────────────────────────────────────
 import { perlinNoise } from "./operators/top/perlin-noise";
 import { simplexNoise } from "./operators/top/simplex-noise";
@@ -59,7 +69,10 @@ import { quadtreeSubdivide } from "./operators/sop/quadtree-subdivide";
 import { proceduralPalette } from "./operators/mat/procedural-palette";
 import { transform2d } from "./operators/sop/transform-2d";
 import { merge } from "./operators/sop/merge";
+import { surfaceLift } from "./operators/sop/surface-lift";
+import { project3d } from "./operators/sop/project-3d";
 import { camera2d } from "./operators/rop/camera-2d";
+import { camera3d } from "./operators/rop/camera-3d";
 import { strokeRenderer } from "./operators/rop/stroke-renderer";
 import { pointRenderer } from "./operators/rop/point-renderer";
 import { composite } from "./operators/rop/composite";
@@ -90,10 +103,13 @@ export const allOperators: Operator[] = [
   quadtreeSubdivide,
   transform2d,
   merge,
+  surfaceLift,
+  project3d,
   // MAT
   proceduralPalette,
   // ROP
   camera2d,
+  camera3d,
   strokeRenderer,
   pointRenderer,
   composite,
