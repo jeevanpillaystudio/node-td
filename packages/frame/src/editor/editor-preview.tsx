@@ -1,23 +1,33 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { Composition } from "@repo/generative";
-import { evaluateComposition, createDefaultRegistry } from "@repo/generative";
-import { blitBuffer2D } from "@repo/generative/render";
+import type { Graph, Geometry, Buffer2D } from "@repo/generative";
+import { createDefaultRegistry, CookEngine } from "@repo/generative";
+import { drawCanvas2D, blitBuffer2D } from "@repo/generative/render";
 
 const registry = createDefaultRegistry();
 
 interface EditorPreviewProps {
-  composition: Composition;
-  patchValues: Record<string, Record<string, number>>;
+  graph: Graph;
+  values: Record<string, number>;
 }
 
-export function EditorPreview({ composition, patchValues }: EditorPreviewProps) {
+export function EditorPreview({ graph, values }: EditorPreviewProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const valuesKey = JSON.stringify(patchValues);
+  const engineRef = useRef<CookEngine | null>(null);
+  const engineGraphRef = useRef<Graph | null>(null);
+  const valuesKey = JSON.stringify(values);
 
   useEffect(() => {
+    // Create or replace engine when graph identity changes
+    if (engineGraphRef.current !== graph) {
+      engineRef.current = new CookEngine(graph, registry);
+      engineGraphRef.current = graph;
+    }
+    const engine = engineRef.current!;
+    engine.setParams(values);
+
     const canvas = canvasRef.current!;
     const wrapper = wrapperRef.current!;
     const ctx = canvas.getContext("2d")!;
@@ -37,25 +47,29 @@ export function EditorPreview({ composition, patchValues }: EditorPreviewProps) 
       canvas.height = displayH * dpr;
       ctx.setTransform(dpr / scale, 0, 0, dpr / scale, 0, 0);
 
-      const buf = evaluateComposition(
-        composition,
-        registry,
-        {
-          width: virtualW,
-          height: virtualH,
-          dpr: 1,
-          createCanvas: (cw: number, ch: number) => new OffscreenCanvas(cw, ch),
-        },
-        patchValues,
-      );
+      // Cook — env diff auto-dirties dependents on resize
+      engine.cook({
+        width: virtualW,
+        height: virtualH,
+        dpr: 1, // Preview handles its own scaling via canvas transform
+        createCanvas: (cw: number, ch: number) => new OffscreenCanvas(cw, ch),
+      });
 
+      // ROP path: graph terminates with Buffer2D
+      const buf = engine.findTerminalOutput<Buffer2D>("buffer");
       if (buf) {
-        // putImageData ignores canvas transforms, so blit to a temp canvas
-        // then drawImage through the current transform (dpr/scale)
+        // putImageData ignores canvas transforms, so we blit to a temp canvas
+        // then drawImage it through the current transform (dpr/scale)
         const tmp = new OffscreenCanvas(buf.width, buf.height);
         const tmpCtx = tmp.getContext("2d")!;
         blitBuffer2D(tmpCtx, buf);
         ctx.drawImage(tmp, 0, 0);
+      } else {
+        // Legacy fallback: graph terminates with Geometry
+        const geo = engine.findTerminalOutput<Geometry<2>>("geometry");
+        if (geo) {
+          drawCanvas2D(ctx, virtualW, virtualH, geo);
+        }
       }
     }
 
@@ -65,7 +79,7 @@ export function EditorPreview({ composition, patchValues }: EditorPreviewProps) 
     ro.observe(wrapper);
     return () => ro.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [valuesKey, composition]);
+  }, [valuesKey, graph]);
 
   return (
     <div

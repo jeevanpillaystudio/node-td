@@ -9,3 +9,5 @@ export { transform2d } from "./transform-2d";
 export { merge } from "./merge";
 export { geometricNormal } from "./geometric-normal";
 export { visibilityCull } from "./visibility-cull";
+export { baseOutline } from "./base-outline";
+export { contourRing } from "./contour-ring";

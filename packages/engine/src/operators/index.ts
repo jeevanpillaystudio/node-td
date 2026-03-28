@@ -30,6 +30,8 @@ export { surfaceLift } from "./sop/surface-lift";
 export { project3d } from "./sop/project-3d";
 export { geometricNormal } from "./sop/geometric-normal";
 export { visibilityCull } from "./sop/visibility-cull";
+export { baseOutline } from "./sop/base-outline";
+export { contourRing } from "./sop/contour-ring";
 
 // MAT — shading
 export { diffuseShade } from "./mat/diffuse-shade";

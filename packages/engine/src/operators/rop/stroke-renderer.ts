@@ -26,6 +26,7 @@ export const strokeRenderer: Operator<Inputs, Outputs> = {
     { key: "bgR", label: "BG Red", min: 0, max: 255, step: 1, default: 26 },
     { key: "bgG", label: "BG Green", min: 0, max: 255, step: 1, default: 26 },
     { key: "bgB", label: "BG Blue", min: 0, max: 255, step: 1, default: 26 },
+    { key: "bgAlpha", label: "BG Alpha", min: 0, max: 1, step: 0.01, default: 1 },
   ],
 
   evaluate({ geometry, camera, palette }, params, env) {
@@ -38,6 +39,7 @@ export const strokeRenderer: Operator<Inputs, Outputs> = {
     const bgR = params.bgR ?? 26;
     const bgG = params.bgG ?? 26;
     const bgB = params.bgB ?? 26;
+    const bgAlpha = params.bgAlpha ?? 1;
 
     // Resolve stroke color from palette or default
     let sr = 217, sg = 217, sb = 217;
@@ -60,8 +62,13 @@ export const strokeRenderer: Operator<Inputs, Outputs> = {
     ctx.scale(dpr, dpr);
 
     // Background (fills entire canvas via the scale transform)
-    ctx.fillStyle = `rgb(${bgR},${bgG},${bgB})`;
-    ctx.fillRect(0, 0, worldW, worldH);
+    // When bgAlpha = 0, skip fill entirely for transparent overlay layers
+    if (bgAlpha > 0) {
+      ctx.fillStyle = bgAlpha >= 1
+        ? `rgb(${bgR},${bgG},${bgB})`
+        : `rgba(${bgR},${bgG},${bgB},${bgAlpha})`;
+      ctx.fillRect(0, 0, worldW, worldH);
+    }
 
     // Apply camera transform
     const [cx, cy] = camera.center;

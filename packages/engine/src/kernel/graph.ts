@@ -1,4 +1,4 @@
-import type { Operator, NodeInstance, ParamDef, PortType, GraphEnv } from "./types";
+import type { Operator, NodeInstance, ParamDef, PortType } from "./types";
 
 // ─── Graph Types ─────────────────────────────────────────────────
 
@@ -148,82 +148,6 @@ export function topoSort(nodeKeys: string[], wires: Wire[]): string[] {
   }
 
   return sorted;
-}
-
-// ─── Evaluation ──────────────────────────────────────────────────
-
-/**
- * Evaluate a graph, executing each node in topological order.
- *
- * Each node's `evaluate` returns `Record<outputPortName, value>`.
- * Returns a Map of every node key → its output record.
- */
-export function evaluateGraph(
-  graph: Graph,
-  registry: RegistryLike,
-  env: GraphEnv,
-  params: Record<string, number> = {},
-): Map<string, Record<string, unknown>> {
-  const order = topoSort(Object.keys(graph.nodes), graph.wires);
-  const outputs = new Map<string, Record<string, unknown>>();
-
-  for (const key of order) {
-    const instance = graph.nodes[key]!;
-    const op = registry.resolve(instance.type);
-
-    if (!op.evaluate) continue;
-
-    // Build a set of variadic port names for this operator
-    const variadicPorts = new Set<string>();
-    for (const port of op.inputs) {
-      if (port.variadic) variadicPorts.add(port.name);
-    }
-
-    // Gather inputs from wires
-    const inputs: Record<string, unknown> = {};
-    for (const w of graph.wires) {
-      if (w.to !== key) continue;
-
-      let value: unknown;
-      if (w.from === "$env") {
-        value = env[w.output];
-      } else {
-        const src = outputs.get(w.from);
-        if (src) value = src[w.output];
-      }
-
-      if (variadicPorts.has(w.input)) {
-        // Variadic: collect into array
-        if (!Array.isArray(inputs[w.input])) {
-          inputs[w.input] = [];
-        }
-        (inputs[w.input] as unknown[]).push(value);
-      } else {
-        inputs[w.input] = value;
-      }
-    }
-
-    // Resolve params: type defaults → instance overrides → external overrides
-    const resolved: Record<string, number> = {};
-    for (const p of op.params) {
-      resolved[p.key] = p.default;
-    }
-    if (instance.params) {
-      for (const [k, v] of Object.entries(instance.params)) {
-        resolved[k] = v;
-      }
-    }
-    const prefix = `${key}.`;
-    for (const [k, v] of Object.entries(params)) {
-      if (k.startsWith(prefix)) {
-        resolved[k.slice(prefix.length)] = v;
-      }
-    }
-
-    outputs.set(key, op.evaluate(inputs, resolved, env) as Record<string, unknown>);
-  }
-
-  return outputs;
 }
 
 // ─── Convenience ─────────────────────────────────────────────────

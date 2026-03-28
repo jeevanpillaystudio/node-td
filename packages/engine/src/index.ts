@@ -67,6 +67,8 @@ import { surfaceLift } from "./operators/sop/surface-lift";
 import { project3d } from "./operators/sop/project-3d";
 import { geometricNormal } from "./operators/sop/geometric-normal";
 import { visibilityCull } from "./operators/sop/visibility-cull";
+import { baseOutline } from "./operators/sop/base-outline";
+import { contourRing } from "./operators/sop/contour-ring";
 import { diffuseShade } from "./operators/mat/diffuse-shade";
 import { camera2d } from "./operators/rop/camera-2d";
 import { camera3d } from "./operators/rop/camera-3d";
@@ -104,6 +106,8 @@ export const allOperators: Operator[] = [
   project3d,
   geometricNormal,
   visibilityCull,
+  baseOutline,
+  contourRing,
   // MAT
   proceduralPalette,
   diffuseShade,

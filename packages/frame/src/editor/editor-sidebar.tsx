@@ -30,7 +30,7 @@ export function EditorSidebar({ editingId }: EditorSidebarProps) {
           >
             <span className="block font-mono text-xs">{entry.name}</span>
             <span className="block font-mono text-xs text-muted-foreground">
-              {entry.composition.patches.length} patch{entry.composition.patches.length !== 1 ? "es" : ""}
+              {entry.params.length} params
             </span>
           </button>
         ))}
