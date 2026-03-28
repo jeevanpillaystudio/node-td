@@ -2,8 +2,9 @@
 
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { cn } from "@repo/ui/lib/utils";
-import type { Graph } from "@repo/generative";
-import { collectParams, evaluateGraph, createDefaultRegistry } from "@repo/generative";
+import type { Graph, Geometry } from "@repo/generative";
+import { collectParams, evaluateGraph, createDefaultRegistry, findTerminalOutput } from "@repo/generative";
+import { drawCanvas2D } from "@repo/generative/render";
 import { useOptionalFrameContext } from "./frame-provider";
 
 const registry = createDefaultRegistry();
@@ -22,6 +23,7 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
   const ctxRegister = ctx?.register;
   const ctxUnregister = ctx?.unregister;
   const ctxSetActive = ctx?.setActive;
+  const ctxSetEditing = ctx?.setEditing;
   const isActive = ctx?.activeId === frameId;
 
   const params = useMemo(() => collectParams(graph, registry), [graph]);
@@ -43,6 +45,7 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
     ctxRegister({
       id: frameId,
       name: graph.name,
+      graph,
       params,
       values,
       set: (k, v) => setRef.current(k, v),
@@ -80,7 +83,14 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
       canvas.height = h * dpr;
       canvasCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      evaluateGraph(graph, registry, { width: w, height: h, ctx: canvasCtx }, values);
+      // Evaluate graph — pure computation, no side effects
+      const outputs = evaluateGraph(graph, registry, { width: w, height: h }, values);
+
+      // Find terminal geometry and render it
+      const geo = findTerminalOutput<Geometry<2>>(graph, registry, outputs, "geometry");
+      if (geo) {
+        drawCanvas2D(canvasCtx, w, h, geo);
+      }
     }
 
     draw();
@@ -128,6 +138,18 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
       )}
     >
       {canvas}
+      {/* Edit button — visible when frame is active */}
+      {isActive && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            ctxSetEditing?.(frameId);
+          }}
+          className="absolute top-2 right-2 z-10 rounded-md border border-border/50 bg-card/80 px-2.5 py-1 font-mono text-xs text-muted-foreground backdrop-blur-md transition-colors hover:text-foreground"
+        >
+          Edit Graph
+        </button>
+      )}
     </div>
   );
 }

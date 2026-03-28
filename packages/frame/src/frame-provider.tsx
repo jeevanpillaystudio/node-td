@@ -8,7 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
-import type { ParamDef } from "@repo/generative";
+import type { ParamDef, Graph } from "@repo/generative";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -17,6 +17,7 @@ import type { ParamDef } from "@repo/generative";
 export interface FrameEntry {
   id: string;
   name: string;
+  graph: Graph;
   params: ParamDef[];
   values: Record<string, number>;
   set: (key: string, value: number) => void;
@@ -25,9 +26,11 @@ export interface FrameEntry {
 interface FrameContextValue {
   frames: Map<string, FrameEntry>;
   activeId: string | null;
+  editingId: string | null;
   register: (entry: FrameEntry) => void;
   unregister: (id: string) => void;
   setActive: (id: string | null) => void;
+  setEditing: (id: string | null) => void;
 }
 
 /* ------------------------------------------------------------------ */
@@ -55,6 +58,7 @@ export function FrameProvider({ children }: { children: React.ReactNode }) {
   const framesRef = useRef(new Map<string, FrameEntry>());
   const [revision, bump] = useState(0);
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const register = useCallback((entry: FrameEntry) => {
     framesRef.current.set(entry.id, entry);
@@ -65,6 +69,7 @@ export function FrameProvider({ children }: { children: React.ReactNode }) {
     (id: string) => {
       framesRef.current.delete(id);
       setActiveId((prev) => (prev === id ? null : prev));
+      setEditingId((prev) => (prev === id ? null : prev));
       bump((n) => n + 1);
     },
     [],
@@ -74,17 +79,24 @@ export function FrameProvider({ children }: { children: React.ReactNode }) {
     setActiveId(id);
   }, []);
 
+  const setEditing = useCallback((id: string | null) => {
+    setEditingId(id);
+    if (id) setActiveId(id);
+  }, []);
+
   // revision included so consumers re-render when frame entries update
   const value = useMemo<FrameContextValue>(
     () => ({
       frames: framesRef.current,
       activeId,
+      editingId,
       register,
       unregister,
       setActive,
+      setEditing,
     }),
     // biome-ignore lint/correctness/useExhaustiveDependencies: revision forces consumer re-render on frame updates
-    [activeId, revision, register, unregister, setActive],
+    [activeId, editingId, revision, register, unregister, setActive, setEditing],
   );
 
   return (

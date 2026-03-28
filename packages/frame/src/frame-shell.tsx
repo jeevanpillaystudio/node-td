@@ -1,10 +1,10 @@
 "use client";
 
-import { FrameProvider } from "./frame-provider";
-import { Inspector } from "./inspector";
+import { FrameProvider, useFrameContext } from "./frame-provider";
+import { FrameEditor } from "./editor/frame-editor";
 
 /**
- * Wraps a page with the Frame selection context and Inspector panel.
+ * Wraps a page with the Frame selection context and editor overlay.
  * In production, renders children directly (no overhead).
  */
 export function FrameShell({ children }: { children: React.ReactNode }) {
@@ -15,7 +15,15 @@ export function FrameShell({ children }: { children: React.ReactNode }) {
   return (
     <FrameProvider>
       {children}
-      <Inspector />
+      <FrameShellOverlays />
     </FrameProvider>
   );
+}
+
+function FrameShellOverlays() {
+  const { editingId, setEditing } = useFrameContext();
+
+  if (!editingId) return null;
+
+  return <FrameEditor onClose={() => setEditing(null)} />;
 }
