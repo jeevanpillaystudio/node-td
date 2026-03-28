@@ -22,9 +22,9 @@ export const debugBaseGraph: Graph = {
     lift:    { type: "surface-lift", params: { amplitude: 80, baseY: 0 } },
     cam3d:   { type: "camera-3d", params: {
       projection: 0,
-      eyeX: 200, eyeY: 300, eyeZ: -200,
+      eyeX: 1.0, eyeY: 1.0, eyeZ: 1.0,
       targetX: 0, targetY: 0, targetZ: 0,
-      orthoSize: 350,
+      orthoSize: 1.61,
     }},
     proj:    { type: "project-3d" },
 
@@ -99,9 +99,9 @@ export const debugCullGraph: Graph = {
     cull:    { type: "visibility-cull" },
     cam3d:   { type: "camera-3d", params: {
       projection: 0,
-      eyeX: 200, eyeY: 300, eyeZ: -200,
+      eyeX: 1.0, eyeY: 1.0, eyeZ: 1.0,
       targetX: 0, targetY: 0, targetZ: 0,
-      orthoSize: 350,
+      orthoSize: 1.61,
     }},
     proj:    { type: "project-3d" },
 
@@ -179,9 +179,9 @@ export const debugMeshGraph: Graph = {
 
     cam3d:   { type: "camera-3d", params: {
       projection: 0,
-      eyeX: 200, eyeY: 300, eyeZ: -200,
+      eyeX: 1.0, eyeY: 1.0, eyeZ: 1.0,
       targetX: 0, targetY: 0, targetZ: 0,
-      orthoSize: 350,
+      orthoSize: 1.61,
     }},
     proj:    { type: "project-3d" },
 

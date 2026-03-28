@@ -107,6 +107,62 @@ function perspective(
   return m;
 }
 
+/** Invert a column-major 4×4 matrix. Returns null if singular. */
+function inv4(m: Float64Array): Float64Array | null {
+  const [
+    a00, a01, a02, a03,
+    a10, a11, a12, a13,
+    a20, a21, a22, a23,
+    a30, a31, a32, a33,
+  ] = m;
+
+  const b00 = a00! * a11! - a01! * a10!;
+  const b01 = a00! * a12! - a02! * a10!;
+  const b02 = a00! * a13! - a03! * a10!;
+  const b03 = a01! * a12! - a02! * a11!;
+  const b04 = a01! * a13! - a03! * a11!;
+  const b05 = a02! * a13! - a03! * a12!;
+  const b06 = a20! * a31! - a21! * a30!;
+  const b07 = a20! * a32! - a22! * a30!;
+  const b08 = a20! * a33! - a23! * a30!;
+  const b09 = a21! * a32! - a22! * a31!;
+  const b10 = a21! * a33! - a23! * a31!;
+  const b11 = a22! * a33! - a23! * a32!;
+
+  let det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
+  if (Math.abs(det) < 1e-15) return null;
+  det = 1.0 / det;
+
+  const out = new Float64Array(16);
+  out[0]  = (a11! * b11 - a12! * b10 + a13! * b09) * det;
+  out[1]  = (a02! * b10 - a01! * b11 - a03! * b09) * det;
+  out[2]  = (a31! * b05 - a32! * b04 + a33! * b03) * det;
+  out[3]  = (a22! * b04 - a21! * b05 - a23! * b03) * det;
+  out[4]  = (a12! * b08 - a10! * b11 - a13! * b07) * det;
+  out[5]  = (a00! * b11 - a02! * b08 + a03! * b07) * det;
+  out[6]  = (a32! * b02 - a30! * b05 - a33! * b01) * det;
+  out[7]  = (a20! * b05 - a22! * b02 + a23! * b01) * det;
+  out[8]  = (a10! * b10 - a11! * b08 + a13! * b06) * det;
+  out[9]  = (a01! * b08 - a00! * b10 - a03! * b06) * det;
+  out[10] = (a30! * b04 - a31! * b02 + a33! * b00) * det;
+  out[11] = (a21! * b02 - a20! * b04 - a23! * b00) * det;
+  out[12] = (a11! * b07 - a10! * b09 - a12! * b06) * det;
+  out[13] = (a00! * b09 - a01! * b07 + a02! * b06) * det;
+  out[14] = (a31! * b01 - a30! * b03 - a32! * b00) * det;
+  out[15] = (a20! * b03 - a21! * b01 + a22! * b00) * det;
+  return out;
+}
+
+/** Transform a homogeneous point [x,y,z,1] by a column-major 4×4 matrix */
+function transformPoint4(m: Float64Array, x: number, y: number, z: number): [number, number, number] {
+  const ox = m[0]! * x + m[4]! * y + m[8]!  * z + m[12]!;
+  const oy = m[1]! * x + m[5]! * y + m[9]!  * z + m[13]!;
+  const oz = m[2]! * x + m[6]! * y + m[10]! * z + m[14]!;
+  const ow = m[3]! * x + m[7]! * y + m[11]! * z + m[15]!;
+  const invW = ow !== 0 ? 1 / ow : 1;
+  return [ox * invW, oy * invW, oz * invW];
+}
+
 /** Multiply two column-major 4×4 matrices: result = a × b */
 function mul4(a: Float64Array, b: Float64Array): Float64Array {
   const r = new Float64Array(16);
@@ -156,16 +212,16 @@ export const camera3d: Operator<Inputs, Outputs> = {
       ],
       default: 0,
     },
-    // Eye offset from scene center (width/2, 0, height/2)
-    { key: "eyeX", label: "Eye X", min: -2000, max: 2000, step: 10, default: 300 },
-    { key: "eyeY", label: "Eye Y", min: -2000, max: 2000, step: 10, default: 400 },
-    { key: "eyeZ", label: "Eye Z", min: -2000, max: 2000, step: 10, default: -300 },
-    // Target offset from scene center
-    { key: "targetX", label: "Target X", min: -2000, max: 2000, step: 10, default: 0 },
-    { key: "targetY", label: "Target Y", min: -2000, max: 2000, step: 10, default: 0 },
-    { key: "targetZ", label: "Target Z", min: -2000, max: 2000, step: 10, default: 0 },
-    // Ortho zoom (smaller = wider view)
-    { key: "orthoSize", label: "Ortho Size", min: 50, max: 2000, step: 10, default: 500 },
+    // Eye offset from scene center (relative to sceneSize; 1.0 = sceneSize)
+    { key: "eyeX", label: "Eye X", min: -5, max: 5, step: 0.1, default: 0.75 },
+    { key: "eyeY", label: "Eye Y", min: -5, max: 5, step: 0.1, default: 1.0 },
+    { key: "eyeZ", label: "Eye Z", min: -5, max: 5, step: 0.1, default: -0.75 },
+    // Target offset from scene center (relative to sceneSize)
+    { key: "targetX", label: "Target X", min: -5, max: 5, step: 0.1, default: 0 },
+    { key: "targetY", label: "Target Y", min: -5, max: 5, step: 0.1, default: 0 },
+    { key: "targetZ", label: "Target Z", min: -5, max: 5, step: 0.1, default: 0 },
+    // Ortho zoom (relative to sceneSize; 1.0 = scene fills viewport height)
+    { key: "orthoSize", label: "Ortho Size", min: 0.1, max: 10, step: 0.1, default: 1.25 },
     // Perspective FOV
     { key: "fov", label: "FOV (deg)", min: 10, max: 120, step: 1, default: 60 },
     // Clip planes
@@ -183,16 +239,18 @@ export const camera3d: Operator<Inputs, Outputs> = {
     const cx = ss / 2;
     const cz = ss / 2;
 
-    // Eye and target are offsets from scene center
+    // Eye and target offsets are relative to sceneSize — this ensures
+    // the camera framing scales with the scene (TouchDesigner convention).
+    // An eyeX of 1.0 means "1× sceneSize from center".
     const eye = [
-      cx + (params.eyeX ?? 300),
-      params.eyeY ?? 400,
-      cz + (params.eyeZ ?? -300),
+      cx + (params.eyeX ?? 300) * ss,
+      (params.eyeY ?? 400) * ss,
+      cz + (params.eyeZ ?? -300) * ss,
     ];
     const target = [
-      cx + (params.targetX ?? 0),
-      params.targetY ?? 0,
-      cz + (params.targetZ ?? 0),
+      cx + (params.targetX ?? 0) * ss,
+      (params.targetY ?? 0) * ss,
+      cz + (params.targetZ ?? 0) * ss,
     ];
 
     // View matrix
@@ -201,8 +259,9 @@ export const camera3d: Operator<Inputs, Outputs> = {
     // Projection matrix
     let proj: Float64Array;
     if (projMode === 0) {
-      // Orthographic — orthoSize controls the visible world-space extent
-      const size = params.orthoSize ?? 500;
+      // Orthographic — orthoSize is relative to sceneSize.
+      // A value of 1.61 means the visible extent is 1.61× sceneSize.
+      const size = (params.orthoSize ?? 500) * ss;
       const aspect = width / height;
       const halfW = size * aspect * 0.5;
       const halfH = size * 0.5;
@@ -215,6 +274,7 @@ export const camera3d: Operator<Inputs, Outputs> = {
 
     // Combined view-projection matrix
     const vp = mul4(proj, view);
+    const invVP = inv4(vp);
 
     // Build the project() closure
     const project = (point: [number, number, number]): [number, number, number] => {
@@ -239,8 +299,35 @@ export const camera3d: Operator<Inputs, Outputs> = {
       return [screenX, screenY, ndcZ];
     };
 
+    // Build the unproject() closure — screen pixel → world-space ray
+    const unproject = (screenX: number, screenY: number): {
+      origin: [number, number, number];
+      dir: [number, number, number];
+    } => {
+      if (!invVP) return { origin: [0, 0, 0], dir: [0, 0, 1] };
+
+      // Screen → NDC (Y is flipped: screen Y-down, NDC Y-up)
+      const ndcX = (screenX / width) * 2 - 1;
+      const ndcY = 1 - (screenY / height) * 2;
+
+      // Unproject near (ndcZ=-1) and far (ndcZ=1) to get ray
+      const pNear = transformPoint4(invVP, ndcX, ndcY, -1);
+      const pFar  = transformPoint4(invVP, ndcX, ndcY,  1);
+
+      const dx = pFar[0] - pNear[0];
+      const dy = pFar[1] - pNear[1];
+      const dz = pFar[2] - pNear[2];
+      const len = Math.sqrt(dx * dx + dy * dy + dz * dz);
+      const invLen = len > 1e-10 ? 1 / len : 1;
+
+      return {
+        origin: pNear,
+        dir: [dx * invLen, dy * invLen, dz * invLen],
+      };
+    };
+
     return {
-      camera3d: { project, viewport: [width, height] },
+      camera3d: { project, unproject, viewport: [width, height] },
     };
   },
 };
