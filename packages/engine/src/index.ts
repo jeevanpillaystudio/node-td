@@ -26,6 +26,26 @@ export {
   vertexAt,
 } from "./kernel/types";
 
+// ─── FieldExpr — reified field computation ──────────────────────
+export type { FieldExpr } from "./kernel/field-expr";
+export {
+  FIELD_EXPR,
+  createField,
+  getFieldExpr,
+  evalExpr,
+  // Algebraic builders
+  X, Y, c, u,
+  perlin, simplex,
+  add, sub, mul, div, fmin, fmax, fpow, fatan2,
+  mix, clamp, smoothstep,
+  abs, neg, floor, round,
+  apply, fbmExpr, warpExpr,
+} from "./kernel/field-expr";
+
+// ─── GLSL field compiler ─────────────────────────────────────────
+export type { CompiledField } from "./kernel/field-compiler";
+export { compileField } from "./kernel/field-compiler";
+
 // ─── Graph engine ────────────────────────────────────────────────
 export type { Wire, Graph } from "./kernel/graph";
 export {
@@ -42,6 +62,9 @@ export { CookEngine } from "./kernel/cook";
 
 // ─── Registry ────────────────────────────────────────────────────
 export { OperatorRegistry } from "./kernel/registry";
+
+// ─── Seeded PRNG ─────────────────────────────────────────────────
+export { SeededRNG } from "./kernel/rng";
 
 // ─── All built-in operators ──────────────────────────────────────
 import { perlinNoise } from "./operators/top/perlin-noise";
@@ -61,6 +84,8 @@ import { continuousStroke } from "./operators/sop/continuous-stroke";
 import { parametricSurface } from "./operators/sop/parametric-surface";
 import { quadtreeSubdivide } from "./operators/sop/quadtree-subdivide";
 import { proceduralPalette } from "./operators/mat/procedural-palette";
+import { oklabPalette } from "./operators/mat/oklab-palette";
+import { contrastFilter } from "./operators/mat/contrast-filter";
 import { transform2d } from "./operators/sop/transform-2d";
 import { merge } from "./operators/sop/merge";
 import { surfaceLift } from "./operators/sop/surface-lift";
@@ -69,12 +94,15 @@ import { geometricNormal } from "./operators/sop/geometric-normal";
 import { visibilityCull } from "./operators/sop/visibility-cull";
 import { baseOutline } from "./operators/sop/base-outline";
 import { contourRing } from "./operators/sop/contour-ring";
+import { surfaceRaymarch } from "./operators/sop/surface-raymarch";
+import { pointOrient } from "./operators/sop/point-orient";
 import { diffuseShade } from "./operators/mat/diffuse-shade";
 import { camera2d } from "./operators/rop/camera-2d";
 import { camera3d } from "./operators/rop/camera-3d";
 import { strokeRenderer } from "./operators/rop/stroke-renderer";
 import { pointRenderer } from "./operators/rop/point-renderer";
 import { composite } from "./operators/rop/composite";
+import { fieldRender } from "./operators/top/field-render";
 import { OperatorRegistry } from "./kernel/registry";
 
 import type { Operator } from "./kernel/types";
@@ -85,6 +113,7 @@ export const allOperators: Operator[] = [
   perlinNoise,
   simplexNoise,
   gridSampler,
+  fieldRender,
   // TOP — field algebra
   fbm,
   domainWarp,
@@ -108,8 +137,12 @@ export const allOperators: Operator[] = [
   visibilityCull,
   baseOutline,
   contourRing,
+  surfaceRaymarch,
+  pointOrient,
   // MAT
   proceduralPalette,
+  oklabPalette,
+  contrastFilter,
   diffuseShade,
   // ROP
   camera2d,
@@ -118,6 +151,9 @@ export const allOperators: Operator[] = [
   pointRenderer,
   composite,
 ];
+
+// ─── Patches ─────────────────────────────────────────────────────
+export { meridianGraph } from "./patches/meridian";
 
 /** Create a registry pre-loaded with all built-in operators */
 export function createDefaultRegistry(): OperatorRegistry {
