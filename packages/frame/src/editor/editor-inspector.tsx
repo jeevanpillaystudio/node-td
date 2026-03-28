@@ -3,16 +3,18 @@
 import { Slider } from "@repo/ui/components/ui/slider";
 import { Label } from "@repo/ui/components/ui/label";
 import { isEnumParam } from "@repo/generative";
-import type { FrameEntry } from "../frame-provider";
+import type { ParamDef } from "@repo/generative";
 
 interface EditorInspectorProps {
-  entry: FrameEntry;
+  params: ParamDef[];
+  values: Record<string, number>;
+  setParam: (key: string, value: number) => void;
   selectedNode: string;
   onClose: () => void;
 }
 
-export function EditorInspector({ entry, selectedNode, onClose }: EditorInspectorProps) {
-  const nodeParams = entry.params.filter((p) =>
+export function EditorInspector({ params, values, setParam, selectedNode, onClose }: EditorInspectorProps) {
+  const nodeParams = params.filter((p) =>
     p.key.startsWith(`${selectedNode}.`),
   );
 
@@ -45,14 +47,14 @@ export function EditorInspector({ entry, selectedNode, onClose }: EditorInspecto
                   </Label>
                   <span className="font-mono text-xs text-muted-foreground">
                     {isEnumParam(p)
-                      ? p.options.find((o) => o.value === entry.values[p.key])?.label
-                      : entry.values[p.key]}
+                      ? p.options.find((o) => o.value === values[p.key])?.label
+                      : values[p.key]}
                   </span>
                 </div>
                 {isEnumParam(p) ? (
                   <select
-                    value={entry.values[p.key]}
-                    onChange={(e) => entry.set(p.key, Number(e.target.value))}
+                    value={values[p.key]}
+                    onChange={(e) => setParam(p.key, Number(e.target.value))}
                     className="w-full rounded-md border border-border/50 bg-background px-2 py-1 font-mono text-xs text-foreground"
                   >
                     {p.options.map((o) => (
@@ -66,8 +68,8 @@ export function EditorInspector({ entry, selectedNode, onClose }: EditorInspecto
                     min={p.min}
                     max={p.max}
                     step={p.step}
-                    value={[entry.values[p.key]!]}
-                    onValueChange={([v]) => entry.set(p.key, v!)}
+                    value={[values[p.key]!]}
+                    onValueChange={([v]) => setParam(p.key, v!)}
                   />
                 )}
               </div>

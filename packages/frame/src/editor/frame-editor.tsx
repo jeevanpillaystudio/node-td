@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@repo/ui/components/ui/button";
 import { useFrameContext } from "../frame-provider";
 import { EditorSidebar } from "./editor-sidebar";
+import { EditorPatchStack } from "./editor-patch-stack";
 import { EditorCanvas } from "./editor-canvas";
 import { EditorInspector } from "./editor-inspector";
 import { EditorPreview } from "./editor-preview";
@@ -22,14 +23,27 @@ export function FrameEditor({ onClose }: FrameEditorProps) {
     setSelectedNode(key);
   }, []);
 
+  // Clear node selection when active patch changes
+  useEffect(() => {
+    setSelectedNode(null);
+  }, [entry?.activePatchId]);
+
   if (!entry) return null;
 
-  const graph = entry.graph;
+  const activePatch = entry.composition.patches.find(
+    (p) => p.id === entry.activePatchId,
+  );
+  const graph = activePatch?.graph;
+  const activeParams = entry.patchParams[entry.activePatchId] ?? [];
+  const activeValues = entry.patchValues[entry.activePatchId] ?? {};
 
   return (
     <div className="fixed inset-0 z-50 flex bg-background/95 backdrop-blur-sm">
       {/* Left sidebar — frame list */}
       <EditorSidebar editingId={editingId!} />
+
+      {/* Patch stack */}
+      <EditorPatchStack entry={entry} />
 
       {/* Center — React Flow canvas */}
       <div className="flex flex-1 flex-col">
@@ -39,9 +53,16 @@ export function FrameEditor({ onClose }: FrameEditorProps) {
             <span className="font-mono text-sm font-medium text-foreground">
               {entry.name}
             </span>
-            <span className="font-mono text-xs text-muted-foreground">
-              {Object.keys(graph.nodes).length} nodes
-            </span>
+            {activePatch && (
+              <span className="font-mono text-xs text-muted-foreground">
+                {activePatch.name}
+              </span>
+            )}
+            {graph && (
+              <span className="font-mono text-xs text-muted-foreground">
+                {Object.keys(graph.nodes).length} nodes
+              </span>
+            )}
           </div>
           <Button variant="ghost" size="sm" onClick={onClose} className="font-mono text-xs">
             Close
@@ -50,22 +71,35 @@ export function FrameEditor({ onClose }: FrameEditorProps) {
 
         {/* Canvas area */}
         <div className="relative flex-1">
-          <EditorCanvas key={graph.id} graph={graph} onNodeSelect={onNodeSelect} />
+          {graph && (
+            <EditorCanvas
+              key={`${entry.activePatchId}-${graph.id}`}
+              graph={graph}
+              onNodeSelect={onNodeSelect}
+            />
+          )}
 
           {/* Floating inspector — top right */}
           {selectedNode && (
             <div className="absolute top-4 right-4">
               <EditorInspector
-                entry={entry}
+                params={activeParams}
+                values={activeValues}
+                setParam={(key, v) =>
+                  entry.setParam(entry.activePatchId, key, v)
+                }
                 selectedNode={selectedNode}
                 onClose={() => setSelectedNode(null)}
               />
             </div>
           )}
 
-          {/* Output preview — bottom right */}
+          {/* Output preview — bottom right (composited) */}
           <div className="absolute right-4 bottom-4 h-40 w-64 overflow-hidden rounded-md shadow-lg">
-            <EditorPreview key={graph.id} graph={graph} values={entry.values} />
+            <EditorPreview
+              composition={entry.composition}
+              patchValues={entry.patchValues}
+            />
           </div>
         </div>
       </div>

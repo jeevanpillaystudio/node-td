@@ -2,20 +2,27 @@
 
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { cn } from "@repo/ui/lib/utils";
-import type { Graph, Geometry, Buffer2D } from "@repo/generative";
-import { collectParams, evaluateGraph, createDefaultRegistry, findTerminalOutput } from "@repo/generative";
-import { drawCanvas2D, blitBuffer2D } from "@repo/generative/render";
+import type { Graph, Composition, BlendMode, ParamDef } from "@repo/generative";
+import {
+  collectParams,
+  createDefaultRegistry,
+  graphToComposition,
+  evaluateComposition,
+} from "@repo/generative";
+import { blitBuffer2D } from "@repo/generative/render";
 import { useOptionalFrameContext } from "./frame-provider";
 
 const registry = createDefaultRegistry();
 
 interface FrameProps {
-  graph: Graph;
+  composition?: Composition;
+  /** Convenience: wraps a single Graph into a one-patch Composition */
+  graph?: Graph;
   id?: string;
   className?: string;
 }
 
-export function Frame({ graph, id: explicitId, className }: FrameProps) {
+export function Frame({ composition: compProp, graph: graphProp, id: explicitId, className }: FrameProps) {
   const autoId = useId();
   const frameId = explicitId ?? `frame-${autoId}`;
   const ctx = useOptionalFrameContext();
@@ -26,31 +33,73 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
   const ctxSetEditing = ctx?.setEditing;
   const isActive = ctx?.activeId === frameId;
 
-  const params = useMemo(() => collectParams(graph, registry), [graph]);
-  const [values, setValues] = useState<Record<string, number>>(() =>
-    Object.fromEntries(params.map((p) => [p.key, p.default])),
+  // Resolve composition from props
+  const initialComp = useMemo(
+    () => compProp ?? (graphProp ? graphToComposition(graphProp) : undefined),
+    [compProp, graphProp],
   );
 
-  const set = useCallback(
-    (key: string, v: number) => setValues((prev) => ({ ...prev, [key]: v })),
-    [],
-  );
+  if (!initialComp) throw new Error("Frame requires either composition or graph prop");
 
-  const setRef = useRef(set);
-  setRef.current = set;
+  // Mutable composition state (blend/opacity/visible can change via editor)
+  const [composition, setComposition] = useState(initialComp);
+  const [activePatchId, setActivePatchId] = useState(composition.patches[0]?.id ?? "");
+
+  // Per-patch params (derived from graphs) and values (mutable state)
+  const patchParams = useMemo(() => {
+    const result: Record<string, ParamDef[]> = {};
+    for (const patch of composition.patches) {
+      result[patch.id] = collectParams(patch.graph, registry);
+    }
+    return result;
+  }, [composition]);
+
+  const [patchValues, setPatchValues] = useState<Record<string, Record<string, number>>>(() => {
+    const init: Record<string, Record<string, number>> = {};
+    for (const [patchId, params] of Object.entries(patchParams)) {
+      init[patchId] = Object.fromEntries(params.map((p) => [p.key, p.default]));
+    }
+    return init;
+  });
+
+  // Mutation callbacks
+  const setParam = useCallback((patchId: string, key: string, v: number) => {
+    setPatchValues((prev) => ({
+      ...prev,
+      [patchId]: { ...prev[patchId], [key]: v },
+    }));
+  }, []);
+
+  const updatePatch = useCallback((patchId: string, updates: { blend?: BlendMode; opacity?: number; visible?: boolean }) => {
+    setComposition((prev) => ({
+      ...prev,
+      patches: prev.patches.map((p) => (p.id === patchId ? { ...p, ...updates } : p)),
+    }));
+  }, []);
+
+  // Stable refs for registration callbacks
+  const setParamRef = useRef(setParam);
+  setParamRef.current = setParam;
+  const updatePatchRef = useRef(updatePatch);
+  updatePatchRef.current = updatePatch;
+  const setActivePatchRef = useRef(setActivePatchId);
+  setActivePatchRef.current = setActivePatchId;
 
   // Register with inspector context when available (dev only)
   useEffect(() => {
     if (!ctxRegister) return;
     ctxRegister({
       id: frameId,
-      name: graph.name,
-      graph,
-      params,
-      values,
-      set: (k, v) => setRef.current(k, v),
+      name: composition.name,
+      composition,
+      activePatchId,
+      patchParams,
+      patchValues,
+      setParam: (pid: string, k: string, v: number) => setParamRef.current(pid, k, v),
+      updatePatch: (pid: string, u: { blend?: BlendMode; opacity?: number; visible?: boolean }) => updatePatchRef.current(pid, u),
+      setActivePatch: (id: string) => setActivePatchRef.current(id),
     });
-  }, [ctxRegister, frameId, graph.name, params, values]);
+  }, [ctxRegister, frameId, composition, activePatchId, patchParams, patchValues]);
 
   useEffect(() => {
     if (!ctxUnregister) return;
@@ -61,7 +110,7 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
-  const valuesKey = JSON.stringify(values);
+  const valuesKey = JSON.stringify(patchValues);
 
   useEffect(() => {
     const canvas = canvasRef.current!;
@@ -82,10 +131,8 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
       canvas.width = w * dpr;
       canvas.height = h * dpr;
 
-      // Evaluate graph — pure computation, no side effects
-      // DPR is passed via env so ROPs can render at full pixel resolution
-      const outputs = evaluateGraph(
-        graph,
+      const buf = evaluateComposition(
+        composition,
         registry,
         {
           width: w,
@@ -93,20 +140,11 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
           dpr,
           createCanvas: (cw: number, ch: number) => new OffscreenCanvas(cw, ch),
         },
-        values,
+        patchValues,
       );
 
-      // ROP path: buffer is already at full pixel resolution (DPR-aware)
-      const buf = findTerminalOutput<Buffer2D>(graph, registry, outputs, "buffer");
       if (buf) {
         blitBuffer2D(canvasCtx, buf);
-      } else {
-        // Legacy fallback: apply DPR transform for direct geometry drawing
-        canvasCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        const geo = findTerminalOutput<Geometry<2>>(graph, registry, outputs, "geometry");
-        if (geo) {
-          drawCanvas2D(canvasCtx, w, h, geo);
-        }
       }
     }
 
@@ -120,7 +158,7 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
       ro.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [valuesKey, graph]);
+  }, [valuesKey, composition]);
 
   const canvas = (
     <div
@@ -155,7 +193,6 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
       )}
     >
       {canvas}
-      {/* Edit button — visible when frame is active */}
       {isActive && (
         <button
           onClick={(e) => {

@@ -8,7 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
-import type { ParamDef, Graph } from "@repo/generative";
+import type { ParamDef, Composition, BlendMode } from "@repo/generative";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -17,10 +17,13 @@ import type { ParamDef, Graph } from "@repo/generative";
 export interface FrameEntry {
   id: string;
   name: string;
-  graph: Graph;
-  params: ParamDef[];
-  values: Record<string, number>;
-  set: (key: string, value: number) => void;
+  composition: Composition;
+  activePatchId: string;
+  patchParams: Record<string, ParamDef[]>;
+  patchValues: Record<string, Record<string, number>>;
+  setParam: (patchId: string, key: string, value: number) => void;
+  updatePatch: (patchId: string, updates: { blend?: BlendMode; opacity?: number; visible?: boolean }) => void;
+  setActivePatch: (patchId: string) => void;
 }
 
 interface FrameContextValue {

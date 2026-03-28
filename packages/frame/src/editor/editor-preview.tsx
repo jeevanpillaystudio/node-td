@@ -1,21 +1,21 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { Graph, Geometry, Buffer2D } from "@repo/generative";
-import { evaluateGraph, createDefaultRegistry, findTerminalOutput } from "@repo/generative";
-import { drawCanvas2D, blitBuffer2D } from "@repo/generative/render";
+import type { Composition } from "@repo/generative";
+import { evaluateComposition, createDefaultRegistry } from "@repo/generative";
+import { blitBuffer2D } from "@repo/generative/render";
 
 const registry = createDefaultRegistry();
 
 interface EditorPreviewProps {
-  graph: Graph;
-  values: Record<string, number>;
+  composition: Composition;
+  patchValues: Record<string, Record<string, number>>;
 }
 
-export function EditorPreview({ graph, values }: EditorPreviewProps) {
+export function EditorPreview({ composition, patchValues }: EditorPreviewProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const valuesKey = JSON.stringify(values);
+  const valuesKey = JSON.stringify(patchValues);
 
   useEffect(() => {
     const canvas = canvasRef.current!;
@@ -37,33 +37,25 @@ export function EditorPreview({ graph, values }: EditorPreviewProps) {
       canvas.height = displayH * dpr;
       ctx.setTransform(dpr / scale, 0, 0, dpr / scale, 0, 0);
 
-      const outputs = evaluateGraph(
-        graph,
+      const buf = evaluateComposition(
+        composition,
         registry,
         {
           width: virtualW,
           height: virtualH,
-          dpr: 1, // Preview handles its own scaling via canvas transform
+          dpr: 1,
           createCanvas: (cw: number, ch: number) => new OffscreenCanvas(cw, ch),
         },
-        values,
+        patchValues,
       );
 
-      // ROP path: graph terminates with Buffer2D
-      const buf = findTerminalOutput<Buffer2D>(graph, registry, outputs, "buffer");
       if (buf) {
-        // putImageData ignores canvas transforms, so we blit to a temp canvas
-        // then drawImage it through the current transform (dpr/scale)
+        // putImageData ignores canvas transforms, so blit to a temp canvas
+        // then drawImage through the current transform (dpr/scale)
         const tmp = new OffscreenCanvas(buf.width, buf.height);
         const tmpCtx = tmp.getContext("2d")!;
         blitBuffer2D(tmpCtx, buf);
         ctx.drawImage(tmp, 0, 0);
-      } else {
-        // Legacy fallback: graph terminates with Geometry
-        const geo = findTerminalOutput<Geometry<2>>(graph, registry, outputs, "geometry");
-        if (geo) {
-          drawCanvas2D(ctx, virtualW, virtualH, geo);
-        }
       }
     }
 
@@ -73,7 +65,7 @@ export function EditorPreview({ graph, values }: EditorPreviewProps) {
     ro.observe(wrapper);
     return () => ro.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [valuesKey, graph]);
+  }, [valuesKey, composition]);
 
   return (
     <div
