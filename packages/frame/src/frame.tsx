@@ -1,10 +1,8 @@
-"use client";
-
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
-import { cn } from "@repo/ui/lib/utils";
-import type { Graph, Geometry, Buffer2D } from "@repo/generative";
-import { collectParams, createDefaultRegistry, CookEngine, SeededRNG } from "@repo/generative";
-import { drawCanvas2D, blitBuffer2D, createWebGL2 } from "@repo/generative/render";
+import { cn } from "./ui/utils";
+import type { Graph, Geometry, Buffer2D } from "@node-td/engine";
+import { collectParams, createDefaultRegistry, CookEngine, SeededRNG } from "@node-td/engine";
+import { drawCanvas2D, blitBuffer2D, createWebGL2 } from "@node-td/engine/render";
 import { useOptionalFrameContext } from "./frame-provider";
 
 const registry = createDefaultRegistry();
@@ -194,7 +192,6 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
       if (staggerTimer !== undefined) clearTimeout(staggerTimer);
       ro.disconnect();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values, graph, isVisible]);
 
   const canvasEl = (

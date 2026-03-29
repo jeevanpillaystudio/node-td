@@ -1,8 +1,6 @@
-"use client";
-
-import { Slider } from "@repo/ui/components/ui/slider";
-import { Label } from "@repo/ui/components/ui/label";
-import { isEnumParam } from "@repo/generative";
+import { Slider } from "../ui/slider";
+import { Label } from "../ui/label";
+import { isEnumParam } from "@node-td/engine";
 import type { FrameEntry } from "../frame-provider";
 
 interface EditorInspectorProps {

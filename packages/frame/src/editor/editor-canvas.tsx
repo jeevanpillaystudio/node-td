@@ -1,5 +1,3 @@
-"use client";
-
 import { useCallback, useMemo } from "react";
 import {
   ReactFlow,
@@ -12,9 +10,9 @@ import {
   type OnSelectionChangeFunc,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import type { Graph } from "@repo/generative";
-import { createDefaultRegistry } from "@repo/generative";
-import { toReactFlowElements } from "@repo/generative/editor";
+import type { Graph } from "@node-td/engine";
+import { createDefaultRegistry } from "@node-td/engine";
+import { toReactFlowElements } from "@node-td/engine/editor";
 import { GenNode, EnvNode } from "./gen-node";
 
 const registry = createDefaultRegistry();

@@ -1,9 +1,7 @@
-"use client";
-
 import { useEffect, useRef } from "react";
-import type { Graph, Geometry, Buffer2D } from "@repo/generative";
-import { createDefaultRegistry, CookEngine, SeededRNG } from "@repo/generative";
-import { drawCanvas2D, blitBuffer2D, createWebGL2 } from "@repo/generative/render";
+import type { Graph, Geometry, Buffer2D } from "@node-td/engine";
+import { createDefaultRegistry, CookEngine, SeededRNG } from "@node-td/engine";
+import { drawCanvas2D, blitBuffer2D, createWebGL2 } from "@node-td/engine/render";
 
 const registry = createDefaultRegistry();
 
@@ -97,7 +95,6 @@ export function EditorPreview({ graph, values }: EditorPreviewProps) {
       cancelAnimationFrame(rafId);
       ro.disconnect();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values, graph]);
 
   return (

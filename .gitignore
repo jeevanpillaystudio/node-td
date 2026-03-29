@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Build
+dist/
+.output/
+.nitro/
+.vinxi/
+
+# Cache
+.cache/
+.turbo/
+
+# Env
+.env
+.env*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# TanStack Router
+**/routeTree.gen.ts
+
+# Bun
+bun.lock

@@ -1,7 +1,5 @@
-"use client";
-
 import { useCallback, useState } from "react";
-import { Button } from "@repo/ui/components/ui/button";
+import { Button } from "../ui/button";
 import { useFrameContext } from "../frame-provider";
 import { EditorSidebar } from "./editor-sidebar";
 import { EditorCanvas } from "./editor-canvas";

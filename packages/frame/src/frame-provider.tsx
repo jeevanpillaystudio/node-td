@@ -1,5 +1,3 @@
-"use client";
-
 import {
   createContext,
   useCallback,
@@ -8,7 +6,7 @@ import {
   useRef,
   useState,
 } from "react";
-import type { ParamDef, Graph } from "@repo/generative";
+import type { ParamDef, Graph } from "@node-td/engine";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -95,7 +93,6 @@ export function FrameProvider({ children }: { children: React.ReactNode }) {
       setActive,
       setEditing,
     }),
-    // biome-ignore lint/correctness/useExhaustiveDependencies: revision forces consumer re-render on frame updates
     [activeId, editingId, revision, register, unregister, setActive, setEditing],
   );
 

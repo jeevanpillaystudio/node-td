@@ -1,8 +1,6 @@
-"use client";
-
 import { memo } from "react";
 import { Handle, Position } from "@xyflow/react";
-import type { GenNodeData } from "@repo/generative/editor";
+import type { GenNodeData } from "@node-td/engine/editor";
 
 const CATEGORY_DOT: Record<string, string> = {
   top: "bg-cyan-400",

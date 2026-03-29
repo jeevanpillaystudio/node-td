@@ -1,5 +1,3 @@
-"use client";
-
 import { FrameProvider, useFrameContext } from "./frame-provider";
 import { FrameEditor } from "./editor/frame-editor";
 

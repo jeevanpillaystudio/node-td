@@ -1,5 +1,3 @@
-"use client";
-
 import { useFrameContext, type FrameEntry } from "../frame-provider";
 
 interface EditorSidebarProps {
