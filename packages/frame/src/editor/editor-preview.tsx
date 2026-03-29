@@ -2,10 +2,15 @@
 
 import { useEffect, useRef } from "react";
 import type { Graph, Geometry, Buffer2D } from "@repo/generative";
-import { createDefaultRegistry, CookEngine } from "@repo/generative";
-import { drawCanvas2D, blitBuffer2D } from "@repo/generative/render";
+import { createDefaultRegistry, CookEngine, SeededRNG } from "@repo/generative";
+import { drawCanvas2D, blitBuffer2D, createWebGL2 } from "@repo/generative/render";
 
 const registry = createDefaultRegistry();
+
+function makeGL() {
+  const canvas = new OffscreenCanvas(1, 1);
+  return createWebGL2(canvas);
+}
 
 interface EditorPreviewProps {
   graph: Graph;
@@ -17,7 +22,8 @@ export function EditorPreview({ graph, values }: EditorPreviewProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const engineRef = useRef<CookEngine | null>(null);
   const engineGraphRef = useRef<Graph | null>(null);
-  const valuesKey = JSON.stringify(values);
+  const glRef = useRef<WebGL2RenderingContext | null>(null);
+  if (!glRef.current) glRef.current = makeGL();
 
   useEffect(() => {
     // Create or replace engine when graph identity changes
@@ -31,6 +37,13 @@ export function EditorPreview({ graph, values }: EditorPreviewProps) {
     const canvas = canvasRef.current!;
     const wrapper = wrapperRef.current!;
     const ctx = canvas.getContext("2d")!;
+
+    let rafId = 0;
+
+    function scheduleDraw() {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(draw);
+    }
 
     function draw() {
       const dpr = window.devicePixelRatio || 1;
@@ -52,6 +65,8 @@ export function EditorPreview({ graph, values }: EditorPreviewProps) {
         width: virtualW,
         height: virtualH,
         dpr: 1, // Preview handles its own scaling via canvas transform
+        rng: new SeededRNG(149149941),
+        _gl: glRef.current,
         createCanvas: (cw: number, ch: number) => new OffscreenCanvas(cw, ch),
       });
 
@@ -73,23 +88,24 @@ export function EditorPreview({ graph, values }: EditorPreviewProps) {
       }
     }
 
-    draw();
+    scheduleDraw();
 
-    const ro = new ResizeObserver(draw);
+    const ro = new ResizeObserver(scheduleDraw);
     ro.observe(wrapper);
-    return () => ro.disconnect();
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      ro.disconnect();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [valuesKey, graph]);
+  }, [values, graph]);
 
   return (
     <div
       ref={wrapperRef}
       className="h-full w-full overflow-hidden rounded-md border border-border/50"
     >
-      <canvas
-        ref={canvasRef}
-        className="block h-full w-full"
-      />
+      <canvas ref={canvasRef} className="block h-full w-full" />
     </div>
   );
 }

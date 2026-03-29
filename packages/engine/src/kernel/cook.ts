@@ -279,6 +279,22 @@ export class CookEngine {
     for (const key of this.order) this.dirty.add(key);
   }
 
+  /**
+   * Drop all cached node outputs and mark everything dirty.
+   *
+   * Call after blitting the terminal output to free intermediate
+   * Float32Array buffers and OffscreenCanvases. Essential when many
+   * Frame components coexist (e.g., debug page with 10 panels) —
+   * without this, cached buffers from all panels persist simultaneously,
+   * easily reaching 600 MB+ at 2× DPR and crashing the browser tab.
+   *
+   * The next cook() will be a full re-evaluation (identical to first cook).
+   */
+  clearCache(): void {
+    this.cache.clear();
+    for (const key of this.order) this.dirty.add(key);
+  }
+
   /** True if any node needs re-evaluation. */
   get needsCook(): boolean {
     return this.dirty.size > 0;

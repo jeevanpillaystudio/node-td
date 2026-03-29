@@ -83,6 +83,7 @@ import { dashStroke } from "./operators/sop/dash-stroke";
 import { continuousStroke } from "./operators/sop/continuous-stroke";
 import { parametricSurface } from "./operators/sop/parametric-surface";
 import { quadtreeSubdivide } from "./operators/sop/quadtree-subdivide";
+import { binarySubdivide } from "./operators/sop/binary-subdivide";
 import { proceduralPalette } from "./operators/mat/procedural-palette";
 import { oklabPalette } from "./operators/mat/oklab-palette";
 import { contrastFilter } from "./operators/mat/contrast-filter";
@@ -129,6 +130,7 @@ export const allOperators: Operator[] = [
   continuousStroke,
   parametricSurface,
   quadtreeSubdivide,
+  binarySubdivide,
   transform2d,
   merge,
   surfaceLift,

@@ -82,13 +82,18 @@ export type Field2D = (x: number, y: number) => number;
  * Basis for textures, heightmaps, angle fields, density maps.
  *
  * On CPU: `data` is a Float32Array.
- * Future GPU path: a WebGLTexture handle wrapping the same shape.
+ * Canvas-native path: `_canvas` carries the source OffscreenCanvas,
+ * enabling hardware-accelerated composite (drawImage) and blit.
+ * When `_canvas` is present, `data` may be a lazy getter that
+ * only triggers readback when pixel data is actually needed.
  */
 export interface Buffer2D {
   data: Float32Array;
   width: number; //   columns
   height: number; //  rows
   channels: number; // 1 = scalar, 2 = vec2, 3 = rgb, 4 = rgba
+  /** Source canvas for GPU-accelerated composite/blit (canvas-native pipeline) */
+  _canvas?: OffscreenCanvas;
 }
 
 /**

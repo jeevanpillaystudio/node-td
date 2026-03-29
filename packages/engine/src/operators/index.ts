@@ -20,6 +20,7 @@ export { dashStroke } from "./sop/dash-stroke";
 export { continuousStroke } from "./sop/continuous-stroke";
 export { parametricSurface } from "./sop/parametric-surface";
 export { quadtreeSubdivide } from "./sop/quadtree-subdivide";
+export { binarySubdivide } from "./sop/binary-subdivide";
 
 // MAT — Material Operators
 export { proceduralPalette } from "./mat/procedural-palette";

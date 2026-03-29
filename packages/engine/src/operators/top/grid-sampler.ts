@@ -49,11 +49,11 @@ export const gridSampler: Operator<Inputs, Outputs> = {
       }
     }
 
-    // CPU path (original)
+    // CPU path — sample at pixel coordinates (not grid indices)
     const data = new Float32Array(cols * rows);
     for (let col = 0; col < cols; col++) {
       for (let row = 0; row < rows; row++) {
-        data[col + row * cols] = field(col, row) * Math.PI * 2;
+        data[col + row * cols] = field(col * resolution, row * resolution) * Math.PI * 2;
       }
     }
 

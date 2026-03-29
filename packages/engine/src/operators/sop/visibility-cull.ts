@@ -35,8 +35,15 @@ export const visibilityCull: Operator<Inputs, Outputs> = {
     { name: "camera3d", type: "camera3d" },
   ],
   outputs: [{ name: "geometry", type: "geometry" }],
-  params: [],
-  evaluate({ geometry: strokes, mesh, camera3d }) {
+  params: [
+    { key: "bypass", label: "Bypass", min: 0, max: 1, step: 1, default: 0 },
+  ],
+  evaluate({ geometry: strokes, mesh, camera3d }, params) {
+    // Debug bypass: when bypass=1, pass through all strokes without culling
+    if ((params.bypass ?? 0) >= 1) {
+      return { geometry: strokes };
+    }
+
     if (strokes.topology !== "line-strip" || !strokes.stripOffsets) {
       // Nothing to cull — pass through non-strip geometry
       return { geometry: strokes };
@@ -91,8 +98,16 @@ export const visibilityCull: Operator<Inputs, Outputs> = {
       ]);
     }
 
-    // ── Build spatial lookup grid for XZ ground-plane ────────────
-    // Find the mesh bounding box in XZ
+    // ── Direct grid lookup for regular parametric meshes ────────
+    // The collision mesh is a regular grid from parametric-surface with
+    // uSeg × vSeg quads, each split into 2 triangles. We infer the grid
+    // dimensions from the index pattern and map XZ positions directly
+    // to the containing quad — O(1) lookup, no spatial hashing needed.
+    //
+    // This mirrors the original Subscapes algorithm's `st()` function
+    // (algorithm.js lines 182-193) which uses a direct grid index.
+
+    // Find mesh bounding box in XZ
     let minX = Infinity, maxX = -Infinity;
     let minZ = Infinity, maxZ = -Infinity;
     for (let i = 0; i < mesh.vertexCount; i++) {
@@ -106,38 +121,65 @@ export const visibilityCull: Operator<Inputs, Outputs> = {
 
     const rangeX = maxX - minX || 1;
     const rangeZ = maxZ - minZ || 1;
-    const gridRes = Math.min(64, Math.ceil(Math.sqrt(triCount)));
-    const cellW = rangeX / gridRes;
-    const cellH = rangeZ / gridRes;
 
-    // Assign triangles to grid cells (by centroid)
-    const grid: number[][] = new Array(gridRes * gridRes);
-    for (let i = 0; i < grid.length; i++) grid[i] = [];
+    // Infer grid dimensions from the mesh index pattern.
+    // parametric-surface creates: triangle 0 = [0, 1, uSeg+1]
+    // so meshIdx[2] = uSeg + 1.
+    const uSeg = (meshIdx[2] ?? 1) - 1;
+    const totalQuads = triCount / 2;
+    const vSeg = uSeg > 0 ? Math.round(totalQuads / uSeg) : 1;
+    const cellW = rangeX / uSeg;
+    const cellH = rangeZ / vSeg;
 
-    for (let t = 0; t < triCount; t++) {
-      const c = triCentroids[t]!;
-      const gx = Math.min(gridRes - 1, Math.max(0, Math.floor((c[0]! - minX) / cellW)));
-      const gz = Math.min(gridRes - 1, Math.max(0, Math.floor((c[2]! - minZ) / cellH)));
-      grid[gz * gridRes + gx]!.push(t);
-    }
-
-    // ── Find triangle for a point in XZ using barycentric coords ─
+    // ── Find triangle for a point in XZ — direct grid index ─────
     function findTriangle(px: number, pz: number): number {
-      const gx = Math.min(gridRes - 1, Math.max(0, Math.floor((px - minX) / cellW)));
-      const gz = Math.min(gridRes - 1, Math.max(0, Math.floor((pz - minZ) / cellH)));
+      const col = Math.min(uSeg - 1, Math.max(0, Math.floor((px - minX) / cellW)));
+      const row = Math.min(vSeg - 1, Math.max(0, Math.floor((pz - minZ) / cellH)));
+      const quadIdx = row * uSeg + col;
 
-      // Search the cell and its neighbors
-      for (let dz = -1; dz <= 1; dz++) {
-        for (let dx = -1; dx <= 1; dx++) {
-          const cx = gx + dx;
-          const cz = gz + dz;
-          if (cx < 0 || cx >= gridRes || cz < 0 || cz >= gridRes) continue;
-          const cell = grid[cz * gridRes + cx]!;
+      // Each quad has 2 triangles. Test both with barycentric coords in XZ.
+      const tri0 = quadIdx * 2;
+      const tri1 = tri0 + 1;
 
-          for (let k = 0; k < cell.length; k++) {
-            const t = cell[k]!;
+      for (const t of [tri0, tri1]) {
+        if (t >= triCount) continue;
+        const v = triVerts[t]!;
+        const ax = v[0]!, az = v[2]!;
+        const bx = v[3]!, bz = v[5]!;
+        const cx2 = v[6]!, cz2 = v[8]!;
+
+        const v0x = cx2 - ax, v0z = cz2 - az;
+        const v1x = bx - ax, v1z = bz - az;
+        const v2x = px - ax, v2z = pz - az;
+
+        const d00 = v0x * v0x + v0z * v0z;
+        const d01 = v0x * v1x + v0z * v1z;
+        const d02 = v0x * v2x + v0z * v2z;
+        const d11 = v1x * v1x + v1z * v1z;
+        const d12 = v1x * v2x + v1z * v2z;
+
+        const inv = d00 * d11 - d01 * d01;
+        if (Math.abs(inv) < 1e-12) continue;
+        const invDenom = 1 / inv;
+
+        const u = (d11 * d02 - d01 * d12) * invDenom;
+        const v2 = (d00 * d12 - d01 * d02) * invDenom;
+
+        if (u >= -1e-6 && v2 >= -1e-6 && u + v2 <= 1 + 1e-6) {
+          return t;
+        }
+      }
+
+      // Fallback: check adjacent quads for edge cases (floating point)
+      for (let dr = -1; dr <= 1; dr++) {
+        for (let dc = -1; dc <= 1; dc++) {
+          if (dr === 0 && dc === 0) continue;
+          const nc = col + dc, nr = row + dr;
+          if (nc < 0 || nc >= uSeg || nr < 0 || nr >= vSeg) continue;
+          const nq = nr * uSeg + nc;
+          for (const t of [nq * 2, nq * 2 + 1]) {
+            if (t >= triCount) continue;
             const v = triVerts[t]!;
-            // Barycentric test in XZ plane
             const ax = v[0]!, az = v[2]!;
             const bx = v[3]!, bz = v[5]!;
             const cx2 = v[6]!, cz2 = v[8]!;
@@ -159,12 +201,13 @@ export const visibilityCull: Operator<Inputs, Outputs> = {
             const u = (d11 * d02 - d01 * d12) * invDenom;
             const v2 = (d00 * d12 - d01 * d02) * invDenom;
 
-            if (u >= 0 && v2 >= 0 && u + v2 <= 1) {
+            if (u >= -1e-6 && v2 >= -1e-6 && u + v2 <= 1 + 1e-6) {
               return t;
             }
           }
         }
       }
+
       return -1;
     }
 

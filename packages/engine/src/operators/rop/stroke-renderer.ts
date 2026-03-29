@@ -156,7 +156,7 @@ export const strokeRenderer: Operator<Inputs, Outputs> = {
         ctx.fill();
       }
 
-      return readback(ctx, pixelW, pixelH);
+      return canvasBuffer(offscreen, pixelW, pixelH);
     }
 
     // ── Oriented Dash mode ─────────────────────────────────────────
@@ -220,7 +220,7 @@ export const strokeRenderer: Operator<Inputs, Outputs> = {
         ctx.stroke();
       }
 
-      return readback(ctx, pixelW, pixelH);
+      return canvasBuffer(offscreen, pixelW, pixelH);
     }
 
     // ── Stroke mode ───────────────────────────────────────────────
@@ -336,23 +336,33 @@ export const strokeRenderer: Operator<Inputs, Outputs> = {
       ctx.stroke();
     }
 
-    return readback(ctx, pixelW, pixelH);
+    return canvasBuffer(offscreen, pixelW, pixelH);
   },
 };
 
-/** Read canvas pixels back as a Float32Array Buffer2D */
-function readback(
-  ctx: OffscreenCanvasRenderingContext2D,
+/**
+ * Read canvas pixels into a CPU-side Buffer2D, then release the canvas.
+ *
+ * The OffscreenCanvas is attached as `_canvas` so that the composite
+ * operator can use the fast drawImage path. However, the `data` field
+ * is eagerly populated — this is critical because keeping many
+ * GPU-backed OffscreenCanvases alive in the CookEngine cache would
+ * exhaust GPU memory (10 panels × 5 canvases × 6.9 MB = 350 MB at 2× DPR).
+ *
+ * The composite operator consumes `_canvas` via drawImage and then
+ * nulls it out, allowing the canvas to be GC'd promptly.
+ */
+function canvasBuffer(
+  canvas: OffscreenCanvas,
   pixelW: number,
   pixelH: number,
 ): Outputs {
+  const ctx = canvas.getContext("2d")!;
   const imageData = ctx.getImageData(0, 0, pixelW, pixelH);
   const rgba = imageData.data;
-  const data = new Float32Array(pixelW * pixelH * 4);
-  for (let i = 0; i < rgba.length; i++) {
-    data[i] = rgba[i]! / 255;
-  }
+  const data = new Float32Array(rgba.length);
+  for (let i = 0; i < rgba.length; i++) data[i] = rgba[i]! / 255;
   return {
-    buffer: { data, width: pixelW, height: pixelH, channels: 4 },
+    buffer: { data, width: pixelW, height: pixelH, channels: 4, _canvas: canvas },
   };
 }

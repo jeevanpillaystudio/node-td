@@ -117,18 +117,30 @@ export function drawCanvas2D(
 }
 
 /**
- * Blit a Buffer2D (RGBA, Float32 0..1) onto a CanvasRenderingContext2D.
+ * Blit a Buffer2D onto a CanvasRenderingContext2D.
  *
- * This is the thin render-backend for ROP-terminated graphs.
- * The graph produces the Buffer2D; this function paints it to pixels.
+ * Canvas-native fast path: when `buffer._canvas` is present, uses
+ * `drawImage` — hardware-accelerated, zero CPU pixel conversion.
+ *
+ * CPU fallback: converts Float32 (0..1) → Uint8Clamped and uses putImageData.
  */
 export function blitBuffer2D(
   ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
   buffer: Buffer2D,
 ): void {
-  const { data, width, height, channels } = buffer;
+  const { width, height } = buffer;
   if (width === 0 || height === 0) return;
 
+  // Canvas-native fast path — hardware-accelerated blit, no conversion
+  // Release the canvas after drawing to free GPU memory.
+  if (buffer._canvas) {
+    ctx.drawImage(buffer._canvas, 0, 0);
+    buffer._canvas = undefined;
+    return;
+  }
+
+  // CPU fallback
+  const { data, channels } = buffer;
   const rgba = new Uint8ClampedArray(width * height * 4);
 
   if (channels === 4) {

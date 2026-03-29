@@ -6,26 +6,36 @@ import { createWebGL2, renderFieldToBufferHQ } from "../../render/webgl";
 type Inputs = { field: Field2D; width: number; height: number };
 type Outputs = { buffer: Buffer2D };
 
-// ─── Persistent GL context ──────────────────────────────────────
+// ─── Per-caller GL context via env ──────────────────────────────
 //
-// Reuse a single OffscreenCanvas + WebGL2 context across cooks.
-// This is critical for performance: the shader program cache
-// (keyed by GL context in a WeakMap) persists across cooks,
-// and with uniform-based parameters, the shader is compiled ONCE
-// then reused with different uniform values on subsequent cooks.
+// Each CookEngine caller passes its own GL context through GraphEnv.
+// This avoids the "10 frames thrashing a shared singleton" problem
+// when multiple Frame components cook at different resolutions.
+//
+// If env doesn't carry a GL context, we create one via createCanvas
+// (the original fallback path).
 
-let _glCanvas: OffscreenCanvas | null = null;
-let _gl: WebGL2RenderingContext | null = null;
-
-function ensureGL(w: number, h: number): WebGL2RenderingContext | null {
-  if (!_gl) {
-    _glCanvas = new OffscreenCanvas(w, h);
-    _gl = createWebGL2(_glCanvas);
-  } else if (_glCanvas!.width !== w || _glCanvas!.height !== h) {
-    _glCanvas!.width = w;
-    _glCanvas!.height = h;
+function getGL(env: GraphEnv | undefined, w: number, h: number): WebGL2RenderingContext | null {
+  // Prefer pre-created GL from env (set by Frame/EditorPreview)
+  const existing = (env as Record<string, unknown> | undefined)?._gl as WebGL2RenderingContext | undefined;
+  if (existing) {
+    // Resize the backing canvas if needed
+    const canvas = existing.canvas as OffscreenCanvas;
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width = w;
+      canvas.height = h;
+    }
+    return existing;
   }
-  return _gl;
+
+  // Fallback: create via env.createCanvas
+  const createCanvas = env?.createCanvas;
+  if (createCanvas) {
+    const canvas = createCanvas(w, h);
+    return createWebGL2(canvas);
+  }
+
+  return null;
 }
 
 /**
@@ -69,7 +79,7 @@ export const fieldRender: Operator<Inputs, Outputs> = {
     const expr = getFieldExpr(field);
     if (expr) {
       try {
-        const gl = ensureGL(bufW, bufH);
+        const gl = getGL(env as GraphEnv | undefined, bufW, bufH);
         if (gl) {
           const compiled = compileField(expr);
           return { buffer: renderFieldToBufferHQ(gl, compiled, bufW, bufH) };

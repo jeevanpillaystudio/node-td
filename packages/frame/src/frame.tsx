@@ -3,11 +3,32 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { cn } from "@repo/ui/lib/utils";
 import type { Graph, Geometry, Buffer2D } from "@repo/generative";
-import { collectParams, createDefaultRegistry, CookEngine } from "@repo/generative";
-import { drawCanvas2D, blitBuffer2D } from "@repo/generative/render";
+import { collectParams, createDefaultRegistry, CookEngine, SeededRNG } from "@repo/generative";
+import { drawCanvas2D, blitBuffer2D, createWebGL2 } from "@repo/generative/render";
 import { useOptionalFrameContext } from "./frame-provider";
 
 const registry = createDefaultRegistry();
+
+// ── Shared WebGL2 context (lazy singleton) ────────────────────
+// One GL context shared across ALL Frame instances. Eliminates the
+// browser's ~8-16 context limit issue. The field-render shader cache
+// is keyed by GL context, so sharing also shares the cache.
+let _sharedGL: WebGL2RenderingContext | null | undefined;
+function getSharedGL(): WebGL2RenderingContext | null {
+  if (_sharedGL !== undefined) return _sharedGL;
+  if (typeof OffscreenCanvas === "undefined") {
+    _sharedGL = null;
+    return null;
+  }
+  _sharedGL = createWebGL2(new OffscreenCanvas(1, 1));
+  return _sharedGL;
+}
+
+// ── Staggered cook scheduler ──────────────────────────────────
+// When many Frames mount simultaneously (e.g., debug page with 10
+// panels), each frame gets an increasing delay so cooks spread across
+// animation frames instead of all blocking the same tick.
+let _mountOrder = 0;
 
 interface FrameProps {
   graph: Graph;
@@ -48,24 +69,46 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
       graph,
       params,
       values,
-      set: (k, v) => setRef.current(k, v),
+      set: (k: string, v: number) => setRef.current(k, v),
     });
-  }, [ctxRegister, frameId, graph.name, params, values]);
+  }, [ctxRegister, frameId, graph, graph.name, params, values]);
 
   useEffect(() => {
     if (!ctxUnregister) return;
     return () => ctxUnregister(frameId);
   }, [ctxUnregister, frameId]);
 
+  // ── Visibility gating via IntersectionObserver ───────────────
+  // Off-screen frames don't cook at all. When the frame scrolls into
+  // view, it enters the cook queue. This is the most impactful
+  // optimization for pages with many panels.
+  const [isVisible, setVisible] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = wrapperRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => { if (entry) setVisible(entry.isIntersecting); },
+      { threshold: 0 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
   // Canvas rendering — persistent CookEngine for incremental evaluation
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const wrapperRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const engineRef = useRef<CookEngine | null>(null);
   const engineGraphRef = useRef<Graph | null>(null);
-  const valuesKey = JSON.stringify(values);
+  const staggerRef = useRef(-1);
+  const hasDrawnRef = useRef(false);
+  if (staggerRef.current === -1) staggerRef.current = _mountOrder++;
 
   useEffect(() => {
+    // Don't cook until visible
+    if (!isVisible) return;
+
     // Create or replace engine when graph identity changes
     if (engineGraphRef.current !== graph) {
       engineRef.current = new CookEngine(graph, registry);
@@ -81,10 +124,8 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
     const overlay = overlayRef.current!;
     const canvasCtx = canvas.getContext("2d")!;
 
-    const revealTimer = setTimeout(() => {
-      overlay.style.transition = "opacity 2s ease-in-out";
-      overlay.style.opacity = "0";
-    }, 300);
+    let rafId = 0;
+    let staggerTimer: ReturnType<typeof setTimeout> | undefined;
 
     function draw() {
       const dpr = window.devicePixelRatio || 1;
@@ -94,11 +135,13 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
       canvas.width = w * dpr;
       canvas.height = h * dpr;
 
-      // Cook — env diff auto-dirties $env dependents on resize
+      // Cook — shared GL context, env diff auto-dirties on resize
       engine.cook({
         width: w,
         height: h,
         dpr,
+        rng: new SeededRNG(42),
+        _gl: getSharedGL(),
         createCanvas: (cw: number, ch: number) => new OffscreenCanvas(cw, ch),
       });
 
@@ -114,21 +157,47 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
           drawCanvas2D(canvasCtx, w, h, geo);
         }
       }
+
+      // Free intermediate buffers — critical for multi-panel pages.
+      // Without this, cached Float32Arrays from all panels persist
+      // simultaneously (~100 MB per panel at 2× DPR), crashing the tab.
+      // Next resize triggers a full re-cook which is fine for static graphs.
+      engine.clearCache();
+
+      // Reveal after first draw
+      if (!hasDrawnRef.current) {
+        hasDrawnRef.current = true;
+        overlay.style.transition = "opacity 1.5s ease-in-out";
+        overlay.style.opacity = "0";
+      }
     }
 
-    draw();
+    function scheduleDraw() {
+      cancelAnimationFrame(rafId);
+      rafId = requestAnimationFrame(draw);
+    }
 
-    const ro = new ResizeObserver(draw);
+    // First render: stagger by mount order (~32ms between each frame)
+    // Subsequent renders (resize, param change): immediate
+    if (!hasDrawnRef.current) {
+      const delay = staggerRef.current * 32;
+      staggerTimer = setTimeout(scheduleDraw, delay);
+    } else {
+      scheduleDraw();
+    }
+
+    const ro = new ResizeObserver(scheduleDraw);
     ro.observe(wrapper);
 
     return () => {
-      clearTimeout(revealTimer);
+      cancelAnimationFrame(rafId);
+      if (staggerTimer !== undefined) clearTimeout(staggerTimer);
       ro.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [valuesKey, graph]);
+  }, [values, graph, isVisible]);
 
-  const canvas = (
+  const canvasEl = (
     <div
       ref={wrapperRef}
       style={{ position: "absolute", inset: 0, overflow: "clip", pointerEvents: "none" }}
@@ -143,7 +212,7 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
   );
 
   if (!ctx) {
-    return <div className={className}>{canvas}</div>;
+    return <div className={className}>{canvasEl}</div>;
   }
 
   return (
@@ -160,7 +229,7 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
         className,
       )}
     >
-      {canvas}
+      {canvasEl}
       {/* Edit button — visible when frame is active */}
       {isActive && (
         <button
