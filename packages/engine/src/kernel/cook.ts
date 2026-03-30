@@ -1,5 +1,6 @@
 import type { Graph, Wire } from "./graph";
 import type { Operator, GraphEnv, PortType } from "./types";
+import { GPUBuffer2D } from "./types";
 import { topoSort } from "./graph";
 
 // ─── Registry interface (avoids circular import) ─────────────────
@@ -53,6 +54,8 @@ export class CookEngine {
   private readonly envDependents: Map<string, Set<string>>;
   /** Node keys with no downstream consumers */
   private readonly terminalKeys: Set<string>;
+  /** Pre-computed variadic port names per node — avoids rebuilding per cook */
+  private readonly variadicPorts: Map<string, Set<string>>;
 
   // ── Mutable state ──────────────────────────────────────────────
   private readonly cache = new Map<string, Record<string, unknown>>();
@@ -60,6 +63,14 @@ export class CookEngine {
   private prevParams: Record<string, number> = {};
   private prevEnvWires: Record<string, unknown> = {};
   private _stats: CookStats = { cooked: 0, cached: 0, total: 0, elapsed: 0, timing: new Map() };
+
+  // ── Incremental cook cursor ────────────────────────────────────
+  private _cursor = 0;
+  private _incrEnv: GraphEnv | null = null;
+  private _incrCooked = 0;
+  private _incrTiming = new Map<string, number>();
+  private _incrT0 = 0;
+  private _incrParamIndex: Map<string, Record<string, number>> | null = null;
 
   constructor(graph: Graph, registry: RegistryLike) {
     this.graph = graph;
@@ -103,6 +114,17 @@ export class CookEngine {
       if (!hasConsumer.has(key)) this.terminalKeys.add(key);
     }
 
+    // Pre-compute variadic port names per node (once per graph)
+    this.variadicPorts = new Map();
+    for (const [key, instance] of Object.entries(graph.nodes)) {
+      const op = registry.resolve(instance.type);
+      const ports = new Set<string>();
+      for (const port of op.inputs) {
+        if (port.variadic) ports.add(port.name);
+      }
+      this.variadicPorts.set(key, ports);
+    }
+
     // First cook is always full — all nodes start dirty
     for (const key of this.order) this.dirty.add(key);
   }
@@ -133,12 +155,14 @@ export class CookEngine {
    * Keys use the `"nodeKey.paramKey"` convention.
    */
   setParams(params: Record<string, number>): void {
+    let changed = false;
     // Detect changed or new keys
     for (const [prefixed, value] of Object.entries(params)) {
       if (this.prevParams[prefixed] === value) continue;
       const dot = prefixed.indexOf(".");
       if (dot === -1) continue;
       this.propagate(prefixed.slice(0, dot));
+      changed = true;
     }
     // Detect removed keys
     for (const prefixed of Object.keys(this.prevParams)) {
@@ -146,8 +170,16 @@ export class CookEngine {
       const dot = prefixed.indexOf(".");
       if (dot === -1) continue;
       this.propagate(prefixed.slice(0, dot));
+      changed = true;
     }
     this.prevParams = params;
+
+    // If params changed during an incremental cook, restart it —
+    // nodes before the cursor used stale params.
+    if (changed && this._incrEnv !== null) {
+      this._incrEnv = null;
+      this._cursor = 0;
+    }
   }
 
   // ── Cook ───────────────────────────────────────────────────────
@@ -186,6 +218,9 @@ export class CookEngine {
     let cooked = 0;
     const timing = new Map<string, number>();
 
+    // Build per-node param index once (O(P) total instead of O(P) per node)
+    const paramsByNode = this._buildParamIndex();
+
     for (const key of this.order) {
       if (!this.dirty.has(key)) continue;
 
@@ -193,13 +228,8 @@ export class CookEngine {
       const op = this.registry.resolve(instance.type);
       if (!op.evaluate) continue;
 
-      // Variadic port lookup
-      const variadicPorts = new Set<string>();
-      for (const port of op.inputs) {
-        if (port.variadic) variadicPorts.add(port.name);
-      }
-
       // Gather inputs from pre-indexed wire map
+      const nodeVariadic = this.variadicPorts.get(key)!;
       const inputs: Record<string, unknown> = {};
       const wires = this.wiresTo.get(key)!;
       for (const w of wires) {
@@ -211,7 +241,7 @@ export class CookEngine {
           if (src) value = src[w.output];
         }
 
-        if (variadicPorts.has(w.input)) {
+        if (nodeVariadic.has(w.input)) {
           if (!Array.isArray(inputs[w.input])) inputs[w.input] = [];
           (inputs[w.input] as unknown[]).push(value);
         } else {
@@ -225,9 +255,9 @@ export class CookEngine {
       if (instance.params) {
         for (const [k, v] of Object.entries(instance.params)) resolved[k] = v;
       }
-      const prefix = `${key}.`;
-      for (const [k, v] of Object.entries(this.prevParams)) {
-        if (k.startsWith(prefix)) resolved[k.slice(prefix.length)] = v;
+      const ext = paramsByNode.get(key);
+      if (ext) {
+        for (const [k, v] of Object.entries(ext)) resolved[k] = v;
       }
 
       const nt0 = performance.now();
@@ -243,6 +273,125 @@ export class CookEngine {
     this.dirty.clear();
     this._stats = { cooked, cached, total: this.order.length, elapsed: performance.now() - t0, timing };
     return this.cache;
+  }
+
+  // ── Budgeted incremental cook ────────────────────────────────────
+
+  /**
+   * Cook the graph incrementally, yielding after `budgetMs` milliseconds.
+   *
+   * Call this in a requestAnimationFrame loop:
+   *   function draw() {
+   *     const result = engine.cookIncremental(env, 8);
+   *     if (!result.done) { rafId = requestAnimationFrame(draw); return; }
+   *     // blit terminal output
+   *   }
+   *
+   * On the first call (or after a new dirty cycle), performs env diffing
+   * and starts walking from the top of topological order. Subsequent
+   * calls resume from where the budget was exhausted.
+   *
+   * Returns { done, progress } where progress is 0..1.
+   */
+  cookIncremental(env: GraphEnv, budgetMs: number): { done: boolean; progress: number } {
+    // Start a new incremental cook if not already in progress
+    if (this._incrEnv === null) {
+      this._incrT0 = performance.now();
+
+      // Diff env wire values
+      for (const [envKey, dependents] of this.envDependents) {
+        if (this.prevEnvWires[envKey] !== env[envKey]) {
+          for (const nodeKey of dependents) this.propagate(nodeKey);
+        }
+      }
+      const snap: Record<string, unknown> = {};
+      for (const envKey of this.envDependents.keys()) snap[envKey] = env[envKey];
+      this.prevEnvWires = snap;
+
+      // Nothing dirty → immediate completion
+      if (this.dirty.size === 0) {
+        this._stats = { cooked: 0, cached: this.order.length, total: this.order.length, elapsed: 0, timing: new Map() };
+        return { done: true, progress: 1 };
+      }
+
+      this._incrEnv = env;
+      this._cursor = 0;
+      this._incrCooked = 0;
+      this._incrTiming = new Map();
+      this._incrParamIndex = this._buildParamIndex();
+    }
+
+    const deadline = performance.now() + budgetMs;
+    const paramsByNode = this._incrParamIndex!;
+
+    while (this._cursor < this.order.length) {
+      const key = this.order[this._cursor]!;
+      this._cursor++;
+
+      if (!this.dirty.has(key)) continue;
+
+      const instance = this.graph.nodes[key]!;
+      const op = this.registry.resolve(instance.type);
+      if (!op.evaluate) continue;
+
+      // Gather inputs (same logic as cook())
+      const nodeVariadic = this.variadicPorts.get(key)!;
+      const inputs: Record<string, unknown> = {};
+      const wires = this.wiresTo.get(key)!;
+      for (const w of wires) {
+        let value: unknown;
+        if (w.from === "$env") {
+          value = env[w.output];
+        } else {
+          const src = this.cache.get(w.from);
+          if (src) value = src[w.output];
+        }
+        if (nodeVariadic.has(w.input)) {
+          if (!Array.isArray(inputs[w.input])) inputs[w.input] = [];
+          (inputs[w.input] as unknown[]).push(value);
+        } else {
+          inputs[w.input] = value;
+        }
+      }
+
+      const resolved: Record<string, number> = {};
+      for (const p of op.params) resolved[p.key] = p.default;
+      if (instance.params) {
+        for (const [k, v] of Object.entries(instance.params)) resolved[k] = v;
+      }
+      const ext = paramsByNode.get(key);
+      if (ext) {
+        for (const [k, v] of Object.entries(ext)) resolved[k] = v;
+      }
+
+      const nt0 = performance.now();
+      this.cache.set(key, op.evaluate(inputs, resolved, env) as Record<string, unknown>);
+      this._incrTiming.set(key, performance.now() - nt0);
+      this._incrCooked++;
+
+      // Check budget after each node
+      if (performance.now() >= deadline && this._cursor < this.order.length) {
+        return { done: false, progress: this._cursor / this.order.length };
+      }
+    }
+
+    // Completed
+    const cached = this.order.length - this._incrCooked;
+    this.dirty.clear();
+    this._stats = {
+      cooked: this._incrCooked,
+      cached,
+      total: this.order.length,
+      elapsed: performance.now() - this._incrT0,
+      timing: this._incrTiming,
+    };
+
+    // Reset incremental state
+    this._incrEnv = null;
+    this._cursor = 0;
+    this._incrParamIndex = null;
+
+    return { done: true, progress: 1 };
   }
 
   // ── Accessors ──────────────────────────────────────────────────
@@ -277,26 +426,76 @@ export class CookEngine {
   /** Force all nodes dirty — next cook() will be a full re-evaluation. */
   invalidateAll(): void {
     for (const key of this.order) this.dirty.add(key);
+    // Reset incremental cook state
+    this._incrEnv = null;
+    this._cursor = 0;
+    this._incrParamIndex = null;
   }
 
   /**
    * Drop all cached node outputs and mark everything dirty.
    *
-   * Call after blitting the terminal output to free intermediate
-   * Float32Array buffers and OffscreenCanvases. Essential when many
-   * Frame components coexist (e.g., debug page with 10 panels) —
-   * without this, cached buffers from all panels persist simultaneously,
-   * easily reaching 600 MB+ at 2× DPR and crashing the browser tab.
-   *
-   * The next cook() will be a full re-evaluation (identical to first cook).
+   * Prefer `dispose()` when tearing down the engine, or simply
+   * let the incremental dirty-flag system avoid unnecessary re-cooks.
+   * Only call this if you need to force a full re-evaluation.
    */
   clearCache(): void {
+    this._disposeGPUResources();
     this.cache.clear();
     for (const key of this.order) this.dirty.add(key);
+    // Reset incremental cook state
+    this._incrEnv = null;
+    this._cursor = 0;
+    this._incrParamIndex = null;
+  }
+
+  /**
+   * Release all GPU resources held by cached outputs.
+   *
+   * Call when the engine is no longer needed (component unmount,
+   * graph change). GPU textures and framebuffers are NOT garbage
+   * collected — they must be explicitly deleted.
+   */
+  dispose(): void {
+    this._disposeGPUResources();
+    this.cache.clear();
   }
 
   /** True if any node needs re-evaluation. */
   get needsCook(): boolean {
     return this.dirty.size > 0;
+  }
+
+  // ── Private helpers ────────────────────────────────────────────
+
+  /**
+   * Build a per-node param index from prevParams.
+   * O(P) total instead of O(P) per node during cook.
+   */
+  private _buildParamIndex(): Map<string, Record<string, number>> {
+    const index = new Map<string, Record<string, number>>();
+    for (const [prefixed, value] of Object.entries(this.prevParams)) {
+      const dot = prefixed.indexOf(".");
+      if (dot === -1) continue;
+      const nodeKey = prefixed.slice(0, dot);
+      let nodeParams = index.get(nodeKey);
+      if (!nodeParams) {
+        nodeParams = {};
+        index.set(nodeKey, nodeParams);
+      }
+      nodeParams[prefixed.slice(dot + 1)] = value;
+    }
+    return index;
+  }
+
+  /** Walk all cached outputs and dispose any GPU resources. */
+  private _disposeGPUResources(): void {
+    for (const outputs of this.cache.values()) {
+      for (const value of Object.values(outputs)) {
+        if (value instanceof GPUBuffer2D) {
+          value.dispose();
+        }
+      }
+    }
   }
 }

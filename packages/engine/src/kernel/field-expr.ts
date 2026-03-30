@@ -1,5 +1,6 @@
 import { pnoise } from "../operators/top/perlin-noise";
 import { simplex2 } from "../operators/top/simplex-noise";
+import { jitCompileField } from "./field-jit";
 import type { Field2D } from "./types";
 
 // ─── FieldExpr — Reified field computation as data ──────────────
@@ -79,11 +80,18 @@ export type FieldExpr =
 
 export const FIELD_EXPR = Symbol.for("generative.field-expr");
 
-/** Create a Field2D that carries its FieldExpr for GPU compilation. */
+/** Create a Field2D that carries its FieldExpr for GPU compilation.
+ *  Uses JIT compilation for fast CPU evaluation, falls back to
+ *  the tree-walk interpreter if new Function() is blocked by CSP. */
 export function createField(expr: FieldExpr): Field2D {
-  const fn = (x: number, y: number) => evalExpr(expr, x, y);
-  Object.defineProperty(fn, FIELD_EXPR, { value: expr, enumerable: false });
-  return fn;
+  try {
+    return jitCompileField(expr);
+  } catch {
+    // CSP or other restriction — fall back to interpreter
+    const fn = (x: number, y: number) => evalExpr(expr, x, y);
+    Object.defineProperty(fn, FIELD_EXPR, { value: expr, enumerable: false });
+    return fn;
+  }
 }
 
 /** Extract the FieldExpr from a Field2D, or undefined if it's an opaque closure. */

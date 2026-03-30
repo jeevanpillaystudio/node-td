@@ -97,6 +97,108 @@ export interface Buffer2D {
 }
 
 /**
+ * GPU-resident buffer — data stays on the GPU as a texture.
+ *
+ * Satisfies the Buffer2D contract via lazy readback: accessing `.data`
+ * triggers `gl.readPixels` only when CPU access is actually needed.
+ * Operators that consume textures directly (composite, blit) never
+ * pay the readback cost.
+ *
+ * This is the key to eliminating GPU→CPU round-trips in the pipeline.
+ */
+export class GPUBuffer2D implements Buffer2D {
+  readonly width: number;
+  readonly height: number;
+  readonly channels: number;
+  readonly texture: WebGLTexture;
+  readonly fbo: WebGLFramebuffer;
+  readonly gl: WebGL2RenderingContext;
+
+  private _cpuData: Float32Array | null = null;
+  _canvas?: OffscreenCanvas;
+
+  constructor(
+    gl: WebGL2RenderingContext,
+    texture: WebGLTexture,
+    fbo: WebGLFramebuffer,
+    width: number,
+    height: number,
+    channels: number,
+  ) {
+    this.gl = gl;
+    this.texture = texture;
+    this.fbo = fbo;
+    this.width = width;
+    this.height = height;
+    this.channels = channels;
+  }
+
+  /** Lazy CPU readback — only triggered when `.data` is accessed. */
+  get data(): Float32Array {
+    if (this._cpuData) return this._cpuData;
+    this._cpuData = this._readback();
+    return this._cpuData;
+  }
+
+  set data(_v: Float32Array) {
+    // Allow assignment for Buffer2D compat but discard — GPU is source of truth
+  }
+
+  /** Force readback and return a plain Buffer2D (detached from GPU). */
+  readback(): Buffer2D {
+    return {
+      data: this.data,
+      width: this.width,
+      height: this.height,
+      channels: this.channels,
+    };
+  }
+
+  /** True if this buffer still holds a live GPU texture. */
+  get isGPUResident(): boolean {
+    return this.texture !== null;
+  }
+
+  /** Release GPU resources. Safe to call multiple times. */
+  dispose(): void {
+    if (this._disposed) return;
+    this._disposed = true;
+    this.gl.deleteTexture(this.texture);
+    this.gl.deleteFramebuffer(this.fbo);
+  }
+
+  private _disposed = false;
+
+  private _readback(): Float32Array {
+    const { gl, fbo, width, height } = this;
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+    const pixels = new Float32Array(width * height * 4);
+    gl.readPixels(0, 0, width, height, gl.RGBA, gl.FLOAT, pixels);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+    // GPU texture is kept alive — it may be needed again if the cache
+    // preserves this node's output across cooks. Disposal happens via
+    // CookEngine.dispose() on unmount or graph change.
+
+    // Extract single channel, flip Y (WebGL is bottom-up)
+    const data = new Float32Array(width * height);
+    for (let row = 0; row < height; row++) {
+      const srcRow = height - 1 - row;
+      for (let col = 0; col < width; col++) {
+        data[row * width + col] = pixels[(srcRow * width + col) * 4]!;
+      }
+    }
+    return data;
+  }
+}
+
+/** Type guard: true when the buffer holds a live GPU texture. */
+export function isGPUBuffer(buffer: Buffer2D): buffer is GPUBuffer2D {
+  return buffer instanceof GPUBuffer2D;
+}
+
+/**
  * Geometry — the universal SOP data currency.
  * Parameterized by dimension so 2D paths and 3D meshes
  * share the same protocol.

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { Frame } from "@node-td/frame";
 import { FrameShell } from "@node-td/frame/shell";
@@ -7,7 +8,7 @@ import {
   subscapesTerrain3dGraph,
   simplexFieldGraph,
   flowFieldGraph,
-} from "@node-td/engine/patches";
+} from "../patches";
 
 const patches = [
   { name: "Subscapes Terrain 3D", graph: subscapesTerrain3dGraph },
@@ -22,6 +23,9 @@ export const Route = createFileRoute("/")({
 });
 
 function HomePage() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const active = patches[activeIndex]!;
+
   return (
     <FrameShell>
       <div className="mx-auto max-w-7xl px-6 py-12">
@@ -34,16 +38,34 @@ function HomePage() {
           </p>
         </header>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {patches.map((patch) => (
-            <div key={patch.name} className="space-y-2">
-              <div className="relative aspect-square overflow-hidden rounded-md border border-border/50">
-                <Frame graph={patch.graph} className="absolute inset-0" />
-              </div>
-              <span className="block font-mono text-xs text-muted-foreground">
-                {patch.name}
-              </span>
-            </div>
+        {/* Active patch — single instance */}
+        <div className="mb-8 space-y-3">
+          <div className="relative aspect-[16/10] w-full overflow-hidden rounded-md border border-border/50">
+            <Frame
+              key={active.name}
+              graph={active.graph}
+              className="absolute inset-0"
+            />
+          </div>
+          <span className="block font-mono text-sm text-muted-foreground">
+            {active.name}
+          </span>
+        </div>
+
+        {/* Patch selector */}
+        <div className="flex flex-wrap gap-2">
+          {patches.map((patch, i) => (
+            <button
+              key={patch.name}
+              onClick={() => setActiveIndex(i)}
+              className={`rounded-md border px-3 py-1.5 font-mono text-xs transition-colors ${
+                i === activeIndex
+                  ? "border-foreground/30 bg-foreground/10 text-foreground"
+                  : "border-border/50 text-muted-foreground hover:border-foreground/20 hover:text-foreground"
+              }`}
+            >
+              {patch.name}
+            </button>
           ))}
         </div>
       </div>

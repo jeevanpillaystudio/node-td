@@ -341,13 +341,12 @@ export const strokeRenderer: Operator<Inputs, Outputs> = {
 };
 
 /**
- * Read canvas pixels into a CPU-side Buffer2D, then release the canvas.
+ * Wrap a rendered OffscreenCanvas as a Buffer2D with lazy CPU readback.
  *
- * The OffscreenCanvas is attached as `_canvas` so that the composite
- * operator can use the fast drawImage path. However, the `data` field
- * is eagerly populated — this is critical because keeping many
- * GPU-backed OffscreenCanvases alive in the CookEngine cache would
- * exhaust GPU memory (10 panels × 5 canvases × 6.9 MB = 350 MB at 2× DPR).
+ * The `_canvas` is attached so that the composite operator can use the
+ * fast drawImage path (GPU-accelerated). CPU pixel data is only read back
+ * if a downstream operator actually accesses `.data` — this eliminates
+ * the ~5ms getImageData stall when the canvas fast path is taken.
  *
  * The composite operator consumes `_canvas` via drawImage and then
  * nulls it out, allowing the canvas to be GC'd promptly.
@@ -357,12 +356,24 @@ function canvasBuffer(
   pixelW: number,
   pixelH: number,
 ): Outputs {
-  const ctx = canvas.getContext("2d")!;
-  const imageData = ctx.getImageData(0, 0, pixelW, pixelH);
-  const rgba = imageData.data;
-  const data = new Float32Array(rgba.length);
-  for (let i = 0; i < rgba.length; i++) data[i] = rgba[i]! / 255;
+  let _data: Float32Array | null = null;
   return {
-    buffer: { data, width: pixelW, height: pixelH, channels: 4, _canvas: canvas },
+    buffer: {
+      get data(): Float32Array {
+        if (!_data) {
+          const ctx = canvas.getContext("2d")!;
+          const imageData = ctx.getImageData(0, 0, pixelW, pixelH);
+          const rgba = imageData.data;
+          _data = new Float32Array(rgba.length);
+          for (let i = 0; i < rgba.length; i++) _data[i] = rgba[i]! / 255;
+        }
+        return _data;
+      },
+      set data(v: Float32Array) { _data = v; },
+      width: pixelW,
+      height: pixelH,
+      channels: 4,
+      _canvas: canvas,
+    } as Buffer2D,
   };
 }

@@ -1,4 +1,4 @@
-import type { Buffer2D } from "../kernel/types";
+import { type Buffer2D, GPUBuffer2D } from "../kernel/types";
 import type { CompiledField } from "../kernel/field-compiler";
 
 // ─── WebGL Field Renderer ────────────────────────────────────────
@@ -314,4 +314,153 @@ export function renderFieldToBufferHQ(
   }
 
   return { data, width, height, channels: 1 };
+}
+
+/**
+ * Render a compiled field to a GPU-resident texture — no readback.
+ *
+ * The field is evaluated per-pixel on the GPU and the result stays
+ * on the GPU as an RGBA32F texture wrapped in a GPUBuffer2D.
+ * CPU readback only happens lazily if a downstream operator accesses `.data`.
+ *
+ * This is the zero-copy fast path: field -> GPU texture -> composite -> blit.
+ * Falls back to `renderFieldToBuffer` (with immediate readback) if
+ * float render targets are unavailable.
+ */
+export function renderFieldToTexture(
+  gl: WebGL2RenderingContext,
+  compiled: CompiledField,
+  width: number,
+  height: number,
+): GPUBuffer2D | Buffer2D {
+  // Float render targets required for GPU-resident path
+  const ext = gl.getExtension("EXT_color_buffer_float");
+  if (!ext) {
+    return renderFieldToBuffer(gl, compiled, width, height);
+  }
+
+  const cached = getOrCreateProgram(gl, compiled);
+
+  // Allocate a dedicated FBO+texture for this output (not shared/cached,
+  // because the GPUBuffer2D owns it for the duration of the cook cycle)
+  const tex = gl.createTexture()!;
+  gl.bindTexture(gl.TEXTURE_2D, tex);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA32F, width, height, 0, gl.RGBA, gl.FLOAT, null);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+
+  const fbo = gl.createFramebuffer()!;
+  gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+  gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+
+  // Render
+  gl.viewport(0, 0, width, height);
+  gl.useProgram(cached.program);
+  if (cached.uResolution) {
+    gl.uniform2f(cached.uResolution, width, height);
+  }
+  setUniforms(gl, cached, compiled.uniforms);
+
+  gl.bindVertexArray(cached.vao);
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  gl.bindVertexArray(null);
+
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  gl.bindTexture(gl.TEXTURE_2D, null);
+
+  return new GPUBuffer2D(gl, tex, fbo, width, height, 1);
+}
+
+// ─── Texture blit to default framebuffer ────────────────────────
+//
+// Renders a GPU texture to the GL canvas's default framebuffer via
+// a fullscreen quad with a simple passthrough shader. The GPU handles
+// float→unorm conversion automatically (clamping to 0..1).
+//
+// This is the correct way to display an RGBA32F texture — unlike
+// blitFramebuffer, which doesn't support float→fixed-point conversion.
+
+const BLIT_VERT = `#version 300 es
+in vec2 aPosition;
+out vec2 vUv;
+void main() {
+  vUv = aPosition * 0.5 + 0.5;
+  gl_Position = vec4(aPosition, 0.0, 1.0);
+}`;
+
+const BLIT_FRAG = `#version 300 es
+precision highp float;
+uniform sampler2D uTexture;
+in vec2 vUv;
+out vec4 fragColor;
+void main() {
+  float v = texture(uTexture, vUv).r;
+  fragColor = vec4(v, v, v, 1.0);
+}`;
+
+const blitCache = new WeakMap<WebGL2RenderingContext, {
+  program: WebGLProgram;
+  vao: WebGLVertexArrayObject;
+  uTexture: WebGLUniformLocation | null;
+}>();
+
+function getBlitProgram(gl: WebGL2RenderingContext) {
+  const existing = blitCache.get(gl);
+  if (existing) return existing;
+
+  const vs = compileShader(gl, gl.VERTEX_SHADER, BLIT_VERT);
+  const fs = compileShader(gl, gl.FRAGMENT_SHADER, BLIT_FRAG);
+  const program = linkProgram(gl, vs, fs);
+  gl.deleteShader(vs);
+  gl.deleteShader(fs);
+
+  const vao = gl.createVertexArray()!;
+  gl.bindVertexArray(vao);
+  const vbo = gl.createBuffer()!;
+  gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+  gl.bufferData(gl.ARRAY_BUFFER, QUAD_VERTS, gl.STATIC_DRAW);
+  const aPos = gl.getAttribLocation(program, "aPosition");
+  gl.enableVertexAttribArray(aPos);
+  gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+  gl.bindVertexArray(null);
+
+  const cached = { program, vao, uTexture: gl.getUniformLocation(program, "uTexture") };
+  blitCache.set(gl, cached);
+  return cached;
+}
+
+/**
+ * Blit a GPU texture to the GL context's default framebuffer.
+ *
+ * Renders a fullscreen quad textured with the source, handling
+ * float→unorm conversion automatically. After this call, the GL
+ * canvas contains the rendered image and can be transferred via
+ * `transferToImageBitmap()`.
+ */
+export function blitTextureToCanvas(
+  gl: WebGL2RenderingContext,
+  texture: WebGLTexture,
+  width: number,
+  height: number,
+): void {
+  const glCanvas = gl.canvas as OffscreenCanvas;
+  if (glCanvas.width !== width || glCanvas.height !== height) {
+    glCanvas.width = width;
+    glCanvas.height = height;
+  }
+
+  const blit = getBlitProgram(gl);
+
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  gl.viewport(0, 0, width, height);
+  gl.useProgram(blit.program);
+
+  gl.activeTexture(gl.TEXTURE0);
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+  if (blit.uTexture !== null) gl.uniform1i(blit.uTexture, 0);
+
+  gl.bindVertexArray(blit.vao);
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  gl.bindVertexArray(null);
+  gl.bindTexture(gl.TEXTURE_2D, null);
 }

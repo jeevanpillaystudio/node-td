@@ -22,11 +22,9 @@ function getSharedGL(): WebGL2RenderingContext | null {
   return _sharedGL;
 }
 
-// ── Staggered cook scheduler ──────────────────────────────────
-// When many Frames mount simultaneously (e.g., debug page with 10
-// panels), each frame gets an increasing delay so cooks spread across
-// animation frames instead of all blocking the same tick.
-let _mountOrder = 0;
+// ── Frame budget target ──────────────────────────────────────────
+// Target 8ms per cook pass to stay under 16ms frame budget (60fps).
+const COOK_BUDGET_MS = 8;
 
 interface FrameProps {
   graph: Graph;
@@ -76,7 +74,7 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
     return () => ctxUnregister(frameId);
   }, [ctxUnregister, frameId]);
 
-  // ── Visibility gating via IntersectionObserver ───────────────
+  // ── Visibility gating via IntersectionObserver ──��────────────
   // Off-screen frames don't cook at all. When the frame scrolls into
   // view, it enters the cook queue. This is the most impactful
   // optimization for pages with many panels.
@@ -99,9 +97,7 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const engineRef = useRef<CookEngine | null>(null);
   const engineGraphRef = useRef<Graph | null>(null);
-  const staggerRef = useRef(-1);
   const hasDrawnRef = useRef(false);
-  if (staggerRef.current === -1) staggerRef.current = _mountOrder++;
 
   useEffect(() => {
     // Don't cook until visible
@@ -109,6 +105,8 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
 
     // Create or replace engine when graph identity changes
     if (engineGraphRef.current !== graph) {
+      // Dispose old engine's GPU resources before replacing
+      engineRef.current?.dispose();
       engineRef.current = new CookEngine(graph, registry);
       engineGraphRef.current = graph;
     }
@@ -123,27 +121,43 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
     const canvasCtx = canvas.getContext("2d")!;
 
     let rafId = 0;
-    let staggerTimer: ReturnType<typeof setTimeout> | undefined;
+    let cancelled = false;
 
-    function draw() {
+    function getEnv() {
       const dpr = window.devicePixelRatio || 1;
       const w = wrapper.clientWidth;
       const h = wrapper.clientHeight;
-
-      canvas.width = w * dpr;
-      canvas.height = h * dpr;
-
-      // Cook — shared GL context, env diff auto-dirties on resize
-      engine.cook({
+      return {
         width: w,
         height: h,
         dpr,
         rng: new SeededRNG(42),
         _gl: getSharedGL(),
         createCanvas: (cw: number, ch: number) => new OffscreenCanvas(cw, ch),
-      });
+      };
+    }
 
-      // ROP path: buffer is already at full pixel resolution (DPR-aware)
+    function draw() {
+      if (cancelled) return;
+
+      const env = getEnv();
+      const dpr = env.dpr as number;
+      const w = env.width as number;
+      const h = env.height as number;
+
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+
+      // Budgeted cook — yields if over budget, resumes next frame
+      const result = engine.cookIncremental(env, COOK_BUDGET_MS);
+
+      if (!result.done) {
+        // Cook not finished — continue next frame
+        rafId = requestAnimationFrame(draw);
+        return;
+      }
+
+      // Cook complete — blit terminal output
       const buf = engine.findTerminalOutput<Buffer2D>("buffer");
       if (buf) {
         blitBuffer2D(canvasCtx, buf);
@@ -156,11 +170,9 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
         }
       }
 
-      // Free intermediate buffers — critical for multi-panel pages.
-      // Without this, cached Float32Arrays from all panels persist
-      // simultaneously (~100 MB per panel at 2× DPR), crashing the tab.
-      // Next resize triggers a full re-cook which is fine for static graphs.
-      engine.clearCache();
+      // Cache is preserved across frames — the dirty-flag system ensures
+      // only changed nodes re-evaluate. Static graphs skip cooking entirely
+      // after first render. GPU resources are cleaned up on unmount/graph change.
 
       // Reveal after first draw
       if (!hasDrawnRef.current) {
@@ -175,22 +187,19 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
       rafId = requestAnimationFrame(draw);
     }
 
-    // First render: stagger by mount order (~32ms between each frame)
-    // Subsequent renders (resize, param change): immediate
-    if (!hasDrawnRef.current) {
-      const delay = staggerRef.current * 32;
-      staggerTimer = setTimeout(scheduleDraw, delay);
-    } else {
-      scheduleDraw();
-    }
+    scheduleDraw();
 
     const ro = new ResizeObserver(scheduleDraw);
     ro.observe(wrapper);
 
     return () => {
+      cancelled = true;
       cancelAnimationFrame(rafId);
-      if (staggerTimer !== undefined) clearTimeout(staggerTimer);
       ro.disconnect();
+      // Dispose GPU resources when unmounting
+      engineRef.current?.dispose();
+      engineRef.current = null;
+      engineGraphRef.current = null;
     };
   }, [values, graph, isVisible]);
 

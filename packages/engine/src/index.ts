@@ -24,6 +24,8 @@ export {
   pathsGeometry,
   geometryToPaths,
   vertexAt,
+  GPUBuffer2D,
+  isGPUBuffer,
 } from "./kernel/types";
 
 // ─── FieldExpr — reified field computation ──────────────────────
@@ -42,6 +44,9 @@ export {
   apply, fbmExpr, warpExpr,
 } from "./kernel/field-expr";
 
+// ─── Field JIT compiler ─────────────────────────────────────────
+export { jitCompileField } from "./kernel/field-jit";
+
 // ─── GLSL field compiler ─────────────────────────────────────────
 export type { CompiledField } from "./kernel/field-compiler";
 export { compileField } from "./kernel/field-compiler";
@@ -59,6 +64,9 @@ export {
 // ─── Cook engine ─────────────────────────────────────────────────
 export type { CookStats } from "./kernel/cook";
 export { CookEngine } from "./kernel/cook";
+
+// ─── Cook scheduler ──────────────────────────────────────────────
+export { CookScheduler } from "./kernel/scheduler";
 
 // ─── Registry ────────────────────────────────────────────────────
 export { OperatorRegistry } from "./kernel/registry";
@@ -153,9 +161,6 @@ export const allOperators: Operator[] = [
   pointRenderer,
   composite,
 ];
-
-// ─── Patches ─────────────────────────────────────────────────────
-export { meridianGraph } from "./patches/meridian";
 
 /** Create a registry pre-loaded with all built-in operators */
 export function createDefaultRegistry(): OperatorRegistry {

@@ -133,8 +133,9 @@ export function topoSort(nodeKeys: string[], wires: Wire[]): string[] {
   }
 
   const sorted: string[] = [];
-  while (queue.length) {
-    const key = queue.shift()!;
+  let head = 0;
+  while (head < queue.length) {
+    const key = queue[head++]!;
     sorted.push(key);
     for (const next of downstream.get(key)!) {
       const d = inDegree.get(next)! - 1;

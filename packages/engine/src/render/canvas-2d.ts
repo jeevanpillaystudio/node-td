@@ -1,4 +1,5 @@
-import type { Geometry, Palette, Buffer2D } from "../kernel/types";
+import { type Geometry, type Palette, type Buffer2D, isGPUBuffer } from "../kernel/types";
+import { blitTextureToCanvas } from "./webgl";
 
 export interface Canvas2DOptions {
   background?: string;
@@ -119,10 +120,14 @@ export function drawCanvas2D(
 /**
  * Blit a Buffer2D onto a CanvasRenderingContext2D.
  *
+ * GPU-resident fast path: when buffer is a GPUBuffer2D, renders the
+ * texture to the GL canvas and blits via transferToImageBitmap —
+ * no CPU readback at all.
+ *
  * Canvas-native fast path: when `buffer._canvas` is present, uses
  * `drawImage` — hardware-accelerated, zero CPU pixel conversion.
  *
- * CPU fallback: converts Float32 (0..1) → Uint8Clamped and uses putImageData.
+ * CPU fallback: converts Float32 (0..1) -> Uint8Clamped and uses putImageData.
  */
 export function blitBuffer2D(
   ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
@@ -130,6 +135,28 @@ export function blitBuffer2D(
 ): void {
   const { width, height } = buffer;
   if (width === 0 || height === 0) return;
+
+  // GPU-resident fast path — blit texture to screen without readback.
+  // Renders a fullscreen quad textured with the field output, then
+  // transfers the GL canvas pixels to the 2D canvas via ImageBitmap.
+  if (isGPUBuffer(buffer)) {
+    const { gl, texture } = buffer;
+    const glCanvas = gl.canvas as OffscreenCanvas;
+
+    // Render texture to GL canvas via a fullscreen quad shader.
+    // This handles float→unorm conversion correctly (unlike blitFramebuffer
+    // which doesn't support RGBA32F → RGBA8 conversion in WebGL2).
+    blitTextureToCanvas(gl, texture, width, height);
+
+    // Transfer GL canvas to 2D canvas via ImageBitmap (zero-copy path)
+    const bitmap = glCanvas.transferToImageBitmap();
+    ctx.drawImage(bitmap, 0, 0);
+    bitmap.close();
+
+    // Release GPU resources now that we've blitted
+    buffer.dispose();
+    return;
+  }
 
   // Canvas-native fast path — hardware-accelerated blit, no conversion
   // Release the canvas after drawing to free GPU memory.

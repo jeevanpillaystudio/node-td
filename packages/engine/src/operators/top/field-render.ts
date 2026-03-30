@@ -1,7 +1,7 @@
 import type { Operator, Field2D, Buffer2D, GraphEnv } from "../../kernel/types";
 import { getFieldExpr } from "../../kernel/field-expr";
 import { compileField } from "../../kernel/field-compiler";
-import { createWebGL2, renderFieldToBufferHQ } from "../../render/webgl";
+import { createWebGL2, renderFieldToTexture } from "../../render/webgl";
 
 type Inputs = { field: Field2D; width: number; height: number };
 type Outputs = { buffer: Buffer2D };
@@ -82,7 +82,7 @@ export const fieldRender: Operator<Inputs, Outputs> = {
         const gl = getGL(env as GraphEnv | undefined, bufW, bufH);
         if (gl) {
           const compiled = compileField(expr);
-          return { buffer: renderFieldToBufferHQ(gl, compiled, bufW, bufH) };
+          return { buffer: renderFieldToTexture(gl, compiled, bufW, bufH) };
         }
       } catch {
         // GPU failed — fall through to CPU
