@@ -334,8 +334,8 @@ describe("caching", () => {
 
 // ─── Known bugs ──────────────────────────────────────────────────
 //
-// Each test.failing below passes while its bug exists and fails once
-// the bug is fixed: the fix must turn it into a plain test.
+// Each test below is marked failing: it passes while its bug exists and
+// fails once the bug is fixed, so the fix must turn it into a plain test.
 
 describe("known bugs", () => {
   test.failing("setParams copies its argument (in-place edit detected)", () => {
