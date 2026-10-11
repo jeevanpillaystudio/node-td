@@ -27,6 +27,3 @@ dist/
 
 # Scratch
 .tmp-linktest/
-
-# TanStack Router
-**/routeTree.gen.ts
