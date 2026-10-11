@@ -4,8 +4,7 @@ node_modules/
 # Build
 dist/
 .output/
-.nitro/
-.vinxi/
+.tanstack/
 
 # Cache
 .cache/
@@ -22,8 +21,12 @@ dist/
 *.swo
 .DS_Store
 
+# Agents
+.claude/worktrees/
+.claude/settings.local.json
+
+# Scratch
+.tmp-linktest/
+
 # TanStack Router
 **/routeTree.gen.ts
-
-# Bun
-bun.lock
