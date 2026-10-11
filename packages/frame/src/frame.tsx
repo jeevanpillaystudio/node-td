@@ -213,6 +213,7 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
   }
 
   return (
+    // biome-ignore lint/a11y/useSemanticElements: it contains the Edit Graph <button>, and a <button> cannot nest another
     <div
       role="button"
       tabIndex={0}
@@ -230,6 +231,7 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
       {/* Edit button — visible when frame is active */}
       {isActive && (
         <button
+          type="button"
           onClick={(e) => {
             e.stopPropagation();
             ctxSetEditing?.(frameId);

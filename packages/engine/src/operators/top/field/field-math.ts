@@ -1,5 +1,6 @@
 import type { Operator, Field2D } from "../../../kernel/types";
 import { createField, getFieldExpr, add as fAdd, mul, fmin, fmax, mix as fMix, c, u } from "../../../kernel/field-expr";
+import type { FieldExpr } from "../../../kernel/field-expr";
 
 type Inputs = { a: Field2D; b: Field2D };
 type Outputs = { field: Field2D };
@@ -46,7 +47,7 @@ export const fieldMath: Operator<Inputs, Outputs> = {
     const aExpr = getFieldExpr(a);
     const bExpr = getFieldExpr(b);
     if (aExpr && bExpr) {
-      let expr;
+      let expr: FieldExpr;
       switch (mode) {
         case 0: expr = fmin(fAdd(aExpr, bExpr), c(1)); break;  // add (clamped)
         case 1: expr = mul(aExpr, bExpr); break;                 // multiply

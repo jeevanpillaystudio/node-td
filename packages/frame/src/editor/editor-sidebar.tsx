@@ -18,6 +18,7 @@ export function EditorSidebar({ editingId }: EditorSidebarProps) {
       <div className="flex-1 overflow-y-auto p-2">
         {entries.map((entry: FrameEntry) => (
           <button
+            type="button"
             key={entry.id}
             onClick={() => setEditing(entry.id)}
             className={`w-full rounded-md px-3 py-2 text-left transition-colors ${

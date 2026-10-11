@@ -21,6 +21,7 @@ export function EditorInspector({ entry, selectedNode, onClose }: EditorInspecto
           {selectedNode}
         </span>
         <button
+          type="button"
           onClick={onClose}
           className="text-muted-foreground transition-colors hover:text-foreground"
         >

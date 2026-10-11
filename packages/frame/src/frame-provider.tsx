@@ -83,6 +83,7 @@ export function FrameProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   // revision included so consumers re-render when frame entries update
+  // biome-ignore lint/correctness/useExhaustiveDependencies: revision is read through framesRef; dropping it would stop consumers seeing register/unregister
   const value = useMemo<FrameContextValue>(
     () => ({
       frames: framesRef.current,

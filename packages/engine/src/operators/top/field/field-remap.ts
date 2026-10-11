@@ -3,6 +3,7 @@ import {
   createField, getFieldExpr, clamp as fClamp, abs as fAbs,
   mul, sub, add, c, u, div, round as fRound, fpow, smoothstep as fSmooth,
 } from "../../../kernel/field-expr";
+import type { FieldExpr } from "../../../kernel/field-expr";
 
 type Inputs = { field: Field2D };
 type Outputs = { field: Field2D };
@@ -62,7 +63,7 @@ export const fieldRemap: Operator<Inputs, Outputs> = {
 
     const inputExpr = getFieldExpr(input);
     if (inputExpr) {
-      let expr;
+      let expr: FieldExpr;
       switch (mode) {
         case 0: // clamp
           expr = fClamp(inputExpr, u("lo", lo), u("hi", hi));
