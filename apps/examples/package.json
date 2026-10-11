@@ -7,7 +7,7 @@
     "build": "vite build",
     "dev": "vite dev",
     "typecheck": "tsc --noEmit",
-    "clean": "git clean -xdf .cache .turbo .output node_modules"
+    "clean": "git clean -xdf .cache .turbo .output .tanstack dist node_modules"
   },
   "dependencies": {
     "@node-td/engine": "workspace:*",
