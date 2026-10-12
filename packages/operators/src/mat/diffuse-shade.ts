@@ -1,7 +1,4 @@
-import type { Operator, Geometry, Palette } from "@node-td/kernel";
-
-type Inputs = { geometry: Geometry<3>; palette?: Palette };
-type Outputs = { palette: Palette };
+import { defineOperator, type Geometry, type Palette } from "@node-td/kernel";
 
 /**
  * Diffuse Shade — Lambert N dot L shading with quantized intensity steps.
@@ -25,7 +22,7 @@ type Outputs = { palette: Palette };
  * "pen and ink" look — in real life, you only have a few pen widths
  * and ink colors to choose from.
  */
-export const diffuseShade: Operator<Inputs, Outputs> = {
+export const diffuseShade = defineOperator({
   id: "diffuse-shade",
   category: "mat",
   label: "Diffuse Shade",
@@ -42,11 +39,11 @@ export const diffuseShade: Operator<Inputs, Outputs> = {
     { key: "ambient", label: "Ambient", min: 0, max: 1, step: 0.01, default: 0.1 },
   ],
   evaluate({ geometry: geo, palette: inputPalette }, params) {
-    const lx = params.lightX ?? 0;
-    const ly = params.lightY ?? -0.707;
-    const lz = params.lightZ ?? -0.707;
-    const steps = Math.round(params.steps ?? 4);
-    const ambient = params.ambient ?? 0.1;
+    const lx = params.lightX;
+    const ly = params.lightY;
+    const lz = params.lightZ;
+    const steps = Math.round(params.steps);
+    const ambient = params.ambient;
 
     // Normalize light direction
     const llen = Math.sqrt(lx * lx + ly * ly + lz * lz);
@@ -130,4 +127,4 @@ export const diffuseShade: Operator<Inputs, Outputs> = {
 
     return { palette: { colors, count } };
   },
-};
+});
