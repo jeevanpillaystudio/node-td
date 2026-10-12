@@ -54,16 +54,25 @@ export function autoLayout(graph: Graph): Record<string, NodeLayout> {
   const nodeKeys = Object.keys(graph.nodes);
   const sorted = topoSort(nodeKeys, graph.wires);
 
-  // Compute depth: longest path from any root to this node
-  const depth = new Map<string, number>();
-  for (const key of sorted) depth.set(key, 0);
-
+  // Each node's sources, from the wires between nodes
+  const sources = new Map<string, string[]>();
   for (const w of graph.wires) {
     if (w.from === "$env") continue;
-    const d = (depth.get(w.from) ?? 0) + 1;
-    if (d > (depth.get(w.to) ?? 0)) {
-      depth.set(w.to, d);
+    const from = sources.get(w.to);
+    if (from) from.push(w.from);
+    else sources.set(w.to, [w.from]);
+  }
+
+  // Depth: longest path from any root to this node. Visiting nodes in
+  // topological order places every source before the nodes it feeds,
+  // whatever order the wires are listed in.
+  const depth = new Map<string, number>();
+  for (const key of sorted) {
+    let d = 0;
+    for (const from of sources.get(key) ?? []) {
+      d = Math.max(d, (depth.get(from) ?? 0) + 1);
     }
+    depth.set(key, d);
   }
 
   // Group by depth column

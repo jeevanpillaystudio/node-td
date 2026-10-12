@@ -117,6 +117,22 @@ describe("autoLayout", () => {
     expect(layout.out?.y).toBe(240);
   });
 
+  test("puts a node right of its source when the wires are listed out of order", () => {
+    const chain: Graph = {
+      id: "chain",
+      name: "Chain",
+      nodes: { a: { type: "filter" }, b: { type: "filter" }, c: { type: "filter" } },
+      wires: [
+        { from: "b", output: "geometry", to: "c", input: "geometry" },
+        { from: "a", output: "geometry", to: "b", input: "geometry" },
+      ],
+    };
+    const x = autoLayout(chain);
+    expect(x.a?.x).toBe(0);
+    expect(x.b?.x).toBe(280);
+    expect(x.c?.x).toBe(560);
+  });
+
   test("starts at column 0 without $env", () => {
     const local: Graph = { ...graph, wires: graph.wires.filter((w) => w.from !== "$env") };
     const x = autoLayout(local);
