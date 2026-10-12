@@ -123,6 +123,9 @@ export function drawCanvas2D(
  * `drawImage` — hardware-accelerated, zero CPU pixel conversion.
  *
  * CPU fallback: converts Float32 (0..1) → Uint8Clamped and uses putImageData.
+ *
+ * The buffer is usually a cached cook output, so it is never modified:
+ * blitting it again takes the same path.
  */
 export function blitBuffer2D(
   ctx: CanvasRenderingContext2D | OffscreenCanvasRenderingContext2D,
@@ -132,10 +135,8 @@ export function blitBuffer2D(
   if (width === 0 || height === 0) return;
 
   // Canvas-native fast path — hardware-accelerated blit, no conversion
-  // Release the canvas after drawing to free GPU memory.
   if (buffer._canvas) {
     ctx.drawImage(buffer._canvas, 0, 0);
-    buffer._canvas = undefined;
     return;
   }
 
