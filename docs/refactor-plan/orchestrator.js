@@ -118,11 +118,11 @@ const SOL_ALLOW = ['Bash(bun test:*)', 'Bash(bun run --cwd apps/examples build:*
 const CLAIMS = [
   {
     key: 'checks',
-    text: `Claim: after this item every check is green and the golden snapshots are unchanged. Run every verification command in the brief (skip any bun install; the orchestrator runs installs), plus \`bun test\` at the root, \`./node_modules/.bin/turbo run typecheck test\`, \`./node_modules/.bin/biome lint .\` and \`bun run --cwd apps/examples build\`. Check that golden snapshot files are byte-identical to <startSha> unless the brief explicitly re-pins them (\`git diff <startSha> HEAD --stat -M -- ':(glob)**/__snapshots__/**'\`; a pure rename is fine). Report each command and what it printed in checksRun.`,
+    text: `Claim: after this item every check is green and the golden snapshots are unchanged. Run every verification command in the brief (skip any bun install; the orchestrator runs installs), plus \`bun test\` at the root, \`./node_modules/.bin/turbo run typecheck test\`, \`./node_modules/.bin/biome lint .\` and \`bun run --cwd apps/examples build\`. Check that golden snapshot files are byte-identical to <startSha> unless the brief explicitly re-pins them (\`git diff <startSha> <endSha> --stat -M -- ':(glob)**/__snapshots__/**'\`; a pure rename is fine). Report each command and what it printed in checksRun.`,
   },
   {
     key: 'behaviour',
-    text: `Claim: the diff from <startSha> to HEAD changes what the code does only as the brief intends. Read \`git diff <startSha> HEAD\` line by line for semantic changes the brief did not ask for. Check that move commits are real renames with only import-path edits (\`git show -M --stat <sha>\`), that deleted code had no remaining callers (grep), and that no layering rule in context.md is broken.`,
+    text: `Claim: the diff from <startSha> to <endSha> changes what the code does only as the brief intends. Read \`git diff <startSha> <endSha>\` line by line for semantic changes the brief did not ask for. Check that move commits are real renames with only import-path edits (\`git show -M --stat <sha>\`), that deleted code had no remaining callers (grep), and that no layering rule in context.md is broken.`,
   },
   {
     key: 'conformance',
@@ -163,9 +163,12 @@ async function solCheck(claim, schema, label, phaseName, extraAllow) {
 
 function claimText(id, impl, c) {
   const start = impl.fix ? impl.fix.startSha : impl.startSha
+  // The item's own range: later commits may already sit on top of it when
+  // items are checked after the next one has started
+  const end = (impl.fix ? impl.fix.endSha : impl.endSha) || 'HEAD'
   return `You are verifying work item ${id} of a refactor of this repository (branch claude/touchdesigner-monorepo-refactor-6d0a2d, a git worktree at ${ROOT}). You did not write it. Be skeptical: report only problems you verified in the files or by running a command, and default to pass=false when the evidence does not show the claim holds. Permission rules match the start of a command: run one command per Bash call, with no \`&&\`, \`;\` or pipe, and use the Grep tool where a shell glob or brace list is needed.
 
-${c.text.split('<startSha>').join(start)}
+${c.text.split('<startSha>').join(start).split('<endSha>').join(end)}
 
 The brief is ${AUDIT}/items/${id}.md; shared context (target layout, layering rules, taxonomy, done checks) is ${AUDIT}/context.md. Shared rules every implementer follows: commits staged by path, git mv for moves, no amend/rebase/push, golden snapshots re-pinned only where the brief says so.
 The implementer's report (claims to check, not facts):
