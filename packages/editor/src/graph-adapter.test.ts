@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import { OperatorRegistry, type Graph, type Operator } from "@node-td/kernel";
-import { autoLayout, handleId, inferEnvPorts, toReactFlowElements } from "./graph-adapter";
+import { type Graph, type Operator, OperatorRegistry } from "@node-td/kernel";
+import { autoLayout, envPorts, handleId, toReactFlowElements } from "./graph-adapter";
 
 function op(id: string, inputs: string[], outputs: string[]): Operator {
   return {
@@ -41,16 +41,16 @@ const graph: Graph = {
 
 /** The handle ids gen-node.tsx renders for a node: one per port it draws, named by handleId. */
 function renderedHandles(node: ReturnType<typeof toReactFlowElements>["nodes"][number]) {
-  const { instanceKey, nodeType, isEnv, envPorts } = node.data;
-  if (isEnv) return (envPorts ?? []).map((p) => handleId(instanceKey, "out", p.name));
+  if (node.type === "env") return node.data.outputs.map((p) => handleId(node.id, "out", p.name));
+  const { instanceKey, nodeType } = node.data;
   return [
     ...nodeType.inputs.map((p) => handleId(instanceKey, "in", p.name)),
     ...nodeType.outputs.map((p) => handleId(instanceKey, "out", p.name)),
   ];
 }
 
-describe("inferEnvPorts", () => {
-  test("lists each $env output once, as a number port", () => {
+describe("envPorts", () => {
+  test("lists each $env output once, with its declared type", () => {
     const twice: Graph = {
       ...graph,
       nodes: { ...graph.nodes, other: { type: "source" } },
@@ -60,10 +60,22 @@ describe("inferEnvPorts", () => {
         { from: "$env", output: "height", to: "other", input: "height" },
       ],
     };
-    expect(inferEnvPorts(twice)).toEqual([
+    expect(envPorts(twice)).toEqual([
       { name: "width", type: "number" },
       { name: "height", type: "number" },
     ]);
+  });
+
+  test("lists only the outputs the graph reads, in declaration order", () => {
+    const flipped: Graph = {
+      ...graph,
+      wires: [
+        { from: "$env", output: "height", to: "src", input: "height" },
+        { from: "$env", output: "height", to: "src", input: "width" },
+      ],
+    };
+    expect(envPorts(flipped)).toEqual([{ name: "height", type: "number" }]);
+    expect(envPorts({ ...graph, wires: [...graph.wires].reverse() })).toEqual(envPorts(graph));
   });
 });
 
@@ -72,7 +84,7 @@ describe("toReactFlowElements", () => {
 
   test("adds an $env node for a graph that reads $env", () => {
     expect(nodes.map((n) => n.id)).toEqual(["$env", "src", "left", "right", "out"]);
-    expect(nodes[0]?.type).toBe("env");
+    expect(nodes[0]).toMatchObject({ type: "env", data: { outputs: envPorts(graph) } });
   });
 
   test("adds no $env node for a graph that does not", () => {

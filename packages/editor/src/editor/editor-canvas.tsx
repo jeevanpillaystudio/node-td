@@ -10,7 +10,7 @@ import {
   type OnSelectionChangeFunc,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import type { Graph, OperatorRegistry } from "@node-td/kernel";
+import { type Graph, isEnvSource, type OperatorRegistry } from "@node-td/kernel";
 import { toReactFlowElements } from "../graph-adapter";
 import { GenNode, EnvNode } from "./gen-node";
 
@@ -36,7 +36,7 @@ export function EditorCanvas({ graph, registry, onNodeSelect }: EditorCanvasProp
 
   const onSelectionChange: OnSelectionChangeFunc = useCallback(
     ({ nodes: selectedNodes }) => {
-      if (selectedNodes.length === 1 && selectedNodes[0]!.id !== "$env") {
+      if (selectedNodes.length === 1 && !isEnvSource(selectedNodes[0]!.id)) {
         onNodeSelect(selectedNodes[0]!.id);
       } else {
         onNodeSelect(null);
