@@ -1,17 +1,17 @@
 import type { Graph } from "../kernel/graph";
 
 /**
- * Terrain Heightmap patch — GPU-accelerated field visualization.
+ * Terrain Heightmap patch — field visualization.
  *
  * Uses the same field algebra chain as subscapes (simplex → fbm → ridge)
  * but renders the scalar field directly to a full-resolution Buffer2D
- * via the field-render GPU operator.
+ * via the field-render operator.
  *
  * Terminal output: "render" node, port "buffer" (Buffer2D, grayscale).
  */
 export const terrainHeightmapGraph: Graph = {
   id: "terrain-heightmap",
-  name: "Terrain Heightmap (GPU)",
+  name: "Terrain Heightmap",
   nodes: {
     noise:   { type: "simplex-noise", params: { noiseScale: 0.025 } },
     terrain: { type: "fbm", params: { octaves: 6, lacunarity: 2.0, gain: 0.5, amplitude: 1.0 } },
