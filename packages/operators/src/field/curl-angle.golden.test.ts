@@ -1,5 +1,5 @@
 import { opGolden, w } from "../../test/goldens";
-import { curlNoise } from "./curl-noise";
+import { curlNoise } from "./curl-angle";
 
 const noise = { type: "simplex-noise" };
 
