@@ -1,5 +1,3 @@
-// ─── Data model ──────────────────────────────────────────────────
-
 // ─── Cook engine ─────────────────────────────────────────────────
 export type { CookStats, NodeError } from "./cook";
 export { CookEngine } from "./cook";
@@ -44,6 +42,7 @@ export { OperatorRegistry } from "./registry";
 // ─── Seeded PRNG ─────────────────────────────────────────────────
 export type { RngState } from "./rng";
 export { SeededRNG } from "./rng";
+// ─── Data model ──────────────────────────────────────────────────
 export type {
   Buffer2D,
   Camera2D,
