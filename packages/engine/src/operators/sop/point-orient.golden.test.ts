@@ -1,4 +1,4 @@
-import { opGolden, w } from "../../../test/support/op-golden";
+import { opGolden, w } from "../../../test/goldens";
 import { pointOrient } from "./point-orient";
 
 const angle = { type: "simplex-noise", params: { noiseScale: 0.03 } };

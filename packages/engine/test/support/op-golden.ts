@@ -9,7 +9,7 @@ import type {
   OperatorRegistry,
   Wire,
 } from "../../src/index";
-import { createDefaultRegistry, isEnumParam, validateGraph } from "../../src/index";
+import { isEnumParam, validateGraph } from "../../src/index";
 import { cookGraph } from "./cook";
 
 /**
@@ -143,9 +143,9 @@ const fixturePolyline: Operator<{ width: number; height: number }, { geometry: G
 
 export const fixtureOperators: readonly Operator[] = [opaqueField, fixtureImage, fixturePolyline];
 
-/** The default registry plus the fixture-only operators. */
-export function fixtureRegistry(): OperatorRegistry {
-  const registry = createDefaultRegistry();
+/** A registry from the package under test plus the fixture-only operators. */
+export function fixtureRegistry(createRegistry: () => OperatorRegistry): OperatorRegistry {
+  const registry = createRegistry();
   for (const op of fixtureOperators) registry.register(op);
   return registry;
 }
@@ -174,19 +174,38 @@ function paramIssues(graph: Graph, registry: OperatorRegistry): string[] {
 
 // ─── Golden registration ─────────────────────────────────────────
 
+export interface OpGoldens {
+  /**
+   * Register golden tests for one operator: a check that it is the
+   * operator the default registry resolves, then one snapshot per fixture.
+   */
+  opGolden(op: Operator, fixtures: Record<string, OpFixture>): void;
+}
+
 /**
- * Register golden tests for one operator: a check that it is the
- * operator the default registry resolves, then one snapshot per fixture.
+ * Bind the op goldens to the package under test, which passes in its
+ * default registry. The helpers take it as an argument so they can live
+ * in a package of their own: that package cannot depend on the operators
+ * it tests, because they depend on it for their tests and turbo rejects
+ * the cycle.
  */
-export function opGolden(op: Operator, fixtures: Record<string, OpFixture>): void {
+export function opGoldens(createRegistry: () => OperatorRegistry): OpGoldens {
+  return { opGolden: (op, fixtures) => opGolden(createRegistry, op, fixtures) };
+}
+
+function opGolden(
+  createRegistry: () => OperatorRegistry,
+  op: Operator,
+  fixtures: Record<string, OpFixture>,
+): void {
   describe(`${op.id} golden`, () => {
     test("is the registered operator", () => {
-      expect(createDefaultRegistry().resolve(op.id)).toBe(op);
+      expect(createRegistry().resolve(op.id)).toBe(op);
     });
 
     for (const [name, fixture] of Object.entries(fixtures)) {
       test(name, () => {
-        const registry = fixtureRegistry();
+        const registry = fixtureRegistry(createRegistry);
         const graph: Graph = {
           id: `${op.id} ${name}`,
           name,

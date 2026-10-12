@@ -1,4 +1,4 @@
-import { renderGolden } from "../../test/support/patch-golden";
+import { renderGolden } from "../../test/goldens";
 import { flowFieldGraph } from "./flow-field";
 
 renderGolden(flowFieldGraph);

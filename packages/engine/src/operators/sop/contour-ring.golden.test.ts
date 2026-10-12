@@ -1,4 +1,4 @@
-import { opGolden, w } from "../../../test/support/op-golden";
+import { opGolden, w } from "../../../test/goldens";
 import { contourRing } from "./contour-ring";
 
 const noise = { type: "simplex-noise" };

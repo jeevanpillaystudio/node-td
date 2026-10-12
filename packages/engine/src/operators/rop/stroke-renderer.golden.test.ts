@@ -4,7 +4,7 @@ import {
   type OpFixture,
   opGolden,
   w,
-} from "../../../test/support/op-golden";
+} from "../../../test/goldens";
 import { strokeRenderer } from "./stroke-renderer";
 
 const SIZE = { width: 128, height: 128 };

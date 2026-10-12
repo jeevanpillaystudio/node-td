@@ -1,4 +1,4 @@
-import { type OpFixture, opGolden, w } from "../../../test/support/op-golden";
+import { type OpFixture, opGolden, w } from "../../../test/goldens";
 import { composite } from "./composite";
 
 const MODES: [string, number][] = [

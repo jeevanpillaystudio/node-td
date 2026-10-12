@@ -1,4 +1,4 @@
-import { opGolden, w } from "../../../test/support/op-golden";
+import { opGolden, w } from "../../../test/goldens";
 import { binarySubdivide } from "./binary-subdivide";
 
 const extent = [w("$env.width", "cells.width"), w("$env.height", "cells.height")];

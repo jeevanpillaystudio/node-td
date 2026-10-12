@@ -1,4 +1,4 @@
-import { opGolden } from "../../../test/support/op-golden";
+import { opGolden } from "../../../test/goldens";
 import { proceduralPalette } from "./procedural-palette";
 
 opGolden(proceduralPalette, {

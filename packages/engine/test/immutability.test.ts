@@ -9,9 +9,13 @@ import {
   terrainHeightmapGraph,
 } from "../src/patches/index";
 import { blitBuffer2D } from "../src/render/canvas-2d";
-import { type Digest, digest, digestLog } from "./support/digest";
-import { withImageData } from "./support/patch-golden";
-import { createRecordingCanvasFactory } from "./support/recording-canvas";
+import {
+  createRecordingCanvasFactory,
+  type Digest,
+  digest,
+  digestLog,
+  withImageData,
+} from "./support";
 
 /**
  * Cook outputs are immutable. Neither a downstream operator nor a host

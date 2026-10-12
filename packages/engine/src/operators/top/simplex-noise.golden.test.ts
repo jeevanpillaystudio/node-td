@@ -1,4 +1,4 @@
-import { opGolden } from "../../../test/support/op-golden";
+import { opGolden } from "../../../test/goldens";
 import { simplexNoise } from "./simplex-noise";
 
 opGolden(simplexNoise, {

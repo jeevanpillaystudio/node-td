@@ -1,4 +1,4 @@
-import { renderGolden } from "../../test/support/patch-golden";
+import { renderGolden } from "../../test/goldens";
 import { meridianGraph } from "./meridian";
 
 renderGolden(meridianGraph);

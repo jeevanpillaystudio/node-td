@@ -1,4 +1,4 @@
-import { opGolden, w } from "../../../test/support/op-golden";
+import { opGolden, w } from "../../../test/goldens";
 import { fieldRender } from "./field-render";
 
 const noise = { type: "simplex-noise" };

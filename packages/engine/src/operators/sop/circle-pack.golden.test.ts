@@ -1,4 +1,4 @@
-import { opGolden, w } from "../../../test/support/op-golden";
+import { opGolden, w } from "../../../test/goldens";
 import { circlePack } from "./circle-pack";
 
 const extent = [w("$env.width", "seeds.width"), w("$env.height", "seeds.height")];

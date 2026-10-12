@@ -1,4 +1,4 @@
-import { opGolden, w } from "../../../test/support/op-golden";
+import { opGolden, w } from "../../../test/goldens";
 import { surfaceRaymarch } from "./surface-raymarch";
 
 // Meridian's camera and seeds over a plain simplex terrain

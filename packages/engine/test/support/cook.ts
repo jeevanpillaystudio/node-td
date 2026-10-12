@@ -1,5 +1,5 @@
 import type { Graph, OperatorRegistry } from "../../src/index";
-import { CookEngine, createDefaultRegistry, SeededRNG } from "../../src/index";
+import { CookEngine, SeededRNG } from "../../src/index";
 import { type Digest, digest, digestLog } from "./digest";
 import { createRecordingCanvasFactory, type LogEntry } from "./recording-canvas";
 
@@ -8,8 +8,8 @@ export interface CookOptions {
   height: number;
   dpr: number;
   seed: number | string;
-  /** Operators to resolve node types with; a fresh default registry when omitted */
-  registry?: OperatorRegistry;
+  /** Operators to resolve node types with, from the package under test */
+  registry: OperatorRegistry;
 }
 
 export interface CookResult {
@@ -27,7 +27,7 @@ export interface CookResult {
 
 /**
  * Cook a graph headless, the way Frame does (frame.tsx draw()): a fresh
- * default registry and CookEngine, setParams, then one full cook with
+ * CookEngine over the given registry, setParams, then one full cook with
  * env {width, height, dpr, rng, createCanvas}. Canvases are
  * RecordingCanvases.
  *
@@ -35,8 +35,7 @@ export interface CookResult {
  * a lazily read-back buffer calls getImageData and would extend the log.
  */
 export function cookGraph(graph: Graph, opts: CookOptions): CookResult {
-  const registry = opts.registry ?? createDefaultRegistry();
-  const engine = new CookEngine(graph, registry);
+  const engine = new CookEngine(graph, opts.registry);
   engine.setParams({});
 
   const { createCanvas, log } = createRecordingCanvasFactory();

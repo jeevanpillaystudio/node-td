@@ -1,4 +1,4 @@
-import { opGolden, w } from "../../../test/support/op-golden";
+import { opGolden, w } from "../../../test/goldens";
 import { parametricSurface } from "./parametric-surface";
 
 const extent = [w("$env.width", "mesh.width"), w("$env.height", "mesh.height")];

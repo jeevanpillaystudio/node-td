@@ -1,7 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import type { Buffer2D, Graph } from "../../src/index";
-import { createDefaultRegistry } from "../../src/index";
-import { blitBuffer2D } from "../../src/render/canvas-2d";
+import type { Buffer2D, Graph, OperatorRegistry } from "../../src/index";
 import { cookGraph } from "./cook";
 import { type Digest, digest, digestLog } from "./digest";
 import { createRecordingCanvasFactory } from "./recording-canvas";
@@ -19,6 +17,19 @@ import { createRecordingCanvasFactory } from "./recording-canvas";
  *
  * Every size is cooked from scratch with seed 42, the way Frame draws.
  */
+
+/**
+ * What the patch goldens take from the packages under test. The helpers
+ * take these as arguments so they can live in a package of their own:
+ * that package cannot depend on the packages it tests, because they
+ * depend on it for their tests and turbo rejects the cycle.
+ */
+export interface PatchGoldenDeps {
+  /** A fresh registry holding every operator the patches use, as Frame makes one */
+  createRegistry: () => OperatorRegistry;
+  /** Draws a buffer onto a 2d context the way Frame displays it (blitBuffer2D) */
+  blit: (ctx: OffscreenCanvasRenderingContext2D, buffer: Buffer2D) => void;
+}
 
 export interface GoldenSize {
   width: number;
@@ -60,14 +71,14 @@ export interface RenderDigest {
  * is digested and blitted after the cook's own log is digested, so
  * neither can extend it.
  */
-export function renderDigest(graph: Graph, size: GoldenSize): RenderDigest {
-  const result = cookGraph(graph, { ...size, seed: GOLDEN_SEED });
+export function renderDigest(graph: Graph, size: GoldenSize, deps: PatchGoldenDeps): RenderDigest {
+  const result = cookGraph(graph, { ...size, seed: GOLDEN_SEED, registry: deps.createRegistry() });
   const terminal = result.engine.findTerminalOutput<Buffer2D>("buffer");
   if (!terminal) throw new Error(`${graph.id}: no terminal buffer at ${sizeLabel(size)}`);
   return {
     cook: result.render,
     terminal: digest(terminal, size),
-    blit: blitDigest(terminal, size),
+    blit: blitDigest(terminal, size, deps.blit),
   };
 }
 
@@ -100,23 +111,26 @@ export function withImageData<T>(fn: () => T): T {
 }
 
 /** Blit a buffer onto a fresh recording canvas sized like Frame's, and digest the log. */
-function blitDigest(buffer: Buffer2D, size: GoldenSize): { hash: string; length: number } {
+function blitDigest(
+  buffer: Buffer2D,
+  size: GoldenSize,
+  blit: PatchGoldenDeps["blit"],
+): { hash: string; length: number } {
   const { createCanvas, log } = createRecordingCanvasFactory();
   const canvas = createCanvas(size.width * size.dpr, size.height * size.dpr);
   const ctx = canvas.getContext("2d");
   if (!ctx) throw new Error("blitDigest: the recording canvas gave no 2d context");
-  withImageData(() => blitBuffer2D(ctx, buffer));
+  withImageData(() => blit(ctx, buffer));
   return digestLog(log);
 }
 
-/** Register one render-tier golden test per size for a patch. */
-export function renderGolden(graph: Graph): void {
+function renderGolden(graph: Graph, deps: PatchGoldenDeps): void {
   describe(`${graph.id} render`, () => {
     for (const size of GOLDEN_SIZES) {
       test(
         sizeLabel(size),
         () => {
-          expect(renderDigest(graph, size)).toMatchSnapshot();
+          expect(renderDigest(graph, size, deps)).toMatchSnapshot();
         },
         TIMEOUT_MS,
       );
@@ -136,8 +150,10 @@ export interface ResolvedNode {
  * Every node's fully resolved params, so a change to an operator default
  * that a patch relies on shows up as a reviewable diff.
  */
-export function resolvedParams(graph: Graph): Record<string, ResolvedNode> {
-  const registry = createDefaultRegistry();
+export function resolvedParams(
+  graph: Graph,
+  registry: OperatorRegistry,
+): Record<string, ResolvedNode> {
   const out: Record<string, ResolvedNode> = {};
   for (const [key, instance] of Object.entries(graph.nodes)) {
     const op = registry.resolve(instance.type);
@@ -151,20 +167,37 @@ export function resolvedParams(graph: Graph): Record<string, ResolvedNode> {
   return out;
 }
 
-/** Register the node-tier golden tests for a patch: resolved params, then one per size. */
-export function nodesGolden(graph: Graph): void {
+function nodesGolden(graph: Graph, deps: PatchGoldenDeps): void {
   describe(`${graph.id} nodes`, () => {
     test("resolved params", () => {
-      expect(resolvedParams(graph)).toMatchSnapshot();
+      expect(resolvedParams(graph, deps.createRegistry())).toMatchSnapshot();
     });
     for (const size of GOLDEN_SIZES) {
       test(
         sizeLabel(size),
         () => {
-          expect(cookGraph(graph, { ...size, seed: GOLDEN_SEED }).nodes).toMatchSnapshot();
+          const registry = deps.createRegistry();
+          expect(cookGraph(graph, { ...size, seed: GOLDEN_SEED, registry }).nodes).toMatchSnapshot();
         },
         TIMEOUT_MS,
       );
     }
   });
+}
+
+// ─── Binding ─────────────────────────────────────────────────────
+
+export interface PatchGoldens {
+  /** Register one render-tier golden test per size for a patch. */
+  renderGolden(graph: Graph): void;
+  /** Register the node-tier golden tests for a patch: resolved params, then one per size. */
+  nodesGolden(graph: Graph): void;
+}
+
+/** Bind the patch goldens to the packages under test. */
+export function patchGoldens(deps: PatchGoldenDeps): PatchGoldens {
+  return {
+    renderGolden: (graph) => renderGolden(graph, deps),
+    nodesGolden: (graph) => nodesGolden(graph, deps),
+  };
 }

@@ -1,4 +1,4 @@
-import { opGolden, w } from "../../../../test/support/op-golden";
+import { opGolden, w } from "../../../../test/goldens";
 import { curlNoise } from "./curl-noise";
 
 const noise = { type: "simplex-noise" };

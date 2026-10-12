@@ -1,4 +1,4 @@
-import { opGolden, w } from "../../../test/support/op-golden";
+import { opGolden, w } from "../../../test/goldens";
 import { visibilityCull } from "./visibility-cull";
 
 // Subscapes' cull: traced strokes lifted onto the terrain, culled against

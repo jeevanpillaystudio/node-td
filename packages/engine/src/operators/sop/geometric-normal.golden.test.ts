@@ -1,4 +1,4 @@
-import { opGolden, w } from "../../../test/support/op-golden";
+import { opGolden, w } from "../../../test/goldens";
 import { geometricNormal } from "./geometric-normal";
 
 // The grid includes the x = 0 and z = 0 edges, where the one-sided differences flip

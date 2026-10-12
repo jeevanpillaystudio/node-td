@@ -1,4 +1,4 @@
-import { type OpFixture, opGolden, w } from "../../../../test/support/op-golden";
+import { type OpFixture, opGolden, w } from "../../../../test/goldens";
 import { fieldMath } from "./field-math";
 
 const a = { type: "simplex-noise" };

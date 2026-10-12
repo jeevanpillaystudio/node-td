@@ -1,4 +1,4 @@
-import { opGolden, w } from "../../../test/support/op-golden";
+import { opGolden, w } from "../../../test/goldens";
 import { baseOutline } from "./base-outline";
 
 const noise = { type: "simplex-noise" };

@@ -1,4 +1,4 @@
-import { opGolden, w } from "../../../test/support/op-golden";
+import { opGolden, w } from "../../../test/goldens";
 import { camera2d } from "./camera-2d";
 
 const extent = [w("$env.width", "camera.width"), w("$env.height", "camera.height")];

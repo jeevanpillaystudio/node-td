@@ -1,4 +1,4 @@
-import { opGolden, w } from "../../../test/support/op-golden";
+import { opGolden, w } from "../../../test/goldens";
 import { contrastFilter } from "./contrast-filter";
 
 // Fully saturated hues span dark blue to bright yellow

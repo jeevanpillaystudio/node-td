@@ -1,4 +1,4 @@
-import { opGolden, w } from "../../../test/support/op-golden";
+import { opGolden, w } from "../../../test/goldens";
 import { quadtreeSubdivide } from "./quadtree-subdivide";
 
 const extent = [w("$env.width", "quad.width"), w("$env.height", "quad.height")];

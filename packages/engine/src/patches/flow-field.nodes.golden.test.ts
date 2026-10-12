@@ -1,4 +1,4 @@
-import { nodesGolden } from "../../test/support/patch-golden";
+import { nodesGolden } from "../../test/goldens";
 import { flowFieldGraph } from "./flow-field";
 
 nodesGolden(flowFieldGraph);
