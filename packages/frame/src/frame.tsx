@@ -1,5 +1,7 @@
 import {
+  Component,
   type CSSProperties,
+  type ReactNode,
   useCallback,
   useContext,
   useEffect,
@@ -8,7 +10,7 @@ import {
   useRef,
   useState,
 } from "react";
-import type { Graph, Buffer2D, OperatorRegistry } from "@node-td/kernel";
+import type { Graph, Buffer2D, OperatorRegistry, ParamDef } from "@node-td/kernel";
 import { collectParams, CookEngine, SeededRNG } from "@node-td/kernel";
 import { defaultRegistry } from "@node-td/operators";
 import { blitBuffer2D } from "@node-td/render-web";
@@ -16,12 +18,6 @@ import { FrameHostContext } from "./frame-host";
 
 /** The seed every gallery artwork was tuned with. */
 const DEFAULT_SEED = 42;
-
-// ── Staggered cook scheduler ──────────────────────────────────
-// When many Frames mount simultaneously (e.g., debug page with 10
-// panels), each frame gets an increasing delay so cooks spread across
-// animation frames instead of all blocking the same tick.
-let _mountOrder = 0;
 
 interface FrameProps {
   graph: Graph;
@@ -45,12 +41,36 @@ export function Frame({
 }: FrameProps) {
   const autoId = useId();
   const frameId = explicitId ?? `frame-${autoId}`;
+
+  return (
+    <div className={className} style={{ position: "relative", ...style }}>
+      <FrameErrorBoundary graph={graph} registry={registry}>
+        <FrameView graph={graph} frameId={frameId} registry={registry} seed={seed} />
+      </FrameErrorBoundary>
+    </div>
+  );
+}
+
+interface FrameViewProps {
+  graph: Graph;
+  frameId: string;
+  registry: OperatorRegistry;
+  seed: number | string;
+}
+
+function FrameView({ graph, frameId, registry, seed }: FrameViewProps) {
   const host = useContext(FrameHostContext);
 
   const params = useMemo(() => collectParams(graph, registry), [graph, registry]);
-  const [values, setValues] = useState<Record<string, number>>(() =>
-    Object.fromEntries(params.map((p) => [p.key, p.default])),
-  );
+  const [values, setValues] = useState(() => defaultValues(params));
+
+  // Param overrides belong to the graph they were made on: a new graph (or
+  // registry) starts again from its own defaults.
+  const [valuesParams, setValuesParams] = useState(params);
+  if (valuesParams !== params) {
+    setValuesParams(params);
+    setValues(defaultValues(params));
+  }
 
   const set = useCallback(
     (key: string, v: number) => setValues((prev) => ({ ...prev, [key]: v })),
@@ -68,9 +88,9 @@ export function Frame({
   }, [host, frameId]);
 
   // ── Visibility gating via IntersectionObserver ───────────────
-  // Off-screen frames don't cook at all. When the frame scrolls into
-  // view, it enters the cook queue. This is the most impactful
-  // optimization for pages with many panels.
+  // Off-screen frames don't cook at all; a frame cooks when it scrolls
+  // into view. This is the most impactful optimization for pages with
+  // many panels.
   const [isVisible, setVisible] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -85,100 +105,118 @@ export function Frame({
     return () => io.disconnect();
   }, []);
 
-  // Canvas rendering — persistent CookEngine for incremental evaluation
+  // ── Drawing ───────────────────────────────────────────────────
+  // Every draw is one full cook in a requestAnimationFrame callback, and a
+  // new request replaces a pending one. Two things request draws: the
+  // effect below, once per change of what the frame shows, and one
+  // ResizeObserver per mount, when the size or dpr changes.
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const overlayRef = useRef<HTMLDivElement>(null);
-  const engineRef = useRef<CookEngine | null>(null);
-  const engineGraphRef = useRef<Graph | null>(null);
-  const engineRegistryRef = useRef<OperatorRegistry | null>(null);
-  const staggerRef = useRef(-1);
+  const coverRef = useRef<HTMLDivElement>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  /** What the next draw cooks; the effect below keeps it current. */
+  const inputsRef = useRef({ graph, registry, seed, values, isVisible });
+  /** The size and dpr of the last draw, or of the last resize seen since. */
+  const sizeRef = useRef<Size | null>(null);
+  const engineRef = useRef<{ graph: Graph; registry: OperatorRegistry; engine: CookEngine } | null>(
+    null,
+  );
+  const rafRef = useRef(0);
   const hasDrawnRef = useRef(false);
-  if (staggerRef.current === -1) staggerRef.current = _mountOrder++;
 
-  useEffect(() => {
-    // Don't cook until visible
-    if (!isVisible) return;
+  const draw = useCallback(() => {
+    const wrapper = wrapperRef.current;
+    const canvas = canvasRef.current;
+    const inputs = inputsRef.current;
+    if (!wrapper || !canvas || !inputs.isVisible) return;
 
-    // Create or replace engine when graph or registry identity changes
-    if (engineGraphRef.current !== graph || engineRegistryRef.current !== registry) {
-      engineRef.current = new CookEngine(graph, registry);
-      engineGraphRef.current = graph;
-      engineRegistryRef.current = registry;
-    }
-    const engine = engineRef.current!;
+    const size = measure(wrapper);
+    sizeRef.current = size;
+    const { width, height, dpr } = size;
+    // A collapsed or hidden container has no pixels to draw, and the
+    // rasterisers cannot read back an empty canvas.
+    if (width === 0 || height === 0) return;
 
-    // Diff params — only marks changed nodes dirty
-    engine.setParams(values);
+    let message: string | null = null;
+    try {
+      const { graph, registry } = inputs;
+      const prev = engineRef.current;
+      const engine =
+        prev && prev.graph === graph && prev.registry === registry
+          ? prev.engine
+          : new CookEngine(graph, registry);
+      engineRef.current = { graph, registry, engine };
+      engine.setParams(inputs.values);
 
-    const canvas = canvasRef.current!;
-    const wrapper = wrapperRef.current!;
-    const overlay = overlayRef.current!;
-    const canvasCtx = canvas.getContext("2d")!;
-
-    let rafId = 0;
-    let staggerTimer: ReturnType<typeof setTimeout> | undefined;
-
-    function draw() {
-      const dpr = window.devicePixelRatio || 1;
-      const w = wrapper.clientWidth;
-      const h = wrapper.clientHeight;
-
-      canvas.width = w * dpr;
-      canvas.height = h * dpr;
-
-      // Cook — env diff auto-dirties on resize
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
       engine.cook({
-        width: w,
-        height: h,
+        width,
+        height,
         dpr,
-        rng: new SeededRNG(seed),
+        rng: new SeededRNG(inputs.seed),
         createCanvas: (cw: number, ch: number) => new OffscreenCanvas(cw, ch),
       });
 
       // The buffer is already at full pixel resolution (DPR-aware)
       const buf = engine.findTerminalOutput<Buffer2D>("buffer");
-      if (buf) blitBuffer2D(canvasCtx, buf);
-
+      const ctx = canvas.getContext("2d");
+      if (!buf) message = "Nothing to draw: the graph has no image output.";
+      else if (!ctx) message = "This browser gave the canvas no 2D context.";
+      else blitBuffer2D(ctx, buf);
+    } catch (err) {
+      console.error(err);
+      message = `Cook failed: ${errorMessage(err)}`;
+    } finally {
       // Free intermediate buffers — critical for multi-panel pages.
       // Without this, cached Float32Arrays from all panels persist
       // simultaneously (~100 MB per panel at 2× DPR), crashing the tab.
-      // Next resize triggers a full re-cook which is fine for static graphs.
-      engine.clearCache();
-
-      // Reveal after first draw
-      if (!hasDrawnRef.current) {
-        hasDrawnRef.current = true;
-        overlay.style.transition = "opacity 1.5s ease-in-out";
-        overlay.style.opacity = "0";
-      }
+      // The next draw is a full re-cook, which is fine for static graphs.
+      engineRef.current?.engine.clearCache();
     }
+    setError(message);
 
-    function scheduleDraw() {
-      cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(draw);
+    // Reveal after the first successful draw
+    const cover = coverRef.current;
+    if (message === null && !hasDrawnRef.current && cover) {
+      hasDrawnRef.current = true;
+      cover.style.transition = "opacity 1.5s ease-in-out";
+      cover.style.opacity = "0";
     }
+  }, []);
 
-    // First render: stagger by mount order (~32ms between each frame)
-    // Subsequent renders (resize, param change): immediate
-    if (!hasDrawnRef.current) {
-      const delay = staggerRef.current * 32;
-      staggerTimer = setTimeout(scheduleDraw, delay);
-    } else {
+  const scheduleDraw = useCallback(() => {
+    cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(draw);
+  }, [draw]);
+
+  // One observer for the life of the frame. It requests a draw only when
+  // the size or dpr differs from the last one recorded (by a draw or by
+  // itself), so the notification observe() sends adds no second cook.
+  useEffect(() => {
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+    const ro = new ResizeObserver(() => {
+      const next = measure(wrapper);
+      if (sameSize(sizeRef.current, next)) return;
+      sizeRef.current = next;
       scheduleDraw();
-    }
-
-    const ro = new ResizeObserver(scheduleDraw);
+    });
     ro.observe(wrapper);
-
     return () => {
-      cancelAnimationFrame(rafId);
-      if (staggerTimer !== undefined) clearTimeout(staggerTimer);
       ro.disconnect();
+      cancelAnimationFrame(rafRef.current);
     };
-  }, [values, graph, registry, seed, isVisible]);
+  }, [scheduleDraw]);
+
+  // One draw per change of the graph, its params or seed, or visibility
+  useEffect(() => {
+    inputsRef.current = { graph, registry, seed, values, isVisible };
+    if (isVisible) scheduleDraw();
+  }, [graph, registry, seed, values, isVisible, scheduleDraw]);
 
   return (
-    <div className={className} style={{ position: "relative", ...style }}>
+    <>
       <div
         ref={wrapperRef}
         style={{ position: "absolute", inset: 0, overflow: "clip", pointerEvents: "none" }}
@@ -186,11 +224,99 @@ export function Frame({
         <canvas ref={canvasRef} style={{ display: "block", width: "100%", height: "100%" }} />
         <div
           aria-hidden="true"
-          ref={overlayRef}
+          ref={coverRef}
           style={{ position: "absolute", inset: 0, background: "#1a1a1a", pointerEvents: "none", zIndex: 3 }}
         />
       </div>
+      {error !== null && <FrameError message={error} />}
       {host?.renderOverlay?.(frameId)}
+    </>
+  );
+}
+
+interface BoundaryProps {
+  graph: Graph;
+  registry: OperatorRegistry;
+  children: ReactNode;
+}
+
+interface BoundaryState {
+  graph: Graph;
+  registry: OperatorRegistry;
+  error: Error | null;
+}
+
+/**
+ * Keeps an error thrown while rendering a Frame, such as a graph naming an
+ * operator the registry lacks, inside the Frame instead of unmounting the
+ * page. A new graph or registry gets a fresh try.
+ */
+class FrameErrorBoundary extends Component<BoundaryProps, BoundaryState> {
+  state: BoundaryState = { graph: this.props.graph, registry: this.props.registry, error: null };
+
+  static getDerivedStateFromError(error: unknown): Partial<BoundaryState> {
+    return { error: error instanceof Error ? error : new Error(String(error)) };
+  }
+
+  static getDerivedStateFromProps(
+    props: BoundaryProps,
+    state: BoundaryState,
+  ): Partial<BoundaryState> | null {
+    if (props.graph === state.graph && props.registry === state.registry) return null;
+    return { graph: props.graph, registry: props.registry, error: null };
+  }
+
+  render() {
+    const { error } = this.state;
+    if (error) {
+      return <FrameError message={`Cannot render ${this.props.graph.name}: ${error.message}`} />;
+    }
+    return this.props.children;
+  }
+}
+
+function FrameError({ message }: { message: string }) {
+  return (
+    <div
+      role="alert"
+      style={{
+        position: "absolute",
+        inset: 0,
+        zIndex: 4,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 16,
+        background: "#1a1a1a",
+        color: "#a3a3a3",
+        font: "12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace",
+        textAlign: "center",
+        overflowWrap: "anywhere",
+      }}
+    >
+      {message}
     </div>
   );
+}
+
+interface Size {
+  width: number;
+  height: number;
+  dpr: number;
+}
+
+function measure(el: HTMLElement): Size {
+  return { width: el.clientWidth, height: el.clientHeight, dpr: window.devicePixelRatio || 1 };
+}
+
+function sameSize(a: Size | null, b: Size): boolean {
+  return a !== null && a.width === b.width && a.height === b.height && a.dpr === b.dpr;
+}
+
+function defaultValues(params: ParamDef[]): Record<string, number> {
+  return Object.fromEntries(params.map((p) => [p.key, p.default]));
+}
+
+function errorMessage(err: unknown): string {
+  return err instanceof Error ? err.message : String(err);
 }
