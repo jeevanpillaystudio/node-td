@@ -103,8 +103,6 @@ export const contrastFilter: Operator<Inputs, Outputs> = {
 
     const count = passing.length;
     const colors = new Float32Array(count * 4);
-    const weights = new Float32Array(count);
-    const w = count > 0 ? 1 / count : 0;
 
     for (let i = 0; i < count; i++) {
       const srcOff = passing[i]! * 4;
@@ -113,9 +111,8 @@ export const contrastFilter: Operator<Inputs, Outputs> = {
       colors[dstOff + 1] = candidates.colors[srcOff + 1]!;
       colors[dstOff + 2] = candidates.colors[srcOff + 2]!;
       colors[dstOff + 3] = candidates.colors[srcOff + 3]!;
-      weights[i] = w;
     }
 
-    return { palette: { colors, count, weights } };
+    return { palette: { colors, count } };
   },
 };

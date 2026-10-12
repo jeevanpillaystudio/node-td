@@ -1,4 +1,4 @@
-import type { Operator, NodeInstance, ParamDef, PortType } from "./types";
+import type { Operator, NodeInstance, ParamDef } from "./types";
 
 // ─── Graph Types ─────────────────────────────────────────────────
 
@@ -173,45 +173,4 @@ export function collectParams(
     }
   }
   return result;
-}
-
-/**
- * Find the terminal outputs of a graph — nodes with no downstream consumers.
- */
-export function terminalOutputs(
-  graph: Graph,
-  outputs: Map<string, Record<string, unknown>>,
-): Record<string, Record<string, unknown>> {
-  const hasConsumer = new Set<string>();
-  for (const w of graph.wires) {
-    if (w.from !== "$env") hasConsumer.add(w.from);
-  }
-  const terminals: Record<string, Record<string, unknown>> = {};
-  for (const [key, out] of outputs) {
-    if (!hasConsumer.has(key)) terminals[key] = out;
-  }
-  return terminals;
-}
-
-/**
- * Find the first output value matching a given port type across terminal nodes.
- */
-export function findTerminalOutput<T>(
-  graph: Graph,
-  registry: RegistryLike,
-  outputs: Map<string, Record<string, unknown>>,
-  portType: PortType,
-): T | undefined {
-  const terminals = terminalOutputs(graph, outputs);
-  for (const [nodeKey, nodeOutputs] of Object.entries(terminals)) {
-    const instance = graph.nodes[nodeKey];
-    if (!instance) continue;
-    const op = registry.resolve(instance.type);
-    for (const port of op.outputs) {
-      if (port.type === portType && nodeOutputs[port.name] != null) {
-        return nodeOutputs[port.name] as T;
-      }
-    }
-  }
-  return undefined;
 }

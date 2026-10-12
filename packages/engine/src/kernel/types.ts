@@ -6,7 +6,7 @@
  * TOP  — Texture operators (field/buffer)
  * SOP  — Surface operators (geometry)
  * MAT  — Material operators (palette)
- * CHOP — Channel operators (signal, future)
+ * CHOP — Channel operators (none yet)
  * ROP  — Render operators (geometry + camera + material → buffer)
  */
 export type OperatorCategory = "top" | "sop" | "mat" | "chop" | "rop";
@@ -19,15 +19,13 @@ export type OperatorCategory = "top" | "sop" | "mat" | "chop" | "rop";
  * TOP outputs:  field, buffer
  * SOP outputs:  geometry
  * MAT outputs:  palette
- * CHOP outputs: signal (future)
  * ROP inputs:   camera (+ geometry, palette, buffer)
  */
 export type PortType =
   | "field" //    Field2D — continuous scalar function
   | "buffer" //   Buffer2D — discretized 2D data (angles, heights, colors, rendered frames)
   | "geometry" // Geometry — vertices + topology
-  | "palette" //  Palette — color set with weights
-  | "signal" //   Signal — time-series (future)
+  | "palette" //  Palette — color set
   | "camera" //   Camera2D — viewport + transform
   | "camera3d" // Camera3D — 3D projection (lookAt + ortho/perspective)
   | "number"; //  scalar value (width, height, etc.)
@@ -131,23 +129,13 @@ export interface Geometry<D extends 2 | 3 = 2> {
 
 /**
  * Color palette — the universal MAT data currency.
- * Carries a set of colors with optional probability weights
- * for procedural selection.
+ * Carries a set of colors for procedural selection.
  */
 export interface Palette {
   /** Flat RGBA values: [r,g,b,a, r,g,b,a, …] in 0..1 range */
   colors: Float32Array;
   /** Number of colors */
   count: number;
-  /** Per-color probability weights (sum to 1) */
-  weights?: Float32Array;
-}
-
-/** Time-series signal — the CHOP data currency (future) */
-export interface Signal {
-  samples: Float32Array;
-  rate: number;
-  channels: number;
 }
 
 /**
@@ -213,10 +201,8 @@ export type GraphEnv = Record<string, unknown> & {
  *   TOP  → Buffer2D, Field2D   (texture / buffer processing)
  *   SOP  → Geometry             (surface / geometry operations)
  *   MAT  → Palette              (material / color operations)
- *   CHOP → Signal               (channel / signal — future)
  *
  * CPU operators implement `evaluate`.
- * GPU operators (future) declare `shader` source instead.
  */
 export interface Operator<TInputs = any, TOutputs = any> {
   /** Unique identifier (used as NodeInstance.type) */
@@ -233,8 +219,6 @@ export interface Operator<TInputs = any, TOutputs = any> {
   params: ParamDef[];
   /** CPU evaluation — returns a record keyed by output port name */
   evaluate?: (inputs: TInputs, params: Record<string, number>, env?: GraphEnv) => TOutputs;
-  /** GPU shader source (reserved for future WebGL/WebGPU backend) */
-  shader?: { vert?: string; frag: string };
 }
 
 /** A placed operator in a graph — references a type by id with optional param overrides */

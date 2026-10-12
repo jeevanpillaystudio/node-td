@@ -1,4 +1,4 @@
-import type { Operator, OperatorCategory } from "./types";
+import type { Operator } from "./types";
 
 export class OperatorRegistry {
   private map = new Map<string, Operator>();
@@ -27,9 +27,5 @@ export class OperatorRegistry {
 
   list(): Operator[] {
     return [...this.map.values()];
-  }
-
-  listByCategory(category: OperatorCategory): Operator[] {
-    return this.list().filter((op) => op.category === category);
   }
 }

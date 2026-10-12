@@ -29,8 +29,6 @@ export const proceduralPalette: Operator<Inputs, Outputs> = {
     const hueOff = params.hueOffset ?? 0;
 
     const colors = new Float32Array(count * 4);
-    const weights = new Float32Array(count);
-    const w = 1 / count;
 
     // Golden angle in degrees for maximally spaced hues
     const goldenAngle = 137.508;
@@ -43,10 +41,9 @@ export const proceduralPalette: Operator<Inputs, Outputs> = {
       colors[base + 1] = g;
       colors[base + 2] = b;
       colors[base + 3] = 1; // alpha
-      weights[i] = w;
     }
 
-    return { palette: { colors, count, weights } };
+    return { palette: { colors, count } };
   },
 };
 

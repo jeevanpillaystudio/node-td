@@ -3,7 +3,7 @@ import type { Graph } from "../kernel/graph";
 /**
  * Meridian patch — inspired by Matt Desl's "Meridian" (fxhash).
  *
- * Signal flow:
+ * Data flow:
  *
  *   simplex-noise → fbm(6oct, rotated 37°) → field-remap(ridge) ──┐
  *                                                                    │

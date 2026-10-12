@@ -76,8 +76,6 @@ export const oklabPalette: Operator<Inputs, Outputs> = {
     const spread = params.hueSpread ?? 360;
 
     const colors = new Float32Array(count * 4);
-    const weights = new Float32Array(count);
-    const w = 1 / count;
 
     // Golden angle (≈137.508°) — maximally separated hues
     const GOLDEN_ANGLE = 137.508;
@@ -94,9 +92,8 @@ export const oklabPalette: Operator<Inputs, Outputs> = {
       colors[off + 1] = g;
       colors[off + 2] = b;
       colors[off + 3] = 1;
-      weights[i] = w;
     }
 
-    return { palette: { colors, count, weights } };
+    return { palette: { colors, count } };
   },
 };

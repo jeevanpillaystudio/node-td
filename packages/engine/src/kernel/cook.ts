@@ -160,7 +160,7 @@ export class CookEngine {
    * 3. For dirty nodes, gathers inputs from pre-indexed wire map.
    * 4. Caches outputs; clears dirty set; records stats.
    *
-   * Returns the cache Map (same shape as the old evaluateGraph return).
+   * Returns the cache Map: node key → outputs keyed by port name.
    */
   cook(env: GraphEnv): Map<string, Record<string, unknown>> {
     const t0 = performance.now();

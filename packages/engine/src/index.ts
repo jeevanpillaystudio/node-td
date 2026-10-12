@@ -10,7 +10,6 @@ export type {
   Buffer2D,
   Geometry,
   Palette,
-  Signal,
   Camera2D,
   Camera3D,
   GraphEnv,
@@ -48,13 +47,7 @@ export { compileField } from "./kernel/field-compiler";
 
 // ─── Graph engine ────────────────────────────────────────────────
 export type { Wire, Graph } from "./kernel/graph";
-export {
-  validateGraph,
-  collectParams,
-  topoSort,
-  terminalOutputs,
-  findTerminalOutput,
-} from "./kernel/graph";
+export { validateGraph, collectParams, topoSort } from "./kernel/graph";
 
 // ─── Cook engine ─────────────────────────────────────────────────
 export type { CookStats } from "./kernel/cook";

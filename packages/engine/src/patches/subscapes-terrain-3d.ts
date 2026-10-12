@@ -14,7 +14,7 @@ import type { Graph } from "../kernel/graph";
  *   - Projection: exact isometric from direction (1,1,1)/√3
  *   - Render: monochrome dark strokes on light bg, source-over, opacity 1
  *
- * Signal flow:
+ * Data flow:
  *
  *   simplex-noise → fbm (6 oct) → field-remap (power 4.5) ─┐
  *                                                            │
