@@ -15,8 +15,9 @@
       "recommended": true,
       "style": {
         // Off: tsconfig's noUncheckedIndexedAccess makes every indexed read
-        // possibly undefined, and the typed-array loops that read them by a
-        // bounded index assert with `!`. Each warning would be one of those.
+        // possibly undefined, so the loops that read by a bounded index
+        // assert with `!`; most of the ~400 warnings were those, the rest
+        // values the code knows are there (a 2d context, a checked canvas).
         "noNonNullAssertion": "off"
       }
     }
