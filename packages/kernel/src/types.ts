@@ -276,8 +276,14 @@ export interface Operator<TInputs = any, TOutputs = any> {
    * and neither does env.rng: the engine tracks the random stream itself.
    */
   envReads?: EnvKey[];
-  /** CPU evaluation — returns a record keyed by output port name */
-  evaluate?: (inputs: TInputs, params: Record<string, number>, env: NodeEnv) => TOutputs;
+  /**
+   * CPU evaluation — returns a record keyed by output port name.
+   *
+   * Declared as a method, so its params are compared bivariantly: an
+   * operator from defineOperator, whose params record names only its own
+   * keys, is still an Operator. The cook resolves every declared key.
+   */
+  evaluate?(inputs: TInputs, params: Record<string, number>, env: NodeEnv): TOutputs;
 }
 
 /** A placed operator in a graph — references a type by id with optional param overrides */

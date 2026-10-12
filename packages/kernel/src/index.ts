@@ -23,6 +23,18 @@ export type {
 } from "./types";
 export { isEnumParam } from "./types";
 
+// ─── Typed operators ─────────────────────────────────────────────
+export type {
+  PortValues,
+  PortValue,
+  InputValue,
+  InputsOf,
+  OutputsOf,
+  ParamsOf,
+  TypedOperator,
+} from "./define";
+export { defineOperator } from "./define";
+
 // ─── Geometry helpers ────────────────────────────────────────────
 export { pointsGeometry, pathsGeometry, geometryToPaths, vertexAt } from "./types";
 
