@@ -1,13 +1,19 @@
-import { defineOperator, type Geometry } from "@node-td/kernel";
+import { defineOperator, forEachStrip, type Geometry } from "@node-td/kernel";
 
 /**
  * Merge — concatenates multiple Geometry inputs into a single Geometry.
  *
- * Accepts a variadic `geometry` input. All geometries must share the same
- * dimension and topology (uses the first input's values). Positions are
- * concatenated and stripOffsets/indices are rebased. Normals, colours and
- * each attribute are carried when any input has them, zero-filled for the
- * inputs that do not.
+ * Accepts a variadic `geometry` input. The inputs must share one dimension
+ * and topology; an input of another kind is an error. Empty inputs add
+ * nothing, whatever their kind. Positions are concatenated:
+ *
+ *   line-strip — every input's strips stay strips: an input without
+ *                stripOffsets is one strip, and the output always has them
+ *   triangles  — indices are rebased; an input without indices draws its
+ *                vertices in order
+ *
+ * Normals, colours and each attribute are carried when any input has them,
+ * zero-filled for the inputs that do not.
  */
 export const merge = defineOperator({
   id: "merge",
@@ -18,7 +24,12 @@ export const merge = defineOperator({
   params: [],
 
   evaluate({ geometry: geos }) {
-    if (geos.length === 0) {
+    if (geos.length === 1) {
+      return { geometry: geos[0]! };
+    }
+
+    const parts = geos.filter((g) => g.vertexCount > 0);
+    if (parts.length === 0) {
       return {
         geometry: {
           positions: new Float32Array(0),
@@ -29,65 +40,45 @@ export const merge = defineOperator({
       };
     }
 
-    if (geos.length === 1) {
-      return { geometry: geos[0]! };
+    const { topology, dim } = parts[0]!;
+    for (const [i, g] of geos.entries()) {
+      if (g.vertexCount > 0 && (g.dim !== dim || g.topology !== topology)) {
+        throw new Error(
+          `merge: input ${i} is ${g.topology} in ${g.dim}D, but the first is ${topology} in ${dim}D`,
+        );
+      }
     }
 
-    const topology = geos[0]!.topology;
-    const dim = geos[0]!.dim;
-
-    // Calculate totals
     let totalVerts = 0;
-    let totalIndices = 0;
-    let totalStrips = 0;
-
-    for (const g of geos) {
-      totalVerts += g.vertexCount;
-      if (g.indices) totalIndices += g.indices.length;
-      if (g.stripOffsets) totalStrips += g.stripOffsets.length;
-    }
+    for (const g of parts) totalVerts += g.vertexCount;
 
     const positions = new Float32Array(totalVerts * dim);
-    const indices = totalIndices > 0 ? new Uint32Array(totalIndices) : undefined;
-    const stripOffsets = totalStrips > 0 ? new Uint32Array(totalStrips) : undefined;
+    const strips: number[] = [];
+    const indexed = parts.some((g) => g.indices);
+    const indices: number[] = [];
 
     let vertOffset = 0;
-    let idxOffset = 0;
-    let stripIdx = 0;
+    for (const g of parts) {
+      positions.set(g.positions.subarray(0, g.vertexCount * dim), vertOffset * dim);
 
-    for (const g of geos) {
-      // Copy positions
-      const srcLen = g.vertexCount * dim;
-      for (let i = 0; i < srcLen; i++) {
-        positions[vertOffset * dim + i] = g.positions[i] as number;
+      if (topology === "line-strip") {
+        forEachStrip(g, (start) => strips.push(start + vertOffset));
       }
-
-      // Rebase indices
-      if (indices && g.indices) {
-        for (let i = 0; i < g.indices.length; i++) {
-          indices[idxOffset + i] = (g.indices[i] as number) + vertOffset;
-        }
-        idxOffset += g.indices.length;
-      }
-
-      // Rebase strip offsets
-      if (stripOffsets && g.stripOffsets) {
-        for (let i = 0; i < g.stripOffsets.length; i++) {
-          stripOffsets[stripIdx + i] = (g.stripOffsets[i] as number) + vertOffset;
-        }
-        stripIdx += g.stripOffsets.length;
+      if (indexed) {
+        if (g.indices) for (const i of g.indices) indices.push(i + vertOffset);
+        else for (let i = 0; i < g.vertexCount; i++) indices.push(i + vertOffset);
       }
 
       vertOffset += g.vertexCount;
     }
 
-    const normals = concatChannel(geos, (g) => g.normals, 3, totalVerts);
-    const colors = concatChannel(geos, (g) => g.colors, 3, totalVerts);
+    const normals = concatChannel(parts, (g) => g.normals, 3, totalVerts);
+    const colors = concatChannel(parts, (g) => g.colors, 3, totalVerts);
     let attributes: Record<string, Float32Array> | undefined;
-    const names = new Set(geos.flatMap((g) => Object.keys(g.attributes ?? {})));
+    const names = new Set(parts.flatMap((g) => Object.keys(g.attributes ?? {})));
     for (const name of [...names].sort()) {
       attributes ??= {};
-      attributes[name] = concatChannel(geos, (g) => g.attributes?.[name], 1, totalVerts)!;
+      attributes[name] = concatChannel(parts, (g) => g.attributes?.[name], 1, totalVerts)!;
     }
 
     return {
@@ -96,8 +87,8 @@ export const merge = defineOperator({
         vertexCount: totalVerts,
         dim,
         topology,
-        ...(indices && { indices }),
-        ...(stripOffsets && { stripOffsets }),
+        ...(indexed && { indices: Uint32Array.from(indices) }),
+        ...(topology === "line-strip" && { stripOffsets: Uint32Array.from(strips) }),
         ...(normals && { normals }),
         ...(colors && { colors }),
         ...(attributes && { attributes }),

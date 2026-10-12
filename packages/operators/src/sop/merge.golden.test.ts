@@ -63,14 +63,7 @@ opGolden(merge, {
       w("polyline.geometry", "merge.geometry"),
     ],
   },
-  "mixed topology, points first": {
-    nodes: { ...strips, merge: { type: "merge" } },
-    wires: [
-      ...stripWires,
-      w("seeds.geometry", "merge.geometry"),
-      w("trace.geometry", "merge.geometry"),
-    ],
-  },
+  // Mixed topology is an error now: merge.test.ts covers it
   "indexed triangles": {
     nodes: { meshA: meshA.node, meshB: meshB.node, merge: { type: "merge" } },
     wires: [
