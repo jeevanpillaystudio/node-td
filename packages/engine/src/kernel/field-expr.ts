@@ -76,7 +76,7 @@ export type FieldExpr =
 // about FieldExpr call field(x, y) normally. GPU-aware consumers
 // call getFieldExpr(field) to extract the AST.
 
-export const FIELD_EXPR = Symbol.for("generative.field-expr");
+export const FIELD_EXPR = Symbol.for("node-td.field-expr");
 
 /** Create a Field2D that carries its FieldExpr for GPU compilation. */
 export function createField(expr: FieldExpr): Field2D {
