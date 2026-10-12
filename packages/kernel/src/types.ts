@@ -141,8 +141,13 @@ export interface Geometry<D extends 2 | 3 = 2> {
   stripOffsets?: Uint32Array;
   /** Triangle or line indices for indexed drawing */
   indices?: Uint32Array;
-  /** Per-vertex normals (3D geometry) */
+  /**
+   * Per-vertex surface normals in world space, 3 floats per vertex. A
+   * projected 2D geometry keeps the normals of the 3D geometry it came from.
+   */
   normals?: Float32Array;
+  /** Per-vertex colours, 3 floats (r, g, b in 0..1) per vertex */
+  colors?: Float32Array;
   /**
    * Arbitrary per-vertex attributes — one Float32Array per named channel.
    * Each array has exactly `vertexCount` elements (1 scalar per vertex).
