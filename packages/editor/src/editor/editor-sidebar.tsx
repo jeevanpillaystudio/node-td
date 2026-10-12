@@ -1,4 +1,4 @@
-import type { FrameEntry } from "../frame-host";
+import type { FrameEntry } from "@node-td/frame";
 import { useFrameContext } from "../frame-provider";
 
 interface EditorSidebarProps {

@@ -8,18 +8,6 @@
     ".": {
       "types": "./src/index.ts",
       "default": "./src/index.ts"
-    },
-    "./provider": {
-      "types": "./src/frame-provider.tsx",
-      "default": "./src/frame-provider.tsx"
-    },
-    "./shell": {
-      "types": "./src/frame-shell.tsx",
-      "default": "./src/frame-shell.tsx"
-    },
-    "./editor": {
-      "types": "./src/editor/frame-editor.tsx",
-      "default": "./src/editor/frame-editor.tsx"
     }
   },
   "scripts": {
@@ -29,14 +17,7 @@
   "dependencies": {
     "@node-td/kernel": "workspace:*",
     "@node-td/operators": "workspace:*",
-    "@node-td/render-web": "workspace:*",
-    "@radix-ui/react-label": "^2.1.0",
-    "@radix-ui/react-slider": "^1.2.1",
-    "@radix-ui/react-slot": "^1.1.0",
-    "@xyflow/react": "^12.10.2",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "tailwind-merge": "^3.0.0"
+    "@node-td/render-web": "workspace:*"
   },
   "peerDependencies": {
     "react": "^19",

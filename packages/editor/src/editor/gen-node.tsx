@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { Handle, Position } from "@xyflow/react";
-import type { GenNodeData } from "./graph-adapter";
+import type { GenNodeData } from "../graph-adapter";
 
 const CATEGORY_DOT: Record<string, string> = {
   top: "bg-cyan-400",

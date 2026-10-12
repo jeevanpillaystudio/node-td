@@ -6,7 +6,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { FrameHostContext, type FrameEntry, type FrameHost } from "./frame-host";
+import { FrameHostContext, type FrameEntry, type FrameHost } from "@node-td/frame";
 import { cn } from "./ui/utils";
 
 /* ------------------------------------------------------------------ */

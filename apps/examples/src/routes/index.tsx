@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Frame } from "@node-td/frame";
-import { FrameShell } from "@node-td/frame/shell";
+import { FrameShell } from "@node-td/editor";
 import { patches } from "@node-td/patches";
 
 export const Route = createFileRoute("/")({

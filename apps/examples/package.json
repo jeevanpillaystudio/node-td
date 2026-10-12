@@ -10,6 +10,7 @@
     "clean": "git clean -xdf .cache .turbo .output .tanstack dist node_modules"
   },
   "dependencies": {
+    "@node-td/editor": "workspace:*",
     "@node-td/frame": "workspace:*",
     "@node-td/patches": "workspace:*",
     "@tanstack/react-router": "^1.157.0",

@@ -12,7 +12,7 @@ import {
 import "@xyflow/react/dist/style.css";
 import type { Graph } from "@node-td/kernel";
 import { defaultRegistry } from "@node-td/operators";
-import { toReactFlowElements } from "./graph-adapter";
+import { toReactFlowElements } from "../graph-adapter";
 import { GenNode, EnvNode } from "./gen-node";
 
 const registry = defaultRegistry();
