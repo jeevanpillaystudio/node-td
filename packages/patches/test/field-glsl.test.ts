@@ -2,13 +2,7 @@ import { expect, test } from "bun:test";
 import type { Graph } from "@node-td/kernel";
 import { createDefaultRegistry } from "@node-td/operators";
 import { cookedFields, cookGraph, fieldGlslIssues } from "@node-td/testing";
-import {
-  flowFieldGraph,
-  meridianGraph,
-  simplexFieldGraph,
-  subscapesTerrain3dGraph,
-  terrainHeightmapGraph,
-} from "../src/index";
+import { patches } from "../src/index";
 
 /**
  * compileField has no runtime caller until the deferred GPU rasterizer.
@@ -17,13 +11,7 @@ import {
  * that are plain closures (fbm with a domain rotation) carry none.
  */
 
-const GALLERY: readonly Graph[] = [
-  meridianGraph,
-  flowFieldGraph,
-  terrainHeightmapGraph,
-  simplexFieldGraph,
-  subscapesTerrain3dGraph,
-];
+const GALLERY: readonly Graph[] = patches.map((p) => p.graph);
 
 const SIZE = { width: 256, height: 256, dpr: 1 };
 const SEED = 42;

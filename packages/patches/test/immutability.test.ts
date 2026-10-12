@@ -2,13 +2,7 @@ import { describe, expect, test } from "bun:test";
 import type { Buffer2D, Graph } from "@node-td/kernel";
 import { CookEngine, OperatorRegistry, SeededRNG } from "@node-td/kernel";
 import { createDefaultRegistry } from "@node-td/operators";
-import {
-  flowFieldGraph,
-  meridianGraph,
-  simplexFieldGraph,
-  subscapesTerrain3dGraph,
-  terrainHeightmapGraph,
-} from "../src/index";
+import { patches } from "../src/index";
 import { blitBuffer2D } from "@node-td/render-web";
 import {
   createRecordingCanvasFactory,
@@ -29,13 +23,7 @@ import {
  * cached output must fingerprint the same.
  */
 
-const GALLERY: readonly Graph[] = [
-  meridianGraph,
-  flowFieldGraph,
-  terrainHeightmapGraph,
-  simplexFieldGraph,
-  subscapesTerrain3dGraph,
-];
+const GALLERY: readonly Graph[] = patches.map((p) => p.graph);
 
 const SIZE = { width: 256, height: 256, dpr: 1 };
 const SEED = 42;
