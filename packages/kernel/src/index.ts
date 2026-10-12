@@ -36,7 +36,7 @@ export type {
 export { defineOperator } from "./define";
 
 // ─── Geometry helpers ────────────────────────────────────────────
-export { pointsGeometry, pathsGeometry, geometryToPaths, vertexAt } from "./types";
+export { pointsGeometry, pathsGeometry, geometryToPaths, vertexAt } from "./geometry";
 
 // ─── Graph ───────────────────────────────────────────────────────
 export type { Wire, Graph } from "./graph";
