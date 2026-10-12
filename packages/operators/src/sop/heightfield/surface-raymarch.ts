@@ -1,7 +1,4 @@
-import type { Operator, Geometry, Field2D, Camera3D } from "@node-td/kernel";
-
-type Inputs = { seeds: Geometry<2>; camera3d: Camera3D; field: Field2D };
-type Outputs = { geometry: Geometry<2> };
+import { defineOperator } from "@node-td/kernel";
 
 /**
  * Surface Raymarch — implicit terrain intersection for each screen-space seed.
@@ -25,7 +22,7 @@ type Outputs = { geometry: Geometry<2> };
  * parametric-surface → surface-lift → visibility-cull → project-3d chain
  * for implicit (fBm-defined) terrain surfaces.
  */
-export const surfaceRaymarch: Operator<Inputs, Outputs> = {
+export const surfaceRaymarch = defineOperator({
   id: "surface-raymarch",
   category: "sop",
   label: "Surface Raymarch",
@@ -45,13 +42,13 @@ export const surfaceRaymarch: Operator<Inputs, Outputs> = {
     { key: "aoRadius", label: "AO Radius", min: 1, max: 50, step: 1, default: 10 },
   ],
   evaluate({ seeds, camera3d, field }, params) {
-    const amplitude = params.amplitude ?? 80;
-    const maxSteps  = Math.round(params.maxSteps ?? 150);
-    const maxDist   = params.maxDist ?? 700;
-    const epsilon   = params.epsilon ?? 0.3;
-    const normalEps = params.normalEps ?? 0.5;
-    const aoSteps   = Math.round(params.aoSteps ?? 4);
-    const aoRadius  = params.aoRadius ?? 10;
+    const amplitude = params.amplitude;
+    const maxSteps  = Math.round(params.maxSteps);
+    const maxDist   = params.maxDist;
+    const epsilon   = params.epsilon;
+    const normalEps = params.normalEps;
+    const aoSteps   = Math.round(params.aoSteps);
+    const aoRadius  = params.aoRadius;
 
     // Height at world (x, z) — scales [0..1] field to world units
     const height = (x: number, z: number): number => field(x, z) * amplitude;
@@ -172,4 +169,4 @@ export const surfaceRaymarch: Operator<Inputs, Outputs> = {
       },
     };
   },
-};
+});

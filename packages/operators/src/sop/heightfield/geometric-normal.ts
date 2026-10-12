@@ -1,7 +1,4 @@
-import type { Operator, Field2D, Geometry } from "@node-td/kernel";
-
-type Inputs = { geometry: Geometry<3>; field: Field2D };
-type Outputs = { geometry: Geometry<3> };
+import { defineOperator } from "@node-td/kernel";
 
 /**
  * Geometric Normal — computes per-vertex surface normals from a heightfield.
@@ -19,7 +16,7 @@ type Outputs = { geometry: Geometry<3> };
  *
  * Needed by: visibility-cull (back-face test), diffuse-shade (N dot L).
  */
-export const geometricNormal: Operator<Inputs, Outputs> = {
+export const geometricNormal = defineOperator({
   id: "geometric-normal",
   category: "sop",
   label: "Geometric Normal",
@@ -33,8 +30,8 @@ export const geometricNormal: Operator<Inputs, Outputs> = {
     { key: "amplitude", label: "Height Scale", min: 0, max: 500, step: 1, default: 120 },
   ],
   evaluate({ geometry: geo, field }, params) {
-    const eps = params.epsilon ?? 0.00001;
-    const amp = params.amplitude ?? 120;
+    const eps = params.epsilon;
+    const amp = params.amplitude;
     const src = geo.positions;
     const normals = new Float32Array(geo.vertexCount * 3);
 
@@ -111,7 +108,7 @@ export const geometricNormal: Operator<Inputs, Outputs> = {
       geometry: {
         positions: geo.positions,
         vertexCount: geo.vertexCount,
-        dim: 3 as const,
+        dim: 3,
         topology: geo.topology,
         stripOffsets: geo.stripOffsets,
         indices: geo.indices,
@@ -119,4 +116,4 @@ export const geometricNormal: Operator<Inputs, Outputs> = {
       },
     };
   },
-};
+});

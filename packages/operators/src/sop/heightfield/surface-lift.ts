@@ -1,7 +1,4 @@
-import type { Operator, Field2D, Geometry } from "@node-td/kernel";
-
-type Inputs = { geometry: Geometry<2>; field: Field2D };
-type Outputs = { geometry: Geometry<3> };
+import { defineOperator } from "@node-td/kernel";
 
 /**
  * Surface Lift — maps 2D geometry onto a 3D terrain surface.
@@ -20,7 +17,7 @@ type Outputs = { geometry: Geometry<3> };
  * strokes traced in screen-space are lifted onto the terrain
  * surface before being projected through a 3D camera.
  */
-export const surfaceLift: Operator<Inputs, Outputs> = {
+export const surfaceLift = defineOperator({
   id: "surface-lift",
   category: "sop",
   label: "Surface Lift",
@@ -34,8 +31,8 @@ export const surfaceLift: Operator<Inputs, Outputs> = {
     { key: "baseY", label: "Base Y", min: -500, max: 500, step: 1, default: 0 },
   ],
   evaluate({ geometry: geo, field }, params) {
-    const amp = params.amplitude ?? 120;
-    const baseY = params.baseY ?? 0;
+    const amp = params.amplitude;
+    const baseY = params.baseY;
 
     // Allocate 3D positions: 3 floats per vertex
     const positions = new Float32Array(geo.vertexCount * 3);
@@ -59,11 +56,11 @@ export const surfaceLift: Operator<Inputs, Outputs> = {
       geometry: {
         positions,
         vertexCount: geo.vertexCount,
-        dim: 3 as const,
+        dim: 3,
         topology: geo.topology,
         stripOffsets: geo.stripOffsets,
         indices: geo.indices,
       },
     };
   },
-};
+});
