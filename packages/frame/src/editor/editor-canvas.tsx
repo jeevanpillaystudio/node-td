@@ -10,8 +10,8 @@ import {
   type OnSelectionChangeFunc,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import type { Graph } from "@node-td/engine";
-import { createDefaultRegistry } from "@node-td/engine";
+import type { Graph } from "@node-td/kernel";
+import { createDefaultRegistry } from "@node-td/operators";
 import { toReactFlowElements } from "@node-td/engine/editor";
 import { GenNode, EnvNode } from "./gen-node";
 

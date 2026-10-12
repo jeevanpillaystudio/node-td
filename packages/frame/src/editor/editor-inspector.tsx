@@ -1,6 +1,6 @@
 import { Slider } from "../ui/slider";
 import { Label } from "../ui/label";
-import { isEnumParam } from "@node-td/engine";
+import { isEnumParam } from "@node-td/kernel";
 import type { FrameEntry } from "../frame-provider";
 
 interface EditorInspectorProps {

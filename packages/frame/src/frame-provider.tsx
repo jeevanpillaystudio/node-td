@@ -6,7 +6,7 @@ import {
   useRef,
   useState,
 } from "react";
-import type { ParamDef, Graph } from "@node-td/engine";
+import type { ParamDef, Graph } from "@node-td/kernel";
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */

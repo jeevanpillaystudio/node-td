@@ -28,6 +28,8 @@
   },
   "dependencies": {
     "@node-td/engine": "workspace:*",
+    "@node-td/kernel": "workspace:*",
+    "@node-td/operators": "workspace:*",
     "@node-td/render-web": "workspace:*",
     "@radix-ui/react-label": "^2.1.0",
     "@radix-ui/react-slider": "^1.2.1",
