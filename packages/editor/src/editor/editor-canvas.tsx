@@ -58,7 +58,7 @@ export function EditorCanvas({ graph, registry, onNodeSelect }: EditorCanvasProp
         fitViewOptions={{ padding: 0.3 }}
         proOptions={{ hideAttribution: true }}
         defaultEdgeOptions={{
-          style: { stroke: "var(--border)", strokeWidth: 1.5 },
+          style: { stroke: "var(--color-border)", strokeWidth: 1.5 },
           animated: true,
         }}
         className="!bg-transparent"

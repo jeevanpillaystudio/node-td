@@ -1,0 +1,26 @@
+/*
+ * Styles for @node-td/editor. Import this from the app's Tailwind entry,
+ * after tailwindcss itself:
+ *
+ *   @import "tailwindcss";
+ *   @import "@node-td/editor/styles.css";
+ *
+ * Tailwind does not scan packages on its own; @source makes it generate the
+ * classes the editor uses. The theme gives the colours those classes name
+ * defaults that the app's own @theme overrides.
+ */
+@source "./src";
+
+@theme default {
+  --color-background: oklch(0.145 0 0);
+  --color-foreground: oklch(0.985 0 0);
+  --color-card: oklch(0.205 0 0);
+  --color-muted: oklch(0.269 0 0);
+  --color-muted-foreground: oklch(0.708 0 0);
+  --color-border: oklch(0.369 0 0);
+  --color-ring: oklch(0.556 0 0);
+  --color-primary: oklch(0.985 0 0);
+  --color-accent: oklch(0.269 0 0);
+  --color-accent-foreground: oklch(0.985 0 0);
+  --color-destructive: oklch(0.396 0.141 25.723);
+}
