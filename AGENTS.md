@@ -46,7 +46,7 @@ Run from the repository root. bun is at `~/.bun/bin/bun`.
 bun install --frozen-lockfile
 TURBO_TELEMETRY_DISABLED=1 ./node_modules/.bin/turbo run typecheck test
 bun test                                   # every test, or a path: bun test packages/operators
-bun run lint                               # biome
+bun run lint                               # biome check: lint, format, import order
 TURBO_TELEMETRY_DISABLED=1 ./node_modules/.bin/turbo boundaries
 bun run --cwd apps/examples build
 bun run dev                                # the gallery and editor
@@ -59,6 +59,7 @@ bun run dev                                # the gallery and editor
   needs one, and say why in the commit.
 - `bun install` needs writable temp and cache directories there: set `BUN_TMPDIR` and `BUN_INSTALL_CACHE_DIR` to directories under `$TMPDIR`.
 - Set `TURBO_TELEMETRY_DISABLED=1` for turbo.
+- Worktrees sit inside the main checkout (`.claude/worktrees/`). If a worktree's `biome.jsonc` does not parse, biome reads the main checkout's config instead, without saying so: after editing it, check that `bun run lint` reports this worktree's rules.
 
 ## Golden tests
 

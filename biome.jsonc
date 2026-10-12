@@ -12,7 +12,13 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "style": {
+        // Off: tsconfig's noUncheckedIndexedAccess makes every indexed read
+        // possibly undefined, and the typed-array loops that read them by a
+        // bounded index assert with `!`. Each warning would be one of those.
+        "noNonNullAssertion": "off"
+      }
     }
   },
   "formatter": {

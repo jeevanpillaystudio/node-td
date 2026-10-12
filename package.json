@@ -7,7 +7,7 @@
     "dev": "turbo run dev",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
-    "lint": "biome lint .",
+    "lint": "biome check .",
     "lint:fix": "biome check --write .",
     "format": "biome format --write .",
     "clean": "git clean -xdf node_modules .turbo .cache"
