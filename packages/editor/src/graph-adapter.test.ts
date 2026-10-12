@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { OperatorRegistry, type Graph, type Operator } from "@node-td/kernel";
-import { autoLayout, inferEnvPorts, toReactFlowElements } from "./graph-adapter";
+import { autoLayout, handleId, inferEnvPorts, toReactFlowElements } from "./graph-adapter";
 
 function op(id: string, inputs: string[], outputs: string[]): Operator {
   return {
@@ -39,13 +39,13 @@ const graph: Graph = {
   ],
 };
 
-/** The handle ids gen-node.tsx renders for a node, by the same rules. */
+/** The handle ids gen-node.tsx renders for a node: one per port it draws, named by handleId. */
 function renderedHandles(node: ReturnType<typeof toReactFlowElements>["nodes"][number]) {
   const { instanceKey, nodeType, isEnv, envPorts } = node.data;
-  if (isEnv) return (envPorts ?? []).map((p) => `$env-out-${p.name}`);
+  if (isEnv) return (envPorts ?? []).map((p) => handleId(instanceKey, "out", p.name));
   return [
-    ...nodeType.inputs.map((p) => `${instanceKey}-in-${p.name}`),
-    ...nodeType.outputs.map((p) => `${instanceKey}-out-${p.name}`),
+    ...nodeType.inputs.map((p) => handleId(instanceKey, "in", p.name)),
+    ...nodeType.outputs.map((p) => handleId(instanceKey, "out", p.name)),
   ];
 }
 

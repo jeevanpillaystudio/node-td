@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { Handle, Position } from "@xyflow/react";
-import type { GenNodeData } from "../graph-adapter";
+import { type GenNodeData, handleId } from "../graph-adapter";
 
 const CATEGORY_DOT: Record<string, string> = {
   top: "bg-cyan-400",
@@ -43,7 +43,7 @@ function GenNodeComponent({ data, selected }: { data: GenNodeData; selected?: bo
                   <Handle
                     type="target"
                     position={Position.Left}
-                    id={`${instanceKey}-in-${port.name}`}
+                    id={handleId(instanceKey, "in", port.name)}
                     className="!-left-[7px] !h-2.5 !w-2.5 !rounded-sm !border-border !bg-muted"
                   />
                   <span className="pl-1 font-mono text-xs text-muted-foreground">
@@ -64,7 +64,7 @@ function GenNodeComponent({ data, selected }: { data: GenNodeData; selected?: bo
                 <Handle
                   type="source"
                   position={Position.Right}
-                  id={`$env-out-${port.name}`}
+                  id={handleId(instanceKey, "out", port.name)}
                   className="!-right-[7px] !h-2.5 !w-2.5 !rounded-sm !border-border !bg-muted"
                 />
               </div>
@@ -78,7 +78,7 @@ function GenNodeComponent({ data, selected }: { data: GenNodeData; selected?: bo
                 <Handle
                   type="source"
                   position={Position.Right}
-                  id={`${instanceKey}-out-${port.name}`}
+                  id={handleId(instanceKey, "out", port.name)}
                   className="!-right-[7px] !h-2.5 !w-2.5 !rounded-sm !border-border !bg-muted"
                 />
               </div>

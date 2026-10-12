@@ -28,6 +28,15 @@ export interface GenEdgeData {
 }
 
 /**
+ * The id of the React Flow handle for one of a node's ports, e.g.
+ * `src-out-geometry` or `out-in-a`. The adapter's edges and the handles
+ * gen-node.tsx renders both use it, so an edge always finds its handle.
+ */
+export function handleId(nodeKey: string, side: "in" | "out", port: string): string {
+  return `${nodeKey}-${side}-${port}`;
+}
+
+/**
  * Infer the environment ports used by a graph.
  * Scans wires for `from: "$env"` and returns deduplicated port definitions,
  * allowing the editor to render $env as a visible node with output handles.
@@ -183,8 +192,8 @@ export function toReactFlowElements(
       id: `e-${i}`,
       source: w.from,
       target: w.to,
-      sourceHandle: `${w.from}-out-${w.output}`,
-      targetHandle: `${w.to}-in-${w.input}`,
+      sourceHandle: handleId(w.from, "out", w.output),
+      targetHandle: handleId(w.to, "in", w.input),
       data: {
         sourcePort: w.output,
         targetPort: w.input,
