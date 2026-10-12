@@ -1,5 +1,13 @@
 import { type FrameEntry, type FrameHost, FrameHostContext } from "@node-td/frame";
-import { createContext, useCallback, useContext, useMemo, useRef, useState } from "react";
+import {
+  createContext,
+  type ReactNode,
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { cn } from "./ui/utils";
 
 /* ------------------------------------------------------------------ */
@@ -34,7 +42,7 @@ export function useFrameContext() {
  * Hosts the Frames inside it: each registers through FrameHostContext, and
  * gets a selection outline and an Edit Graph button drawn over it.
  */
-export function FrameProvider({ children }: { children: React.ReactNode }) {
+export function FrameProvider({ children }: { children: ReactNode }) {
   const framesRef = useRef(new Map<string, FrameEntry>());
   const [revision, bump] = useState(0);
   const [activeId, setActiveId] = useState<string | null>(null);
