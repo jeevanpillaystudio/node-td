@@ -9,10 +9,6 @@
       "types": "./src/index.ts",
       "default": "./src/index.ts"
     },
-    "./patches": {
-      "types": "./src/patches/index.ts",
-      "default": "./src/patches/index.ts"
-    },
     "./editor": {
       "types": "./src/editor/index.ts",
       "default": "./src/editor/index.ts"
@@ -20,7 +16,6 @@
   },
   "scripts": {
     "clean": "git clean -xdf .cache .turbo node_modules",
-    "test": "bun test",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -28,8 +23,6 @@
     "@node-td/operators": "workspace:*"
   },
   "devDependencies": {
-    "@node-td/render-web": "workspace:*",
-    "@node-td/testing": "workspace:*",
     "@node-td/typescript-config": "workspace:*",
     "@types/bun": "1.3.9",
     "typescript": "^5.9.0"

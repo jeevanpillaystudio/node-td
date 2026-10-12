@@ -61,6 +61,3 @@ export { SeededRNG } from "@node-td/kernel";
 
 // ─── All built-in operators ──────────────────────────────────────
 export { allOperators, createDefaultRegistry } from "@node-td/operators";
-
-// ─── Patches ─────────────────────────────────────────────────────
-export { meridianGraph } from "./patches/meridian";

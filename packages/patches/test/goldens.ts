@@ -1,4 +1,4 @@
-import { createDefaultRegistry } from "../src/index";
+import { createDefaultRegistry } from "@node-td/operators";
 import { blitBuffer2D } from "@node-td/render-web";
 import { patchGoldens } from "@node-td/testing";
 

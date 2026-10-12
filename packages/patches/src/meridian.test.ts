@@ -1,6 +1,7 @@
 import { describe, it, expect } from "bun:test";
 import { meridianGraph } from "./meridian";
-import { createDefaultRegistry, CookEngine, SeededRNG } from "../index";
+import { CookEngine, SeededRNG } from "@node-td/kernel";
+import { createDefaultRegistry } from "@node-td/operators";
 import { createRecordingCanvasFactory } from "@node-td/testing";
 
 describe("meridian patch", () => {

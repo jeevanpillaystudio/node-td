@@ -7,7 +7,7 @@ import {
   subscapesTerrain3dGraph,
   simplexFieldGraph,
   flowFieldGraph,
-} from "@node-td/engine/patches";
+} from "@node-td/patches";
 
 const patches = [
   { name: "Subscapes Terrain 3D", graph: subscapesTerrain3dGraph },

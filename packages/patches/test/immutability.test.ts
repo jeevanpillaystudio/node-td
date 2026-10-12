@@ -1,13 +1,14 @@
 import { describe, expect, test } from "bun:test";
-import type { Buffer2D, Graph } from "../src/index";
-import { CookEngine, createDefaultRegistry, OperatorRegistry, SeededRNG } from "../src/index";
+import type { Buffer2D, Graph } from "@node-td/kernel";
+import { CookEngine, OperatorRegistry, SeededRNG } from "@node-td/kernel";
+import { createDefaultRegistry } from "@node-td/operators";
 import {
   flowFieldGraph,
   meridianGraph,
   simplexFieldGraph,
   subscapesTerrain3dGraph,
   terrainHeightmapGraph,
-} from "../src/patches/index";
+} from "../src/index";
 import { blitBuffer2D } from "@node-td/render-web";
 import {
   createRecordingCanvasFactory,
