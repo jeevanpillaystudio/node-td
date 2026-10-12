@@ -47,7 +47,10 @@ export interface PortDef {
   type: PortType;
   /** If true, this input need not be wired */
   optional?: boolean;
-  /** If true, multiple wires may connect to this input — evaluate receives an array */
+  /**
+   * If true, multiple wires may connect to this input — evaluate receives
+   * an array of their values in wire order, [] when none is wired
+   */
   variadic?: boolean;
 }
 

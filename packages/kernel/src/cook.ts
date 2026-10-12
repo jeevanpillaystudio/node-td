@@ -380,14 +380,14 @@ export class CookEngine {
     const op = this.registry.resolve(instance.type);
     if (!op.evaluate) throw new Error(`Operator "${op.id}" has no evaluate`);
 
-    // Variadic port lookup
-    const variadicPorts = new Set<string>();
+    // A variadic port gathers its wires' values in wire order: [] when none is wired
+    const variadic = new Map<string, unknown[]>();
     for (const port of op.inputs) {
-      if (port.variadic) variadicPorts.add(port.name);
+      if (port.variadic) variadic.set(port.name, []);
     }
 
     // Gather inputs from pre-indexed wire map
-    const inputs: Record<string, unknown> = {};
+    const inputs: Record<string, unknown> = Object.fromEntries(variadic);
     const wires = this.wiresTo.get(key)!;
     for (const w of wires) {
       let value: unknown;
@@ -398,12 +398,9 @@ export class CookEngine {
         if (src) value = src[w.output];
       }
 
-      if (variadicPorts.has(w.input)) {
-        if (!Array.isArray(inputs[w.input])) inputs[w.input] = [];
-        (inputs[w.input] as unknown[]).push(value);
-      } else {
-        inputs[w.input] = value;
-      }
+      const gathered = variadic.get(w.input);
+      if (gathered) gathered.push(value);
+      else inputs[w.input] = value;
     }
 
     // Resolve params: op defaults → instance overrides → external overrides

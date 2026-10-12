@@ -54,14 +54,16 @@ const collect: Operator = {
   label: "Collect",
   inputs: [
     { name: "items", type: "number", variadic: true },
+    { name: "extras", type: "number", variadic: true, optional: true },
     { name: "single", type: "number", optional: true },
   ],
   outputs: [
     { name: "items", type: "number" },
+    { name: "extras", type: "number" },
     { name: "single", type: "number" },
   ],
   params: [],
-  evaluate: (inputs) => ({ items: inputs.items, single: inputs.single }),
+  evaluate: (inputs) => ({ items: inputs.items, extras: inputs.extras, single: inputs.single }),
 };
 
 /** Emits env.dpr, read straight from the env. Declares the env keys it reads. */
@@ -512,7 +514,7 @@ describe("input gathering", () => {
     );
     const engine = new CookEngine(g, makeRegistry());
     engine.cook(ENV);
-    expect(engine.getOutput("col")).toEqual({ items: [3, 1, 2], single: 2 });
+    expect(engine.getOutput("col")).toEqual({ items: [3, 1, 2], extras: [], single: 2 });
   });
 
   test("a variadic input with one wire receives an array of one", () => {
@@ -521,7 +523,31 @@ describe("input gathering", () => {
     ]);
     const engine = new CookEngine(g, makeRegistry());
     engine.cook(ENV);
-    expect(engine.getOutput("col")).toEqual({ items: [4], single: undefined });
+    expect(engine.getOutput("col")).toEqual({ items: [4], extras: [], single: undefined });
+  });
+
+  test("an unwired variadic input receives [], an unwired optional one undefined", () => {
+    const g = graph({ s: { type: "source" }, col: { type: "collect" } }, [
+      wire("s", "n", "col", "items"),
+    ]);
+    const engine = new CookEngine(g, makeRegistry());
+    engine.cook(ENV);
+    expect(engine.getOutput("col")).toEqual({ items: [1], extras: [], single: undefined });
+  });
+
+  test("each cook hands a variadic input a fresh array, so cached outputs keep theirs", () => {
+    const g = graph({ s: { type: "source" }, col: { type: "collect" } }, [
+      wire("s", "n", "col", "items"),
+    ]);
+    const engine = new CookEngine(g, makeRegistry());
+    engine.cook(ENV);
+    const first = engine.getOutput("col")!;
+    engine.setParams({ "s.k": 2 });
+    engine.cook(ENV);
+    const second = engine.getOutput("col")!;
+    expect(second.items).toEqual([2]);
+    expect(second.extras).not.toBe(first.extras);
+    expect(first.items).toEqual([1]);
   });
 });
 
