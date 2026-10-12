@@ -6,12 +6,12 @@ file carried what it still owed; git keeps it.
 
 ## Pull request #1
 
-Still to do on the branch: one format pass (`biome check --write .`) in a
-commit of its own, listed in `.git-blame-ignore-revs`, with `bun run lint`
-becoming `biome check .`; and a CI workflow for pull requests (lint,
-typecheck, tests, boundaries, the examples build, no file changed), which is
-committed but pushed only on Jeevan's go-ahead, since it adds a trigger.
-Merging the pull request waits for Jeevan: a merge commit, never a squash.
+A CI workflow for pull requests (lint, typecheck, tests, boundaries, the
+examples build, and no file changed by the run) waits for Jeevan's
+go-ahead, since it adds a trigger. Next: on his yes, push
+`.github/workflows/ci.yml`; a commit with it waits on the local branch
+`claude/node-td-ci`, on top of this one. Merging the pull request also
+waits for him: a merge commit, never a squash.
 
 ## v0.1: a working node-td
 
