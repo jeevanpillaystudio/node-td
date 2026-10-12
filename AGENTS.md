@@ -73,3 +73,17 @@ bun run dev                                # the gallery and editor
 - Small commits, staged by path. A file move is a `git mv` commit with only the move and import-path edits.
 - Work on a branch and open a pull request; merge with a merge commit, never a squash.
 - What is still owed lives in `docs/roadmap.md`.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in GitHub Issues on jeevanpillaystudio/node-td, through the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The five default roles, each label named after its role: needs-triage, needs-info, ready-for-agent, ready-for-human, wontfix. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: one `CONTEXT.md` and `docs/adr/` at the root, created when the first term or decision is settled. See `docs/agents/domain.md`.
