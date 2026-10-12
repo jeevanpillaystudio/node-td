@@ -39,10 +39,47 @@ describe("SeededRNG", () => {
     expect(values.every((v) => v >= 0 && v < 1)).toBe(true);
   });
 
-  test.failing("fork is a pure function of (seed, tag)", () => {
-    const fresh = new SeededRNG(42);
-    const used = new SeededRNG(42);
-    used.random();
-    expect(used.fork("x").random()).toBe(fresh.fork("x").random());
+  // fork, which mixed the draw count into its child's seed, is gone: a
+  // stream is now resumed from a recorded state instead.
+  test("has no fork", () => {
+    expect("fork" in SeededRNG.prototype).toBe(false);
+  });
+
+  test("setState resumes the stream from a getState", () => {
+    const rng = new SeededRNG(42);
+    draws(rng, 3);
+    const state = rng.getState();
+    const next = draws(rng, 5);
+    draws(rng, 100);
+    rng.setState(state);
+    expect(draws(rng, 5)).toEqual(next);
+  });
+
+  test("a state is a pure function of the seed and the number of draws", () => {
+    const a = new SeededRNG(42);
+    const b = new SeededRNG(42);
+    expect(a.getState()).toEqual(b.getState());
+    draws(a, 7);
+    expect(a.getState()).not.toEqual(b.getState());
+    draws(b, 7);
+    expect(a.getState()).toEqual(b.getState());
+  });
+
+  test("getState returns a copy, which later draws do not change", () => {
+    const rng = new SeededRNG(42);
+    const state = rng.getState();
+    const copy = [...state];
+    draws(rng, 3);
+    expect([...state]).toEqual(copy);
+  });
+
+  test("setState copies the state, so the caller can reuse it", () => {
+    const state = new SeededRNG(7).getState();
+    const a = new SeededRNG(1);
+    const b = new SeededRNG(2);
+    a.setState(state);
+    draws(a, 10);
+    b.setState(state);
+    expect(draws(b, 5)).toEqual(draws(new SeededRNG(7), 5));
   });
 });

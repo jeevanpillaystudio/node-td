@@ -1,3 +1,6 @@
+/** The four numbers of a SeededRNG's state. */
+export type RngState = readonly [number, number, number, number];
+
 /**
  * SeededRNG — deterministic pseudo-random number generator.
  *
@@ -38,9 +41,14 @@ export class SeededRNG {
     return (t >>> 0) / 4294967296;
   }
 
-  /** Create an independent child RNG keyed by a tag. */
-  fork(tag: string): SeededRNG {
-    return new SeededRNG((this.d >>> 0) ^ SeededRNG.hashString(tag));
+  /** The generator's whole state: the stream continues from here. */
+  getState(): RngState {
+    return [this.a, this.b, this.c, this.d];
+  }
+
+  /** Continue the stream from a state getState returned. */
+  setState(state: RngState): void {
+    [this.a, this.b, this.c, this.d] = state;
   }
 
   /** FNV-1a hash: string → 32-bit unsigned integer. */

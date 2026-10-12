@@ -38,4 +38,5 @@ export { CookEngine } from "./cook";
 export { OperatorRegistry } from "./registry";
 
 // ─── Seeded PRNG ─────────────────────────────────────────────────
+export type { RngState } from "./rng";
 export { SeededRNG } from "./rng";
