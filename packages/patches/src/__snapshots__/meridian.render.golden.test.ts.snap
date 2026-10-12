@@ -32,8 +32,8 @@ exports[`meridian render 400x400 dpr1 1`] = `
     "length": 2,
   },
   "cook": {
-    "hash": "8f01b570",
-    "length": 300,
+    "hash": "33379d00",
+    "length": 549,
   },
   "terminal": {
     "channels": 4,
@@ -57,8 +57,8 @@ exports[`meridian render 800x800 dpr1 1`] = `
     "length": 2,
   },
   "cook": {
-    "hash": "66499875",
-    "length": 7,
+    "hash": "ecaa8559",
+    "length": 2081,
   },
   "terminal": {
     "channels": 4,
@@ -82,8 +82,8 @@ exports[`meridian render 640x400 dpr1 1`] = `
     "length": 2,
   },
   "cook": {
-    "hash": "7e7e89da",
-    "length": 468,
+    "hash": "1d3229c6",
+    "length": 849,
   },
   "terminal": {
     "channels": 4,
@@ -107,8 +107,8 @@ exports[`meridian render 400x400 dpr2 1`] = `
     "length": 2,
   },
   "cook": {
-    "hash": "75bfe890",
-    "length": 300,
+    "hash": "27d4b520",
+    "length": 549,
   },
   "terminal": {
     "channels": 4,

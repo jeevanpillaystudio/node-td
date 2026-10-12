@@ -40,6 +40,13 @@ opGolden(surfaceRaymarch, {
     width: 400,
     height: 400,
   },
+  // Rays start further from the terrain than maxDist: the march goes on
+  "meridian params, 800 × 800": {
+    nodes: { ...upstream, march: { type: "surface-raymarch", params: meridian } },
+    wires,
+    width: 800,
+    height: 800,
+  },
   // Seeds tagged with their partition's cellId: the hits keep it
   "seeds with attributes": {
     nodes: {
@@ -54,10 +61,11 @@ opGolden(surfaceRaymarch, {
       w("cells.geometry", "seeds.partitions"),
     ],
   },
-  // Rays stop short of the terrain: the no-hit branch
-  "maxDist 50, no hits": {
+  // The camera looks up, away from the terrain: the no-hit branch
+  "camera looking up, no hits": {
     nodes: {
       ...upstream,
+      cam: { type: "camera-3d", params: { ...upstream.cam.params, targetY: 2 } },
       march: { type: "surface-raymarch", params: { maxSteps: 50, maxDist: 50 } },
     },
     wires,

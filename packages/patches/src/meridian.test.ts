@@ -100,4 +100,25 @@ describe("meridian patch", () => {
       expect(attrs.length![i]).toBeGreaterThan(0);
     }
   });
+
+  // The camera scales with the canvas and the terrain does not: the march
+  // must reach the terrain at every size, not only the calibrated 256 px
+  for (const size of [400, 800, 1600]) {
+    it(`raymarch hits at least 90% of the seeds at ${size} × ${size}`, () => {
+      const env = {
+        width: size,
+        height: size,
+        dpr: 1,
+        seed: 42,
+        createCanvas: createRecordingCanvasFactory().createCanvas,
+      };
+      const outputs = new CookEngine(meridianGraph, createDefaultRegistry()).cook(env);
+      type Geo = { vertexCount: number };
+      const seeds = (outputs.get("seeds") as { geometry: Geo }).geometry;
+      const hits = (outputs.get("raymarch") as { geometry: Geo }).geometry;
+
+      expect(seeds.vertexCount).toBeGreaterThan(0);
+      expect(hits.vertexCount / seeds.vertexCount).toBeGreaterThanOrEqual(0.9);
+    });
+  }
 });

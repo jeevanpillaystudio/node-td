@@ -12,7 +12,7 @@ import { defineOperator, filterVertices } from "@node-td/kernel";
  * with the seeds' own colours and attributes, plus these per-vertex
  * attributes for downstream shading and mark-making:
  *
- *   depth   — normalized ray distance 0..1 (near = bright)
+ *   depth   — ray distance over the distance marched, 0..1 (near = bright)
  *   ao      — simple ambient occlusion estimate
  *   worldX  — world X at hit point (for angle field sampling)
  *   worldZ  — world Z at hit point
@@ -67,6 +67,21 @@ export const surfaceRaymarch = defineOperator({
 
     const { positions: seedPos, vertexCount: seedCount } = seeds;
 
+    const rays = Array.from({ length: seedCount }, (_, i) =>
+      camera3d.unproject(seedPos[i * 2]!, seedPos[i * 2 + 1]!),
+    );
+
+    // The field is 0..1, so the surface lies between y = 0 and y = amplitude,
+    // and a ray going down has met it by the time it crosses y = 0: no step
+    // crosses that plane by more than the 0.5 minimum. March at least
+    // maxDist, and on until the last ray has crossed, whatever the camera's
+    // scale; the step budget grows in proportion.
+    let marchLimit = maxDist;
+    for (const { origin, dir } of rays) {
+      if (dir[1] < 0) marchLimit = Math.max(marchLimit, origin[1] / -dir[1] + 1);
+    }
+    const stepBudget = Math.ceil((maxSteps * marchLimit) / maxDist);
+
     const hitSeed = new Uint8Array(seedCount);
     const outDepth: number[] = [];
     const outAO: number[]    = [];
@@ -74,17 +89,13 @@ export const surfaceRaymarch = defineOperator({
     const outWZ: number[]    = [];
 
     for (let i = 0; i < seedCount; i++) {
-      const sx = seedPos[i * 2]!;
-      const sy = seedPos[i * 2 + 1]!;
-
-      const ray = camera3d.unproject(sx, sy);
-      const { origin: [ox, oy, oz], dir: [dx, dy, dz] } = ray;
+      const { origin: [ox, oy, oz], dir: [dx, dy, dz] } = rays[i]!;
 
       // Sphere-trace along ray
       let t = 0;
       let hit = false;
 
-      for (let step = 0; step < maxSteps; step++) {
+      for (let step = 0; step < stepBudget; step++) {
         const wx = ox + dx * t;
         const wy = oy + dy * t;
         const wz = oz + dz * t;
@@ -98,7 +109,7 @@ export const surfaceRaymarch = defineOperator({
 
         // Full sphere-trace step — safe for smooth fBm terrain
         t += Math.max(dist, 0.5);
-        if (t >= maxDist) break;
+        if (t >= marchLimit) break;
       }
 
       if (!hit) continue;
@@ -110,7 +121,7 @@ export const surfaceRaymarch = defineOperator({
       const aoVal = ao(wx, wy, wz);
 
       hitSeed[i] = 1;
-      outDepth.push(t / maxDist);
+      outDepth.push(t / marchLimit);
       outAO.push(aoVal);
       outWX.push(wx);
       outWZ.push(wz);
