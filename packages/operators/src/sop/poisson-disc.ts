@@ -114,7 +114,7 @@ export const poissonDisc = defineOperator({
     const raw = poissonDiscSample(width + 2 * margin, height + 2 * margin, minRadius, rand);
     const shifted = raw.map(([x, y]): [number, number] => [x - margin, y - margin]);
 
-    if (!partitions || !partitions.indices || !partitions.attributes?.cellId) {
+    if (!partitions?.indices || !partitions.attributes?.cellId) {
       return { geometry: pointsGeometry(shifted) };
     }
 

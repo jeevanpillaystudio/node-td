@@ -1,7 +1,7 @@
 import { defineOperator, type Field2D } from "@node-td/kernel";
 import {
   createField, getFieldExpr, clamp as fClamp, abs as fAbs,
-  mul, sub, add, c, u, div, round as fRound, fpow, smoothstep as fSmooth,
+  mul, sub, c, u, div, round as fRound, fpow, smoothstep as fSmooth,
 } from "@node-td/kernel/field";
 import type { FieldExpr } from "@node-td/kernel/field";
 
