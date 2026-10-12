@@ -69,7 +69,7 @@ export const subscapesTerrain3dGraph: Graph = {
     // 0.00025 × 400px = 0.1 units — matches actual algorithm.
     flow: { type: "simplex-noise", params: { noiseScale: 0.00025 } },
     grid: { type: "grid-sampler", params: { resolution: 18 } },
-    // ── Quadtree partitioning (patchwork quilt) ──────────────────
+    // ── Binary partitioning (patchwork quilt) ────────────────────
     // Binary subdivision creates the Subscapes partition cells.
     // depth 5 → up to 32 leaf cells with varying sizes.
     partitions: {
@@ -212,7 +212,7 @@ export const subscapesTerrain3dGraph: Graph = {
     { from: "$env", output: "height", to: "grid", input: "width" },
     { from: "$env", output: "height", to: "grid", input: "height" },
 
-    // ── Quadtree partitioning ───────────────────────────────────
+    // ── Binary partitioning ─────────────────────────────────────
     { from: "$env", output: "height", to: "partitions", input: "width" },
     { from: "$env", output: "height", to: "partitions", input: "height" },
 
