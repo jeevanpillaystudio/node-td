@@ -10,12 +10,9 @@ import {
   type OnSelectionChangeFunc,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import type { Graph } from "@node-td/kernel";
-import { defaultRegistry } from "@node-td/operators";
+import type { Graph, OperatorRegistry } from "@node-td/kernel";
 import { toReactFlowElements } from "../graph-adapter";
 import { GenNode, EnvNode } from "./gen-node";
-
-const registry = defaultRegistry();
 
 const nodeTypes: NodeTypes = {
   gen: GenNode,
@@ -24,13 +21,14 @@ const nodeTypes: NodeTypes = {
 
 interface EditorCanvasProps {
   graph: Graph;
+  registry: OperatorRegistry;
   onNodeSelect: (instanceKey: string | null) => void;
 }
 
-export function EditorCanvas({ graph, onNodeSelect }: EditorCanvasProps) {
+export function EditorCanvas({ graph, registry, onNodeSelect }: EditorCanvasProps) {
   const { nodes: initialNodes, edges: initialEdges } = useMemo(
     () => toReactFlowElements(graph, registry),
-    [graph],
+    [graph, registry],
   );
 
   const [nodes, , onNodesChange] = useNodesState(initialNodes);

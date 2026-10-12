@@ -1,94 +1,161 @@
-import { useEffect, useRef } from "react";
-import type { Graph, Buffer2D } from "@node-td/kernel";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { Graph, Buffer2D, OperatorRegistry } from "@node-td/kernel";
 import { CookEngine, SeededRNG } from "@node-td/kernel";
-import { defaultRegistry } from "@node-td/operators";
 import { blitBuffer2D } from "@node-td/render-web";
-
-const registry = defaultRegistry();
 
 interface EditorPreviewProps {
   graph: Graph;
+  registry: OperatorRegistry;
+  /** The Frame's seed, so the preview shows the same artwork. */
+  seed: number | string;
   values: Record<string, number>;
 }
 
-export function EditorPreview({ graph, values }: EditorPreviewProps) {
+/**
+ * Draws the same way Frame does: one full cook per rAF draw, requested once
+ * per change of graph or values, and by one ResizeObserver per mount when the
+ * size or dpr changes.
+ */
+export function EditorPreview({ graph, registry, seed, values }: EditorPreviewProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const engineRef = useRef<CookEngine | null>(null);
-  const engineGraphRef = useRef<Graph | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    // Create or replace engine when graph identity changes
-    if (engineGraphRef.current !== graph) {
-      engineRef.current = new CookEngine(graph, registry);
-      engineGraphRef.current = graph;
-    }
-    const engine = engineRef.current!;
-    engine.setParams(values);
+  /** What the next draw cooks; the effect below keeps it current. */
+  const inputsRef = useRef({ graph, registry, seed, values });
+  /** The size and dpr of the last draw, or of the last resize seen since. */
+  const sizeRef = useRef<Size | null>(null);
+  const engineRef = useRef<{ graph: Graph; registry: OperatorRegistry; engine: CookEngine } | null>(
+    null,
+  );
+  const rafRef = useRef(0);
 
-    const canvas = canvasRef.current!;
-    const wrapper = wrapperRef.current!;
-    const ctx = canvas.getContext("2d")!;
+  const draw = useCallback(() => {
+    const wrapper = wrapperRef.current;
+    const canvas = canvasRef.current;
+    if (!wrapper || !canvas) return;
 
-    let rafId = 0;
+    const size = measure(wrapper);
+    sizeRef.current = size;
+    const { width: displayW, height: displayH, dpr } = size;
+    // A collapsed panel has no pixels to draw, and the rasterisers cannot
+    // read back an empty canvas.
+    if (displayW === 0 || displayH === 0) return;
 
-    function scheduleDraw() {
-      cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(draw);
-    }
+    // Render at a larger virtual size so the art looks like a miniature,
+    // not a zoomed-in crop of a tiny canvas.
+    const scale = 4;
+    const virtualW = displayW * scale;
+    const virtualH = displayH * scale;
 
-    function draw() {
-      const dpr = window.devicePixelRatio || 1;
-      const displayW = wrapper.clientWidth;
-      const displayH = wrapper.clientHeight;
-
-      // Render at a larger virtual size so the art looks like a miniature,
-      // not a zoomed-in crop of a tiny canvas.
-      const scale = 4;
-      const virtualW = displayW * scale;
-      const virtualH = displayH * scale;
+    const inputs = inputsRef.current;
+    let message: string | null = null;
+    try {
+      const { graph, registry } = inputs;
+      const prev = engineRef.current;
+      const engine =
+        prev && prev.graph === graph && prev.registry === registry
+          ? prev.engine
+          : new CookEngine(graph, registry);
+      engineRef.current = { graph, registry, engine };
+      engine.setParams(inputs.values);
 
       canvas.width = displayW * dpr;
       canvas.height = displayH * dpr;
-      ctx.setTransform(dpr / scale, 0, 0, dpr / scale, 0, 0);
+      const ctx = canvas.getContext("2d");
+      ctx?.setTransform(dpr / scale, 0, 0, dpr / scale, 0, 0);
 
-      // Cook — env diff auto-dirties dependents on resize
       engine.cook({
         width: virtualW,
         height: virtualH,
         dpr: 1, // Preview handles its own scaling via canvas transform
-        rng: new SeededRNG(149149941),
+        rng: new SeededRNG(inputs.seed),
         createCanvas: (cw: number, ch: number) => new OffscreenCanvas(cw, ch),
       });
 
       const buf = engine.findTerminalOutput<Buffer2D>("buffer");
-      if (buf) {
+      if (!buf) {
+        message = "No image output";
+      } else {
         // putImageData ignores canvas transforms, so we blit to a temp canvas
         // then drawImage it through the current transform (dpr/scale)
         const tmp = new OffscreenCanvas(buf.width, buf.height);
-        const tmpCtx = tmp.getContext("2d")!;
-        blitBuffer2D(tmpCtx, buf);
-        ctx.drawImage(tmp, 0, 0);
+        const tmpCtx = tmp.getContext("2d");
+        if (!ctx || !tmpCtx) {
+          message = "No 2D canvas context";
+        } else {
+          blitBuffer2D(tmpCtx, buf);
+          ctx.drawImage(tmp, 0, 0);
+        }
       }
+    } catch (err) {
+      console.error(err);
+      message = `Cook failed: ${err instanceof Error ? err.message : String(err)}`;
+    } finally {
+      // As in Frame: every draw is a full cook, since a partial re-cook
+      // replays the shared random stream differently.
+      engineRef.current?.engine.clearCache();
     }
+    setError(message);
+  }, []);
 
-    scheduleDraw();
+  const scheduleDraw = useCallback(() => {
+    cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(draw);
+  }, [draw]);
 
-    const ro = new ResizeObserver(scheduleDraw);
+  // One observer per mount: it requests a draw only when the size or dpr
+  // differs from the last one recorded.
+  useEffect(() => {
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+    const ro = new ResizeObserver(() => {
+      const next = measure(wrapper);
+      if (sameSize(sizeRef.current, next)) return;
+      sizeRef.current = next;
+      scheduleDraw();
+    });
     ro.observe(wrapper);
-
     return () => {
-      cancelAnimationFrame(rafId);
       ro.disconnect();
+      cancelAnimationFrame(rafRef.current);
     };
-  }, [values, graph]);
+  }, [scheduleDraw]);
+
+  // One draw per change of the graph, its params or seed
+  useEffect(() => {
+    inputsRef.current = { graph, registry, seed, values };
+    scheduleDraw();
+  }, [graph, registry, seed, values, scheduleDraw]);
 
   return (
     <div
       ref={wrapperRef}
-      className="h-full w-full overflow-hidden rounded-md border border-border/50"
+      className="relative h-full w-full overflow-hidden rounded-md border border-border/50"
     >
       <canvas ref={canvasRef} className="block h-full w-full" />
+      {error !== null && (
+        <div
+          role="alert"
+          className="absolute inset-0 flex items-center justify-center bg-card p-2 text-center font-mono text-xs text-muted-foreground"
+        >
+          {error}
+        </div>
+      )}
     </div>
   );
+}
+
+interface Size {
+  width: number;
+  height: number;
+  dpr: number;
+}
+
+function measure(el: HTMLElement): Size {
+  return { width: el.clientWidth, height: el.clientHeight, dpr: window.devicePixelRatio || 1 };
+}
+
+function sameSize(a: Size | null, b: Size): boolean {
+  return a !== null && a.width === b.width && a.height === b.height && a.dpr === b.dpr;
 }

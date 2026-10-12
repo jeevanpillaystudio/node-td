@@ -48,7 +48,12 @@ export function FrameEditor({ onClose }: FrameEditorProps) {
 
         {/* Canvas area */}
         <div className="relative flex-1">
-          <EditorCanvas key={graph.id} graph={graph} onNodeSelect={onNodeSelect} />
+          <EditorCanvas
+            key={graph.id}
+            graph={graph}
+            registry={entry.registry}
+            onNodeSelect={onNodeSelect}
+          />
 
           {/* Floating inspector — top right */}
           {selectedNode && (
@@ -63,7 +68,13 @@ export function FrameEditor({ onClose }: FrameEditorProps) {
 
           {/* Output preview — bottom right */}
           <div className="absolute right-4 bottom-4 h-40 w-64 overflow-hidden rounded-md shadow-lg">
-            <EditorPreview key={graph.id} graph={graph} values={entry.values} />
+            <EditorPreview
+              key={graph.id}
+              graph={graph}
+              registry={entry.registry}
+              seed={entry.seed}
+              values={entry.values}
+            />
           </div>
         </div>
       </div>
