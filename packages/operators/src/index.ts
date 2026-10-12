@@ -71,12 +71,11 @@ export const allOperators: Operator[] = [
   contourRing,
   surfaceRaymarch,
   pointOrient,
+  diffuseShade,
   // CHOP
   proceduralPalette,
   oklabPalette,
   contrastFilter,
-  // MAT
-  diffuseShade,
   // COMP
   camera2d,
   camera3d,

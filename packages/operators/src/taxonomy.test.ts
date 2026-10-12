@@ -23,17 +23,13 @@ const FAMILY: Record<PortType, OperatorCategory | undefined> = {
   number: undefined,
 };
 
-/** MAT holds diffuse-shade alone, until its per-vertex colour moves onto geometry. */
-const MAT_OPERATORS = new Set(["diffuse-shade"]);
-
 describe("taxonomy", () => {
   test("every operator's category is the family of its primary output", () => {
     const mismatched: string[] = [];
     for (const op of allOperators) {
       const primary = op.outputs[0];
       const family = primary ? FAMILY[primary.type] : undefined;
-      const allowed = op.category === family || (op.category === "mat" && MAT_OPERATORS.has(op.id));
-      if (!allowed) mismatched.push(`${op.id}: ${op.category}, primary output ${primary?.type}`);
+      if (op.category !== family) mismatched.push(`${op.id}: ${op.category}, primary output ${primary?.type}`);
     }
     expect(mismatched).toEqual([]);
   });

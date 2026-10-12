@@ -9,7 +9,6 @@ const CATEGORY_DOT: Record<OperatorCategory, string> = {
   top: "bg-purple-400",
   sop: "bg-blue-400",
   chop: "bg-green-400",
-  mat: "bg-yellow-400",
   comp: "bg-zinc-400",
 };
 

@@ -9,13 +9,13 @@
  *         sample fields point by point.
  * TOP   — rasterised 2D data and images: rasterisers, renderers and
  *         compositing, as TD's Render and Composite TOPs
- * SOP   — geometry
+ * SOP   — geometry, with per-vertex normals, colours and attributes
  * CHOP  — palettes, as channel tables of r, g, b, a per sample
- * MAT   — diffuse-shade only: it outputs a palette of per-vertex colours,
- *         until that colour moves onto the geometry
  * COMP  — camera objects, as TD's Camera COMP
+ *
+ * There is no MAT: shading is a SOP that writes colours onto the geometry.
  */
-export type OperatorCategory = "field" | "top" | "sop" | "chop" | "mat" | "comp";
+export type OperatorCategory = "field" | "top" | "sop" | "chop" | "comp";
 
 // ─── Port Types ──────────────────────────────────────────────────
 
@@ -26,7 +26,7 @@ export type OperatorCategory = "field" | "top" | "sop" | "chop" | "mat" | "comp"
  * FIELD outputs: field
  * TOP outputs:   image, grid
  * SOP outputs:   geo2, geo3
- * CHOP outputs:  palette (and MAT, for now)
+ * CHOP outputs:  palette
  * COMP outputs:  camera2d, camera3d
  * $env outputs:  number
  */
