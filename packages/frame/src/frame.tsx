@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { cn } from "./ui/utils";
-import type { Graph, Geometry, Buffer2D } from "@node-td/kernel";
+import type { Graph, Geometry, Buffer2D, OperatorRegistry } from "@node-td/kernel";
 import { collectParams, CookEngine, SeededRNG } from "@node-td/kernel";
 import { defaultRegistry } from "@node-td/operators";
 import { drawCanvas2D, blitBuffer2D } from "@node-td/render-web";
 import { useOptionalFrameContext } from "./frame-provider";
 
-const registry = defaultRegistry();
+/** The seed every gallery artwork was tuned with. */
+const DEFAULT_SEED = 42;
 
 // ── Staggered cook scheduler ──────────────────────────────────
 // When many Frames mount simultaneously (e.g., debug page with 10
@@ -18,9 +19,19 @@ interface FrameProps {
   graph: Graph;
   id?: string;
   className?: string;
+  /** Operators the graph's node types resolve against. Defaults to the built-in operators. */
+  registry?: OperatorRegistry;
+  /** Seed for the random stream the graph's operators draw from. */
+  seed?: number | string;
 }
 
-export function Frame({ graph, id: explicitId, className }: FrameProps) {
+export function Frame({
+  graph,
+  id: explicitId,
+  className,
+  registry = defaultRegistry(),
+  seed = DEFAULT_SEED,
+}: FrameProps) {
   const autoId = useId();
   const frameId = explicitId ?? `frame-${autoId}`;
   const ctx = useOptionalFrameContext();
@@ -31,7 +42,7 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
   const ctxSetEditing = ctx?.setEditing;
   const isActive = ctx?.activeId === frameId;
 
-  const params = useMemo(() => collectParams(graph, registry), [graph]);
+  const params = useMemo(() => collectParams(graph, registry), [graph, registry]);
   const [values, setValues] = useState<Record<string, number>>(() =>
     Object.fromEntries(params.map((p) => [p.key, p.default])),
   );
@@ -85,6 +96,7 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const engineRef = useRef<CookEngine | null>(null);
   const engineGraphRef = useRef<Graph | null>(null);
+  const engineRegistryRef = useRef<OperatorRegistry | null>(null);
   const staggerRef = useRef(-1);
   const hasDrawnRef = useRef(false);
   if (staggerRef.current === -1) staggerRef.current = _mountOrder++;
@@ -93,10 +105,11 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
     // Don't cook until visible
     if (!isVisible) return;
 
-    // Create or replace engine when graph identity changes
-    if (engineGraphRef.current !== graph) {
+    // Create or replace engine when graph or registry identity changes
+    if (engineGraphRef.current !== graph || engineRegistryRef.current !== registry) {
       engineRef.current = new CookEngine(graph, registry);
       engineGraphRef.current = graph;
+      engineRegistryRef.current = registry;
     }
     const engine = engineRef.current!;
 
@@ -124,7 +137,7 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
         width: w,
         height: h,
         dpr,
-        rng: new SeededRNG(42),
+        rng: new SeededRNG(seed),
         createCanvas: (cw: number, ch: number) => new OffscreenCanvas(cw, ch),
       });
 
@@ -177,7 +190,7 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
       if (staggerTimer !== undefined) clearTimeout(staggerTimer);
       ro.disconnect();
     };
-  }, [values, graph, isVisible]);
+  }, [values, graph, registry, seed, isVisible]);
 
   const canvasEl = (
     <div
