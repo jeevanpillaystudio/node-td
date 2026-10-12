@@ -60,7 +60,7 @@ export const subscapesTerrain3dGraph: Graph = {
     },
     // Power mode (4) — actual uses $e ∈ [3, 5], typ. 4.5
     // Lower power shows more terrain height for visual debugging
-    ridge: { type: "field-remap", params: { mode: 4, power: 2.0 } },
+    shape: { type: "field-remap", params: { mode: 4, power: 2.0 } },
 
     // ── Flow field: INDEPENDENT simplex noise ──────────────────
     // grid-sampler now evaluates at pixel positions (not grid indices),
@@ -206,7 +206,7 @@ export const subscapesTerrain3dGraph: Graph = {
   wires: [
     // ── Field algebra: noise → fbm → power ────────────────────
     { from: "noise", output: "field", to: "terrain", input: "field" },
-    { from: "terrain", output: "field", to: "ridge", input: "field" },
+    { from: "terrain", output: "field", to: "shape", input: "field" },
 
     // ── Flow field: independent noise → grid (NOT curl of terrain)
     { from: "flow", output: "field", to: "grid", input: "field" },
@@ -236,18 +236,18 @@ export const subscapesTerrain3dGraph: Graph = {
     { from: "trace", output: "geometry", to: "stroke", input: "geometry" },
 
     // ── Fan-out: power-field → surface-lift (for stroke height)
-    { from: "ridge", output: "field", to: "lift", input: "field" },
+    { from: "shape", output: "field", to: "lift", input: "field" },
     { from: "stroke", output: "geometry", to: "lift", input: "geometry" },
 
     // ── Geometric normals from height field on lifted strokes ──
     { from: "lift", output: "geometry", to: "normals", input: "geometry" },
-    { from: "ridge", output: "field", to: "normals", input: "field" },
+    { from: "shape", output: "field", to: "normals", input: "field" },
 
     // ── Collision mesh: parametric-surface → surface-lift ──────
     { from: "$env", output: "height", to: "colmesh", input: "width" },
     { from: "$env", output: "height", to: "colmesh", input: "height" },
     { from: "colmesh", output: "geometry", to: "liftmesh", input: "geometry" },
-    { from: "ridge", output: "field", to: "liftmesh", input: "field" },
+    { from: "shape", output: "field", to: "liftmesh", input: "field" },
 
     // ── Visibility cull: normals'd strokes vs collision mesh ───
     { from: "normals", output: "geometry", to: "cull", input: "geometry" },
@@ -277,7 +277,7 @@ export const subscapesTerrain3dGraph: Graph = {
     { from: "shade", output: "palette", to: "render", input: "palette" },
 
     // ── Base outline: project + fill render ───────────────────
-    { from: "ridge", output: "field", to: "base", input: "field" },
+    { from: "shape", output: "field", to: "base", input: "field" },
     { from: "$env", output: "height", to: "base", input: "width" },
     { from: "$env", output: "height", to: "base", input: "height" },
 
@@ -293,7 +293,7 @@ export const subscapesTerrain3dGraph: Graph = {
     { from: "camera", output: "camera", to: "render-base", input: "camera" },
 
     // ── Contour ring pipeline ─────────────────────────────────
-    { from: "ridge", output: "field", to: "contour", input: "field" },
+    { from: "shape", output: "field", to: "contour", input: "field" },
     { from: "$env", output: "height", to: "contour", input: "width" },
     { from: "$env", output: "height", to: "contour", input: "height" },
 
