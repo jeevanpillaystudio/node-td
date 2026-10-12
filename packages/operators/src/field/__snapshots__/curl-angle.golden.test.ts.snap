@@ -1,6 +1,6 @@
 // Bun Snapshot v1, https://bun.sh/docs/test/snapshots
 
-exports[`curl-noise golden default 1`] = `
+exports[`curl-angle golden default 1`] = `
 {
   "nodes": {
     "curl": {
@@ -29,7 +29,7 @@ exports[`curl-noise golden default 1`] = `
 }
 `;
 
-exports[`curl-noise golden epsilon 2, scale 0.5 1`] = `
+exports[`curl-angle golden epsilon 2, scale 0.5 1`] = `
 {
   "nodes": {
     "curl": {
@@ -58,7 +58,7 @@ exports[`curl-noise golden epsilon 2, scale 0.5 1`] = `
 }
 `;
 
-exports[`curl-noise golden opaque input 1`] = `
+exports[`curl-angle golden opaque input 1`] = `
 {
   "nodes": {
     "curl": {

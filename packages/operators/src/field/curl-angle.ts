@@ -7,8 +7,8 @@ type Inputs = { field: Field2D };
 type Outputs = { field: Field2D };
 
 /**
- * Curl Noise — produces a divergence-free flow field from a scalar
- * Field2D by rotating its gradient 90 degrees.
+ * Curl Angle — the direction of the curl of a scalar Field2D: its
+ * gradient rotated 90 degrees. It generates no noise of its own.
  *
  * In 2D, the curl of scalar field f is:
  *   curl_x =  df/dy
@@ -19,13 +19,12 @@ type Outputs = { field: Field2D };
  * grid-sampler's 0..2pi mapping).
  *
  * This produces organic, contour-following flow: strokes naturally
- * orbit ridges and valleys of the input terrain. This is the key
- * technique that gives subscapes its topographic aesthetic.
+ * orbit ridges and valleys of the input terrain.
  */
-export const curlNoise: Operator<Inputs, Outputs> = {
-  id: "curl-noise",
+export const curlAngle: Operator<Inputs, Outputs> = {
+  id: "curl-angle",
   category: "top",
-  label: "Curl Noise",
+  label: "Curl Angle",
   inputs: [{ name: "field", type: "field" }],
   outputs: [{ name: "field", type: "field" }],
   params: [

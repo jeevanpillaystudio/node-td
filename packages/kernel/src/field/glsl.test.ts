@@ -128,7 +128,7 @@ function mainValue(source: string): string | undefined {
 // ─── Expressions ─────────────────────────────────────────────────
 //
 // The shapes the operators build, from the same builders: simplex- and
-// perlin-noise, fbm, domain-warp, field-gradient, curl-noise and the
+// perlin-noise, fbm, domain-warp, field-gradient, curl-angle and the
 // field-remap modes, chained the way the gallery patches chain them.
 
 const scale = u("noiseScale", 0.03);
@@ -156,7 +156,7 @@ function gradientXOf(source: FieldExpr): FieldExpr {
   );
 }
 
-/** curl-noise: the angle of the rotated gradient, normalized to [0, 1]. */
+/** curl-angle: the angle of the rotated gradient, normalized to [0, 1]. */
 function curlOf(source: FieldExpr): FieldExpr {
   const s = u("curlScale", 1);
   const eps = u("curlEps", 1);

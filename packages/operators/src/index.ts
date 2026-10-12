@@ -12,7 +12,7 @@ import { domainWarp } from "./field/domain-warp";
 import { fieldMath } from "./field/field-math";
 import { fieldRemap } from "./field/field-remap";
 import { fieldGradient } from "./field/field-gradient";
-import { curlNoise } from "./field/curl-angle";
+import { curlAngle } from "./field/curl-angle";
 import { diffuseShade } from "./mat/diffuse-shade";
 import { circlePack } from "./sop/circle-pack";
 import { poissonDisc } from "./sop/poisson-disc";
@@ -49,7 +49,7 @@ export const allOperators: Operator[] = [
   fieldMath,
   fieldRemap,
   fieldGradient,
-  curlNoise,
+  curlAngle,
   // SOP
   circlePack,
   poissonDisc,
