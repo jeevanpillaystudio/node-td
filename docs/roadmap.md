@@ -6,12 +6,9 @@ file carried what it still owed; git keeps it.
 
 ## Pull request #1
 
-A CI workflow for pull requests (lint, typecheck, tests, boundaries, the
-examples build, and no file changed by the run) waits for Jeevan's
-go-ahead, since it adds a trigger. Next: on his yes, push
-`.github/workflows/ci.yml`; a commit with it waits on the local branch
-`claude/node-td-ci`, on top of this one. Merging the pull request also
-waits for him: a merge commit, never a squash.
+Complete: every step reviewed, CI green on its first run (12 Oct 2026).
+Merging it waits for Jeevan: a merge commit, never a squash. Work after it
+is tracked as GitHub issues on jeevanpillaystudio/node-td.
 
 ## v0.1: a working node-td
 
