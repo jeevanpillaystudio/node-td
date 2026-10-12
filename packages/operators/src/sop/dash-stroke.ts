@@ -1,4 +1,4 @@
-import type { Operator, Geometry, GraphEnv } from "@node-td/kernel";
+import type { Operator, Geometry } from "@node-td/kernel";
 import { geometryToPaths, pathsGeometry } from "@node-td/kernel";
 
 type Inputs = { geometry: Geometry<2> };
@@ -12,8 +12,8 @@ export const dashStroke: Operator<Inputs, Outputs> = {
   inputs: [{ name: "geometry", type: "geometry" }],
   outputs: [{ name: "geometry", type: "geometry" }],
   params: [],
-  evaluate({ geometry }, _params, env?: GraphEnv) {
-    const rand = env?.rng ? () => env.rng!.random() : Math.random;
+  evaluate({ geometry }, _params, env) {
+    const rand = () => env.rng.random();
     const paths = geometryToPaths(geometry);
     const segments: [number, number][][] = [];
 

@@ -18,7 +18,6 @@ export type {
   Capabilities,
   NodeRng,
   NodeEnv,
-  GraphEnv,
   Operator,
   NodeInstance,
 } from "./types";

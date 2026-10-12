@@ -1,5 +1,5 @@
 import { asOffscreen } from "../canvas-handle";
-import type { Operator, Geometry, Camera2D, Palette, Buffer2D, GraphEnv } from "@node-td/kernel";
+import type { Operator, Geometry, Camera2D, Palette, Buffer2D } from "@node-td/kernel";
 
 type Inputs = { geometry: Geometry<2>; camera: Camera2D; palette?: Palette };
 type Outputs = { buffer: Buffer2D };
@@ -53,10 +53,11 @@ export const strokeRenderer: Operator<Inputs, Outputs> = {
     { key: "fillG", label: "Fill Green", min: 0, max: 255, step: 1, default: 26 },
     { key: "fillB", label: "Fill Blue", min: 0, max: 255, step: 1, default: 26 },
   ],
+  envReads: ["dpr"],
 
   evaluate({ geometry, camera, palette }, params, env) {
     const [worldW, worldH] = camera.viewport;
-    const dpr = ((env as GraphEnv | undefined)?.dpr as number) ?? 1;
+    const dpr = env.dpr;
     const pixelW = Math.round(worldW * dpr);
     const pixelH = Math.round(worldH * dpr);
     const lineWidth = params.lineWidth ?? 1.8;
@@ -78,7 +79,7 @@ export const strokeRenderer: Operator<Inputs, Outputs> = {
       sb = Math.round((palette.colors[2] ?? 0.85) * 255);
     }
 
-    const createCanvas = (env as GraphEnv | undefined)?.createCanvas;
+    const createCanvas = env.createCanvas;
     if (!createCanvas) {
       throw new Error("stroke-renderer requires env.createCanvas");
     }

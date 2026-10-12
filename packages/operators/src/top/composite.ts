@@ -1,5 +1,5 @@
 import { asOffscreen } from "../canvas-handle";
-import type { Operator, Buffer2D, GraphEnv } from "@node-td/kernel";
+import type { Operator, Buffer2D } from "@node-td/kernel";
 
 type Inputs = { layers: Buffer2D[] };
 type Outputs = { buffer: Buffer2D };
@@ -58,7 +58,7 @@ export const composite: Operator<Inputs, Outputs> = {
     // All layers have _canvas → composite via drawImage (GPU-accelerated)
     // Inputs are cached outputs: they are read, never modified. Their
     // canvases are released when the host clears the cook cache.
-    const createCanvas = (env as GraphEnv | undefined)?.createCanvas;
+    const createCanvas = env.createCanvas;
     if (createCanvas && layers.every(l => l._canvas)) {
       const canvas = asOffscreen(createCanvas(width, height));
       const ctx = canvas.getContext("2d")!;

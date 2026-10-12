@@ -1,4 +1,4 @@
-import type { Operator, Geometry, GraphEnv } from "@node-td/kernel";
+import type { Operator, Geometry } from "@node-td/kernel";
 import { pointsGeometry } from "@node-td/kernel";
 
 type Inputs = { width: number; height: number };
@@ -44,10 +44,10 @@ export const circlePack: Operator<Inputs, Outputs> = {
     { key: "minRadius", label: "Min Seed Radius", min: 10, max: 150, step: 5, default: 50 },
     { key: "margin", label: "Edge Margin", min: 0, max: 300, step: 10, default: 100 },
   ],
-  evaluate({ width, height }, params, env?: GraphEnv) {
+  evaluate({ width, height }, params, env) {
     const minRadius = params.minRadius ?? 50;
     const margin = params.margin ?? 100;
-    const rand: RandFn = env?.rng ? () => env.rng!.random() : Math.random;
+    const rand: RandFn = () => env.rng.random();
     const raw = packSeeds(width + 2 * margin, height + 2 * margin, minRadius, 3000, rand);
     const shifted = raw.map(([x, y]): [number, number] => [x - margin, y - margin]);
     return { geometry: pointsGeometry(shifted) };

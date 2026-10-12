@@ -1,10 +1,10 @@
-import type { Operator, Geometry, GraphEnv } from "@node-td/kernel";
+import type { Operator, Geometry } from "@node-td/kernel";
 import { pointsGeometry } from "@node-td/kernel";
 
 type Inputs = { width: number; height: number; partitions?: Geometry<2> };
 type Outputs = { geometry: Geometry<2> };
 
-/** Random source — reads from env.rng when available, falls back to Math.random */
+/** Random source — draws from env.rng, the graph's seeded stream */
 type RandFn = () => number;
 
 /**
@@ -108,10 +108,10 @@ export const poissonDisc: Operator<Inputs, Outputs> = {
     { key: "margin", label: "Edge Margin", min: 0, max: 300, step: 10, default: 100 },
     { key: "densityScale", label: "Partition Density Scale", min: 0.1, max: 3, step: 0.1, default: 1.5 },
   ],
-  evaluate({ width, height, partitions }, params, env?: GraphEnv) {
+  evaluate({ width, height, partitions }, params, env) {
     const minRadius = params.minRadius ?? 40;
     const margin = params.margin ?? 100;
-    const rand: RandFn = env?.rng ? () => env.rng!.random() : Math.random;
+    const rand: RandFn = () => env.rng.random();
 
     // Sample in an extended area so seeds reach all canvas edges
     const raw = poissonDiscSample(width + 2 * margin, height + 2 * margin, minRadius, rand);

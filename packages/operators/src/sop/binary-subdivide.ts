@@ -1,4 +1,4 @@
-import type { Operator, Geometry, GraphEnv } from "@node-td/kernel";
+import type { Operator, Geometry } from "@node-td/kernel";
 
 type Inputs = { width: number; height: number };
 type Outputs = { geometry: Geometry<2> };
@@ -47,11 +47,11 @@ export const binarySubdivide: Operator<Inputs, Outputs> = {
     { key: "minSize", label: "Min Cell Size", min: 2, max: 200, step: 1, default: 10 },
     { key: "splitJitter", label: "Split Jitter", min: 0, max: 0.4, step: 0.01, default: 0.15 },
   ],
-  evaluate({ width, height }, params, env?: GraphEnv) {
+  evaluate({ width, height }, params, env) {
     const maxDepth = Math.round(params.maxDepth ?? 5);
     const minSize = params.minSize ?? 10;
     const splitJitter = params.splitJitter ?? 0.15;
-    const rand = env?.rng ? () => env.rng!.random() : Math.random;
+    const rand = () => env.rng.random();
 
     const leaves: Cell[] = [];
 

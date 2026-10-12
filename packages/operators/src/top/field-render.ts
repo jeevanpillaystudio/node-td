@@ -1,4 +1,4 @@
-import type { Operator, Field2D, Buffer2D, GraphEnv } from "@node-td/kernel";
+import type { Operator, Field2D, Buffer2D } from "@node-td/kernel";
 
 type Inputs = { field: Field2D; width: number; height: number };
 type Outputs = { buffer: Buffer2D };
@@ -24,10 +24,11 @@ export const fieldRender: Operator<Inputs, Outputs> = {
   params: [
     { key: "scale", label: "Resolution Scale", min: 0.25, max: 2, step: 0.25, default: 1 },
   ],
+  envReads: ["dpr"],
 
   evaluate({ field, width, height }, params, env) {
     const scale = params.scale ?? 1;
-    const dpr = ((env as GraphEnv | undefined)?.dpr as number) ?? 1;
+    const dpr = env.dpr;
     const bufW = Math.round(width * scale * dpr);
     const bufH = Math.round(height * scale * dpr);
 

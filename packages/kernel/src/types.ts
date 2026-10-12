@@ -234,9 +234,6 @@ export interface NodeRng {
 /** The env an operator's evaluate receives: the env values, the capabilities and the stream. */
 export type NodeEnv = EnvValues & Capabilities & { rng: NodeRng };
 
-/** @deprecated Use NodeEnv. Kept until the operators stop naming it. */
-export type GraphEnv = NodeEnv;
-
 // ─── Operator Protocol ───────────────────────────────────────────
 
 /**
