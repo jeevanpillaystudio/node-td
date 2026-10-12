@@ -59,7 +59,8 @@ describe("meridian patch", () => {
     expect(attrs.ao).toHaveLength(geo.vertexCount);
     expect(attrs.worldX).toHaveLength(geo.vertexCount);
     expect(attrs.worldZ).toHaveLength(geo.vertexCount);
-    expect(attrs.normalX).toHaveLength(geo.vertexCount);
+    // Only the attributes something downstream reads
+    expect(Object.keys(attrs).sort()).toEqual(["ao", "depth", "worldX", "worldZ"]);
 
     // Depth values should be normalized 0..1
     for (let i = 0; i < geo.vertexCount; i++) {

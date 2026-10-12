@@ -14,9 +14,7 @@ import { defineOperator } from "@node-td/kernel";
  *   depth   — normalized ray distance 0..1 (near = bright)
  *   ao      — simple ambient occlusion estimate
  *   worldX  — world X at hit point (for angle field sampling)
- *   worldY  — world Y (terrain height at hit)
  *   worldZ  — world Z at hit point
- *   normalX/Y/Z — surface normal via central differences
  *
  * This is the core Meridian SOP. It replaces the explicit
  * parametric-surface → surface-lift → visibility-cull → project-3d chain
@@ -37,7 +35,6 @@ export const surfaceRaymarch = defineOperator({
     { key: "maxSteps", label: "Max Steps", min: 50, max: 500, step: 10, default: 150 },
     { key: "maxDist", label: "Max Distance", min: 50, max: 2000, step: 50, default: 700 },
     { key: "epsilon", label: "Hit Epsilon", min: 0.01, max: 2, step: 0.01, default: 0.3 },
-    { key: "normalEps", label: "Normal Epsilon", min: 0.1, max: 5, step: 0.1, default: 0.5 },
     { key: "aoSteps", label: "AO Steps", min: 0, max: 10, step: 1, default: 4 },
     { key: "aoRadius", label: "AO Radius", min: 1, max: 50, step: 1, default: 10 },
   ],
@@ -46,7 +43,6 @@ export const surfaceRaymarch = defineOperator({
     const maxSteps  = Math.round(params.maxSteps);
     const maxDist   = params.maxDist;
     const epsilon   = params.epsilon;
-    const normalEps = params.normalEps;
     const aoSteps   = Math.round(params.aoSteps);
     const aoRadius  = params.aoRadius;
 
@@ -55,16 +51,6 @@ export const surfaceRaymarch = defineOperator({
 
     // Terrain SDF: positive = above surface, negative = below
     const sdf = (x: number, y: number, z: number): number => y - height(x, z);
-
-    // Central-difference surface normal
-    const normal = (x: number, y: number, z: number): [number, number, number] => {
-      const e = normalEps;
-      const dx = sdf(x + e, y, z) - sdf(x - e, y, z);
-      const dy = sdf(x, y + e, z) - sdf(x, y - e, z);
-      const dz = sdf(x, y, z + e) - sdf(x, y, z - e);
-      const len = Math.sqrt(dx * dx + dy * dy + dz * dz);
-      return len > 1e-10 ? [dx / len, dy / len, dz / len] : [0, 1, 0];
-    };
 
     // Horizon-based AO: step upward along Y and check if terrain occludes
     const ao = (wx: number, wy: number, wz: number): number => {
@@ -84,11 +70,7 @@ export const surfaceRaymarch = defineOperator({
     const outDepth: number[] = [];
     const outAO: number[]    = [];
     const outWX: number[]    = [];
-    const outWY: number[]    = [];
     const outWZ: number[]    = [];
-    const outNX: number[]    = [];
-    const outNY: number[]    = [];
-    const outNZ: number[]    = [];
 
     for (let i = 0; i < seedCount; i++) {
       const sx = seedPos[i * 2]!;
@@ -124,18 +106,13 @@ export const surfaceRaymarch = defineOperator({
       const wy = oy + dy * t;
       const wz = oz + dz * t;
 
-      const [nx, ny, nz] = normal(wx, wy, wz);
       const aoVal = ao(wx, wy, wz);
 
       outPos.push(sx, sy);
       outDepth.push(t / maxDist);
       outAO.push(aoVal);
       outWX.push(wx);
-      outWY.push(wy);
       outWZ.push(wz);
-      outNX.push(nx);
-      outNY.push(ny);
-      outNZ.push(nz);
     }
 
     const n = outDepth.length;
@@ -160,11 +137,7 @@ export const surfaceRaymarch = defineOperator({
           depth:   new Float32Array(outDepth),
           ao:      new Float32Array(outAO),
           worldX:  new Float32Array(outWX),
-          worldY:  new Float32Array(outWY),
           worldZ:  new Float32Array(outWZ),
-          normalX: new Float32Array(outNX),
-          normalY: new Float32Array(outNY),
-          normalZ: new Float32Array(outNZ),
         },
       },
     };

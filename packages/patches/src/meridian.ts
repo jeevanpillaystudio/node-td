@@ -68,7 +68,6 @@ export const meridianGraph: Graph = {
       maxSteps:  150,
       maxDist:   700,
       epsilon:   0.3,
-      normalEps: 0.5,
       aoSteps:   4,
       aoRadius:  12,
     }},
