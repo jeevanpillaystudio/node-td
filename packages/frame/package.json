@@ -27,7 +27,6 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@node-td/engine": "workspace:*",
     "@node-td/kernel": "workspace:*",
     "@node-td/operators": "workspace:*",
     "@node-td/render-web": "workspace:*",
