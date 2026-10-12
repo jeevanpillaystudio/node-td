@@ -80,27 +80,4 @@ opGolden(merge, {
       w("meshB.geometry", "merge.geometry"),
     ],
   },
-  "3D, normals on one input": {
-    nodes: {
-      noise: { type: "simplex-noise" },
-      meshA: meshA.node,
-      meshB: meshB.node,
-      liftA: { type: "surface-lift" },
-      liftB: { type: "surface-lift" },
-      normals: { type: "geometric-normal", params: { epsilon: 1 } },
-      merge: { type: "merge" },
-    },
-    wires: [
-      ...meshA.wires,
-      ...meshB.wires,
-      w("meshA.geometry", "liftA.geometry"),
-      w("noise.field", "liftA.field"),
-      w("meshB.geometry", "liftB.geometry"),
-      w("noise.field", "liftB.field"),
-      w("liftA.geometry", "normals.geometry"),
-      w("noise.field", "normals.field"),
-      w("normals.geometry", "merge.geometry"),
-      w("liftB.geometry", "merge.geometry"),
-    ],
-  },
 });

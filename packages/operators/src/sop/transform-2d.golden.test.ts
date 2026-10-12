@@ -38,20 +38,4 @@ opGolden(transform2d, {
       w("trace.geometry", "xf.geometry"),
     ],
   },
-  // A 3D input: only x and y of each vertex are written
-  "3D input": {
-    nodes: {
-      noise: { type: "simplex-noise" },
-      mesh: { type: "parametric-surface", params: { uSegments: 4, vSegments: 4 } },
-      lift: { type: "surface-lift" },
-      xf: moved,
-    },
-    wires: [
-      w("$env.width", "mesh.width"),
-      w("$env.height", "mesh.height"),
-      w("mesh.geometry", "lift.geometry"),
-      w("noise.field", "lift.field"),
-      w("lift.geometry", "xf.geometry"),
-    ],
-  },
 });

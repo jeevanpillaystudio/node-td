@@ -154,11 +154,14 @@ opGolden(strokeRenderer, {
     dash,
     withPalette(oriented, { type: "oklab-palette" }),
   ),
+  // diffuse-shade takes 3D geometry: lift the points, keeping one shade per vertex
   "Oriented Dash, per-vertex palette": fixture(dash, {
-    nodes: { ...orientedNodes, shade: { type: "diffuse-shade" } },
+    nodes: { ...orientedNodes, lift: { type: "surface-lift" }, shade: { type: "diffuse-shade" } },
     wires: [
       ...orientedWires,
-      w("orient.geometry", "shade.geometry"),
+      w("orient.geometry", "lift.geometry"),
+      w("terrain.field", "lift.field"),
+      w("lift.geometry", "shade.geometry"),
       w("shade.palette", "render.palette"),
     ],
   }),

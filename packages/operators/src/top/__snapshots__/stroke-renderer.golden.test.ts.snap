@@ -1220,6 +1220,38 @@ exports[`stroke-renderer golden Oriented Dash, per-vertex palette 1`] = `
         "zoom": 1,
       },
     },
+    "lift": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "f85fae54",
+          "stats": [
+            {
+              "max": 126.983,
+              "mean": 61.403,
+              "min": 0.268,
+            },
+            {
+              "max": 94.069,
+              "mean": 60.354,
+              "min": 12.704,
+            },
+            {
+              "max": 123.842,
+              "mean": 64.583,
+              "min": 1.428,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 29,
+      },
+    },
     "march": {
       "geometry": {
         "attributes": {
