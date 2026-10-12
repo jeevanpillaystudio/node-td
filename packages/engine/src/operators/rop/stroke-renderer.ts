@@ -341,16 +341,18 @@ export const strokeRenderer: Operator<Inputs, Outputs> = {
 };
 
 /**
- * Read canvas pixels into a CPU-side Buffer2D, then release the canvas.
+ * Read canvas pixels into a CPU-side Buffer2D.
  *
  * The OffscreenCanvas is attached as `_canvas` so that the composite
- * operator can use the fast drawImage path. However, the `data` field
- * is eagerly populated — this is critical because keeping many
- * GPU-backed OffscreenCanvases alive in the CookEngine cache would
- * exhaust GPU memory (10 panels × 5 canvases × 6.9 MB = 350 MB at 2× DPR).
+ * operator and blitBuffer2D can use the fast drawImage path. The `data`
+ * field is eagerly populated, so consumers that need pixels never read
+ * back from the canvas.
  *
- * The composite operator consumes `_canvas` via drawImage and then
- * nulls it out, allowing the canvas to be GC'd promptly.
+ * The canvas lives as long as this output stays in the CookEngine cache:
+ * consumers never clear `_canvas`, and the canvas is released when the
+ * host clears the cache. Keeping many GPU-backed OffscreenCanvases cached
+ * would exhaust GPU memory (10 panels × 5 canvases × 6.9 MB = 350 MB at
+ * 2× DPR), which is why Frame clears its cache after every draw.
  */
 function canvasBuffer(
   canvas: OffscreenCanvas,
