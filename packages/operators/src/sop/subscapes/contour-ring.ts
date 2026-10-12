@@ -1,7 +1,4 @@
-import type { Operator, Field2D, Geometry } from "@node-td/kernel";
-
-type Inputs = { field: Field2D; width: number; height: number };
-type Outputs = { geometry: Geometry<3> };
+import { defineOperator } from "@node-td/kernel";
 
 /**
  * Contour Ring -- generates elevation contour lines along the terrain boundary.
@@ -17,7 +14,7 @@ type Outputs = { geometry: Geometry<3> };
  * (algorithm.js:408-437). The original uses `e = 1 - pow(1 - t, 4)` easing
  * and `Oe` levels (typically 2, 5, 10, or 15).
  */
-export const contourRing: Operator<Inputs, Outputs> = {
+export const contourRing = defineOperator({
   id: "contour-ring",
   category: "sop",
   label: "Contour Ring",
@@ -35,10 +32,10 @@ export const contourRing: Operator<Inputs, Outputs> = {
   ],
 
   evaluate({ field, width: w, height: h }, params) {
-    const levels = Math.round(params.levels ?? 5);
-    const samples = Math.round(params.samples ?? 150);
-    const amp = params.amplitude ?? 80;
-    const baseY = params.baseY ?? 0;
+    const levels = Math.round(params.levels);
+    const samples = Math.round(params.samples);
+    const amp = params.amplitude;
+    const baseY = params.baseY;
 
     // -- Sample terrain height along the two visible edges ---------------
     const edgeCoords: [number, number][] = []; // [x, z]
@@ -119,10 +116,10 @@ export const contourRing: Operator<Inputs, Outputs> = {
       geometry: {
         positions,
         vertexCount: totalVerts,
-        dim: 3 as const,
-        topology: "line-strip" as const,
+        dim: 3,
+        topology: "line-strip",
         stripOffsets,
       },
     };
   },
-};
+});

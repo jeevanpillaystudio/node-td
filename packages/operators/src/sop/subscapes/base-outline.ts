@@ -1,7 +1,4 @@
-import type { Operator, Field2D, Geometry } from "@node-td/kernel";
-
-type Inputs = { field: Field2D; width: number; height: number };
-type Outputs = { geometry: Geometry<3> };
+import { defineOperator } from "@node-td/kernel";
 
 /**
  * Base Outline -- generates the visible base polygon of a terrain tile.
@@ -23,7 +20,7 @@ type Outputs = { geometry: Geometry<3> };
  *
  * Mirrors the `bt` polygon in the Subscapes algorithm (algorithm.js:388-407).
  */
-export const baseOutline: Operator<Inputs, Outputs> = {
+export const baseOutline = defineOperator({
   id: "base-outline",
   category: "sop",
   label: "Base Outline",
@@ -40,9 +37,9 @@ export const baseOutline: Operator<Inputs, Outputs> = {
   ],
 
   evaluate({ field, width: w, height: h }, params) {
-    const samples = Math.round(params.samples ?? 150);
-    const amp = params.amplitude ?? 80;
-    const baseY = params.baseY ?? 0;
+    const samples = Math.round(params.samples);
+    const amp = params.amplitude;
+    const baseY = params.baseY;
 
     // -- Sample the two visible edges ------------------------------------
     // Back edge: x from 0 -> w, z = h
@@ -91,10 +88,10 @@ export const baseOutline: Operator<Inputs, Outputs> = {
       geometry: {
         positions,
         vertexCount,
-        dim: 3 as const,
-        topology: "line-strip" as const,
+        dim: 3,
+        topology: "line-strip",
         stripOffsets: new Uint32Array([0]),
       },
     };
   },
-};
+});
