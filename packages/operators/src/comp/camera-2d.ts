@@ -1,7 +1,4 @@
-import type { Operator, Camera2D } from "@node-td/kernel";
-
-type Inputs = { width: number; height: number };
-type Outputs = { camera: Camera2D };
+import { defineOperator } from "@node-td/kernel";
 
 /**
  * Camera 2D — produces a Camera2D currency from viewport dimensions.
@@ -9,7 +6,7 @@ type Outputs = { camera: Camera2D };
  * centerX/centerY default to 0, meaning the camera is centered on the canvas.
  * The evaluate function offsets by width/2, height/2 so (0,0) maps to canvas center.
  */
-export const camera2d: Operator<Inputs, Outputs> = {
+export const camera2d = defineOperator({
   id: "camera-2d",
   category: "comp",
   label: "Camera 2D",
@@ -27,11 +24,11 @@ export const camera2d: Operator<Inputs, Outputs> = {
   evaluate({ width, height }, params) {
     return {
       camera: {
-        center: [(params.centerX ?? 0) + width / 2, (params.centerY ?? 0) + height / 2],
-        zoom: params.zoom ?? 1,
-        rotation: params.rotation ?? 0,
+        center: [params.centerX + width / 2, params.centerY + height / 2],
+        zoom: params.zoom,
+        rotation: params.rotation,
         viewport: [width, height],
       },
     };
   },
-};
+});

@@ -1,7 +1,4 @@
-import type { Operator, Camera3D } from "@node-td/kernel";
-
-type Inputs = { width: number; height: number; sceneSize?: number };
-type Outputs = { camera3d: Camera3D };
+import { defineOperator, type Camera3D } from "@node-td/kernel";
 
 // ─── Vector math (inline, zero dependencies) ────────────────────
 
@@ -191,7 +188,7 @@ function mul4(a: Float64Array, b: Float64Array): Float64Array {
  * creates the parallel-projection 2.5D tiles aesthetic
  * used by subscapes.
  */
-export const camera3d: Operator<Inputs, Outputs> = {
+export const camera3d = defineOperator({
   id: "camera-3d",
   category: "comp",
   label: "Camera 3D",
@@ -229,9 +226,9 @@ export const camera3d: Operator<Inputs, Outputs> = {
     { key: "far", label: "Far", min: 100, max: 10000, step: 100, default: 5000 },
   ],
   evaluate({ width, height, sceneSize }, params) {
-    const projMode = Math.round(params.projection ?? 0);
-    const near = params.near ?? 0.1;
-    const far = params.far ?? 5000;
+    const projMode = Math.round(params.projection);
+    const near = params.near;
+    const far = params.far;
 
     // Scene center: if sceneSize is provided, terrain is a square of that size
     // centered at (sceneSize/2, 0, sceneSize/2). Otherwise use viewport dims.
@@ -243,14 +240,14 @@ export const camera3d: Operator<Inputs, Outputs> = {
     // the camera framing scales with the scene (TouchDesigner convention).
     // An eyeX of 1.0 means "1× sceneSize from center".
     const eye = [
-      cx + (params.eyeX ?? 300) * ss,
-      (params.eyeY ?? 400) * ss,
-      cz + (params.eyeZ ?? -300) * ss,
+      cx + params.eyeX * ss,
+      params.eyeY * ss,
+      cz + params.eyeZ * ss,
     ];
     const target = [
-      cx + (params.targetX ?? 0) * ss,
-      (params.targetY ?? 0) * ss,
-      cz + (params.targetZ ?? 0) * ss,
+      cx + params.targetX * ss,
+      params.targetY * ss,
+      cz + params.targetZ * ss,
     ];
 
     // View matrix
@@ -261,14 +258,14 @@ export const camera3d: Operator<Inputs, Outputs> = {
     if (projMode === 0) {
       // Orthographic — orthoSize is relative to sceneSize.
       // A value of 1.61 means the visible extent is 1.61× sceneSize.
-      const size = (params.orthoSize ?? 500) * ss;
+      const size = params.orthoSize * ss;
       const aspect = width / height;
       const halfW = size * aspect * 0.5;
       const halfH = size * 0.5;
       proj = ortho(-halfW, halfW, -halfH, halfH, near, far);
     } else {
       // Perspective
-      const fovRad = ((params.fov ?? 60) * Math.PI) / 180;
+      const fovRad = (params.fov * Math.PI) / 180;
       proj = perspective(fovRad, width / height, near, far);
     }
 
@@ -330,4 +327,4 @@ export const camera3d: Operator<Inputs, Outputs> = {
       camera3d: { project, unproject, viewport: [width, height] },
     };
   },
-};
+});
