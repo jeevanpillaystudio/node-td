@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["bun"],
+    "tsBuildInfoFile": "${configDir}/.cache/tsbuildinfo.test.json"
+  },
+  "include": ["src/**/*.test.ts"],
+  "exclude": ["node_modules"]
+}

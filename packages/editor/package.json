@@ -13,7 +13,8 @@
   },
   "scripts": {
     "clean": "git clean -xdf .cache .turbo node_modules",
-    "typecheck": "tsc --noEmit"
+    "test": "bun test",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json"
   },
   "dependencies": {
     "@node-td/frame": "workspace:*",
@@ -32,6 +33,7 @@
   },
   "devDependencies": {
     "@node-td/typescript-config": "workspace:*",
+    "@types/bun": "1.3.9",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "typescript": "^5.9.0"
