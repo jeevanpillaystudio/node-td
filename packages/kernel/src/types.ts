@@ -189,18 +189,53 @@ export interface Camera3D {
   viewport: [number, number];
 }
 
+// ─── Environment ─────────────────────────────────────────────────
+
 /**
- * Graph evaluation environment — passed through to all evaluate() calls.
- *
- * Carries env values ($env wires: width, height) plus injected
- * capabilities like a canvas factory for ROP operators and a
- * seeded PRNG for deterministic randomness.
+ * The values a host cooks with. The CookEngine diffs them on every
+ * setEnv, so a change re-cooks only the nodes that read the changed key:
+ * through a $env wire (width, height), through the operator's envReads,
+ * or, for the seed, through the random stream.
  */
-export type GraphEnv = Record<string, unknown> & {
+export interface EnvValues {
+  /** Scene width in CSS pixels */
+  width: number;
+  /** Scene height in CSS pixels */
+  height: number;
+  /** Device pixel ratio: rasterisers draw width·dpr × height·dpr pixels */
+  dpr: number;
+  /** Seed of the random stream the operators draw from */
+  seed: number | string;
+}
+
+/** The name of one environment value. */
+export type EnvKey = keyof EnvValues;
+
+/**
+ * What the host lends the operators. Never diffed: a new factory does
+ * not re-cook anything.
+ */
+export interface Capabilities {
+  /** Makes a canvas for the renderers to draw into (an OffscreenCanvas in the browser) */
   createCanvas?: (w: number, h: number) => CanvasHandle;
-  /** Seeded PRNG — operators read from this for deterministic output. */
-  rng?: { random(): number };
-};
+}
+
+/**
+ * The random stream as an operator sees it. Every operator draws from
+ * the one stream, in topological order; the engine records where the
+ * stream stood around each node, so it can skip a clean node without
+ * changing what the nodes after it draw.
+ */
+export interface NodeRng {
+  /** A float in [0, 1) */
+  random(): number;
+}
+
+/** The env an operator's evaluate receives: the env values, the capabilities and the stream. */
+export type NodeEnv = EnvValues & Capabilities & { rng: NodeRng };
+
+/** @deprecated Use NodeEnv. Kept until the operators stop naming it. */
+export type GraphEnv = NodeEnv;
 
 // ─── Operator Protocol ───────────────────────────────────────────
 
@@ -227,8 +262,14 @@ export interface Operator<TInputs = any, TOutputs = any> {
   outputs: PortDef[];
   /** Tunable parameters */
   params: ParamDef[];
+  /**
+   * The env values evaluate reads from its env argument. A change to one
+   * re-cooks the node. Values wired in through $env need not be listed,
+   * and neither does env.rng: the engine tracks the random stream itself.
+   */
+  envReads?: EnvKey[];
   /** CPU evaluation — returns a record keyed by output port name */
-  evaluate?: (inputs: TInputs, params: Record<string, number>, env?: GraphEnv) => TOutputs;
+  evaluate?: (inputs: TInputs, params: Record<string, number>, env: NodeEnv) => TOutputs;
 }
 
 /** A placed operator in a graph — references a type by id with optional param overrides */

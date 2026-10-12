@@ -11,7 +11,7 @@ import {
   useState,
 } from "react";
 import type { Graph, Buffer2D, NodeError, OperatorRegistry, ParamDef } from "@node-td/kernel";
-import { collectParams, CookEngine, GraphValidationError, SeededRNG } from "@node-td/kernel";
+import { collectParams, CookEngine, GraphValidationError } from "@node-td/kernel";
 import { defaultRegistry } from "@node-td/operators";
 import { blitBuffer2D } from "@node-td/render-web";
 import { FrameHostContext } from "./frame-host";
@@ -154,7 +154,7 @@ function FrameView({ graph, frameId, registry, seed }: FrameViewProps) {
         width,
         height,
         dpr,
-        rng: new SeededRNG(inputs.seed),
+        seed: inputs.seed,
         createCanvas: (cw: number, ch: number) => new OffscreenCanvas(cw, ch),
       });
 

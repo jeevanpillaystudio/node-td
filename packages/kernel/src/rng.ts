@@ -11,8 +11,11 @@ export type RngState = readonly [number, number, number, number];
  * Seeding spreads a single integer across 4 state words via splitmix32,
  * then discards 12 outputs to escape initial correlation.
  *
- * In the graph, SeededRNG lives on GraphEnv.rng and is read by any
- * operator that needs randomness (SOP seed placement, dash patterns, etc.).
+ * In the graph, the CookEngine makes one SeededRNG(seed) per cook, and
+ * every operator that needs randomness (SOP seed placement, dash
+ * patterns, etc.) draws from it as env.rng, in topological order. The
+ * engine records the state around each node with getState, so it can
+ * skip a clean node with setState without changing what later nodes draw.
  */
 export class SeededRNG {
   private a: number;

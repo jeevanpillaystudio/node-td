@@ -21,6 +21,11 @@ export interface Graph {
   name: string;
   nodes: Record<string, NodeInstance>;
   wires: Wire[];
+  /**
+   * The seed the graph's random stream was tuned with. Hosts cook with it
+   * (EnvValues.seed) unless told to use another.
+   */
+  seed?: number | string;
 }
 
 // ─── Registry interface (avoids circular import) ─────────────────

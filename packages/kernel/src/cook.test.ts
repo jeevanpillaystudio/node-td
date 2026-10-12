@@ -2,8 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { CookEngine } from "./cook";
 import { type Graph, GraphValidationError, type Wire } from "./graph";
 import { OperatorRegistry } from "./registry";
-import { SeededRNG } from "./rng";
-import type { GraphEnv, Operator } from "./types";
+import type { Capabilities, EnvValues, Operator } from "./types";
 
 // ─── Fake operators ──────────────────────────────────────────────
 //
@@ -66,7 +65,7 @@ const collect: Operator = {
 };
 
 /** Emits env.dpr, read straight from the env. Declares the env keys it reads. */
-const dprReader = {
+const dprReader: Operator = {
   id: "dpr-reader",
   category: "top",
   label: "DPR Reader",
@@ -74,8 +73,29 @@ const dprReader = {
   outputs: [{ name: "dpr", type: "number" }],
   params: [],
   envReads: ["dpr"],
-  evaluate: (_inputs: unknown, _params: unknown, env?: GraphEnv) => ({ dpr: env?.dpr }),
-} as Operator;
+  evaluate: (_inputs, _params, env) => ({ dpr: env.dpr }),
+};
+
+/** Emits the env it was handed, as plain data. Declares every env value. */
+const envEcho: Operator = {
+  id: "env-echo",
+  category: "top",
+  label: "Env Echo",
+  inputs: [],
+  outputs: [{ name: "env", type: "number" }],
+  params: [],
+  envReads: ["width", "height", "dpr", "seed"],
+  evaluate: (_inputs, _params, env) => ({
+    env: {
+      width: env.width,
+      height: env.height,
+      dpr: env.dpr,
+      seed: env.seed,
+      canvas: env.createCanvas?.(3, 4),
+      rngKeys: Object.keys(env.rng),
+    },
+  }),
+};
 
 /** Always throws. */
 const broken: Operator = {
@@ -115,8 +135,9 @@ const inert: Operator = {
 };
 
 /**
- * Stands in for circle-pack: draws from the shared env.rng and offsets
- * the draws by its `margin` param, so the output depends on both.
+ * Stands in for circle-pack: draws eight values from the shared env.rng
+ * and offsets them by its `margin` param, so the output depends on both,
+ * while the number of draws does not.
  */
 const scatter: Operator = {
   id: "scatter",
@@ -126,19 +147,66 @@ const scatter: Operator = {
   outputs: [{ name: "points", type: "geometry" }],
   params: [{ key: "margin", label: "Margin", min: 0, max: 300, step: 10, default: 100 }],
   evaluate: (_inputs, params, env) => {
-    const rng = env?.rng;
-    if (!rng) throw new Error("scatter needs env.rng");
     const margin = params.margin;
     if (margin === undefined) throw new Error("scatter needs params.margin");
     const points: number[] = [];
-    for (let i = 0; i < 8; i++) points.push(rng.random() * 1000 - margin);
+    for (let i = 0; i < 8; i++) points.push(env.rng.random() * 1000 - margin);
     return { points };
   },
 };
 
+/**
+ * Stands in for poisson-disc: the number of values it draws is its
+ * param `n`. While `fail` is 1 it draws one value and throws.
+ */
+const draws: Operator = {
+  id: "draws",
+  category: "sop",
+  label: "Draws",
+  inputs: [],
+  outputs: [{ name: "values", type: "geometry" }],
+  params: [
+    { key: "n", label: "N", min: 0, max: 10, step: 1, default: 3 },
+    { key: "fail", label: "Fail", min: 0, max: 1, step: 1, default: 0 },
+  ],
+  evaluate: (_inputs, params, env) => {
+    if (params.fail === 1) {
+      env.rng.random();
+      throw new Error("draws failed");
+    }
+    const values: number[] = [];
+    for (let i = 0; i < (params.n ?? 0); i++) values.push(env.rng.random());
+    return { values };
+  },
+};
+
+/** Emits how many values its input holds. Draws nothing. */
+const count: Operator = {
+  id: "count",
+  category: "sop",
+  label: "Count",
+  inputs: [{ name: "values", type: "geometry" }],
+  outputs: [{ name: "n", type: "number" }],
+  params: [],
+  evaluate: ({ values }) => ({ n: values.length }),
+};
+
 function makeRegistry(): OperatorRegistry {
   const registry = new OperatorRegistry();
-  for (const op of [source, pass, echoParams, collect, dprReader, broken, flaky, inert, scatter]) {
+  for (const op of [
+    source,
+    pass,
+    echoParams,
+    collect,
+    dprReader,
+    envEcho,
+    broken,
+    flaky,
+    inert,
+    scatter,
+    draws,
+    count,
+  ]) {
     registry.register(op);
   }
   return registry;
@@ -152,10 +220,10 @@ function graph(nodes: Graph["nodes"], wires: Wire[]): Graph {
   return { id: "test", name: "Test", nodes, wires };
 }
 
-const ENV: GraphEnv = { width: 100, height: 100, dpr: 1 };
+const ENV: EnvValues = { width: 100, height: 100, dpr: 1, seed: 42 };
 
 /** Cook and return the keys of the nodes that evaluated, in cook order. */
-function cooked(engine: CookEngine, env: GraphEnv = ENV): string[] {
+function cooked(engine: CookEngine, env: EnvValues & Capabilities = ENV): string[] {
   engine.cook(env);
   return [...engine.stats.timing.keys()];
 }
@@ -311,23 +379,97 @@ describe("env dirty tracking", () => {
 
   test("$env wires deliver env values as inputs", () => {
     const engine = new CookEngine(envGraph, makeRegistry());
-    engine.cook({ width: 300, height: 200 });
+    engine.cook({ ...ENV, width: 300, height: 200 });
     expect(engine.getOutput("w")).toEqual({ n: 300 });
     expect(engine.getOutput("h")).toEqual({ n: 200 });
   });
 
   test("a width change dirties only $env.width dependents and their descendants", () => {
     const engine = new CookEngine(envGraph, makeRegistry());
-    cooked(engine, { width: 100, height: 100 });
-    expect(cooked(engine, { width: 200, height: 100 })).toEqual(["w", "w2"]);
+    cooked(engine, { ...ENV, width: 100, height: 100 });
+    expect(cooked(engine, { ...ENV, width: 200, height: 100 })).toEqual(["w", "w2"]);
     expect(engine.getOutput("w2")).toEqual({ n: 200 });
   });
 
-  test("an unchanged env, or a change to an unwired key, cooks nothing", () => {
+  test("an unchanged env, or a change to a key nothing reads, cooks nothing", () => {
     const engine = new CookEngine(envGraph, makeRegistry());
-    cooked(engine, { width: 100, height: 100, dpr: 1 });
-    expect(cooked(engine, { width: 100, height: 100, dpr: 1 })).toEqual([]);
-    expect(cooked(engine, { width: 100, height: 100, dpr: 2 })).toEqual([]);
+    cooked(engine, { ...ENV, dpr: 1 });
+    expect(cooked(engine, { ...ENV, dpr: 1 })).toEqual([]);
+    expect(cooked(engine, { ...ENV, dpr: 2 })).toEqual([]);
+    expect(cooked(engine, { ...ENV, seed: 7 })).toEqual([]);
+  });
+
+  test("setEnv dirties at once, so needsCook is accurate before the cook", () => {
+    const engine = new CookEngine(envGraph, makeRegistry());
+    engine.cook(ENV);
+    engine.setEnv(ENV);
+    expect(engine.needsCook).toBe(false);
+    engine.setEnv({ ...ENV, width: 200 });
+    expect(engine.needsCook).toBe(true);
+    engine.run();
+    expect(engine.stats.timing.size).toBe(2);
+    expect(engine.getOutput("w2")).toEqual({ n: 200 });
+    expect(engine.needsCook).toBe(false);
+  });
+
+  test("setEnv copies its values (in-place edit detected)", () => {
+    const engine = new CookEngine(envGraph, makeRegistry());
+    const values = { ...ENV };
+    engine.cook(values);
+    values.height = 300;
+    engine.setEnv(values);
+    expect(engine.needsCook).toBe(true);
+    engine.run();
+    expect(engine.getOutput("h")).toEqual({ n: 300 });
+  });
+
+  test("run before any setEnv throws", () => {
+    const engine = new CookEngine(envGraph, makeRegistry());
+    expect(() => engine.run()).toThrow("CookEngine.run: call setEnv (or cook) first");
+  });
+});
+
+describe("env values read by operators", () => {
+  test("a dpr change re-cooks dpr readers", () => {
+    const g = graph({ r: { type: "dpr-reader" } }, []);
+    const engine = new CookEngine(g, makeRegistry());
+    engine.cook({ ...ENV, dpr: 1 });
+    engine.cook({ ...ENV, dpr: 2 });
+    expect(engine.getOutput("r")).toEqual({ dpr: 2 });
+  });
+
+  test("a dpr change re-cooks only the nodes whose operator reads it, and their descendants", () => {
+    // r reads dpr; p is downstream of r; s and w do not read it (w reads $env.width)
+    const g = graph(
+      {
+        s: { type: "source" },
+        r: { type: "dpr-reader" },
+        p: { type: "pass" },
+        w: { type: "pass" },
+      },
+      [wire("r", "dpr", "p", "n"), wire("$env", "width", "w", "n")],
+    );
+    const engine = new CookEngine(g, makeRegistry());
+    cooked(engine);
+    expect(cooked(engine, { ...ENV, dpr: 2 })).toEqual(["r", "p"]);
+    expect(engine.getOutput("p")).toEqual({ n: 2 });
+  });
+
+  test("evaluate gets the env values, the capabilities and a draw-only rng", () => {
+    const g = graph({ e: { type: "env-echo" } }, []);
+    const engine = new CookEngine(g, makeRegistry());
+    const canvas = { width: 3, height: 4 };
+    engine.cook({ width: 10, height: 20, dpr: 2, seed: "abc", createCanvas: () => canvas });
+    expect(engine.getOutput("e")).toEqual({
+      env: { width: 10, height: 20, dpr: 2, seed: "abc", canvas, rngKeys: ["random"] },
+    });
+  });
+
+  test("capabilities are never diffed: a new factory re-cooks nothing", () => {
+    const g = graph({ e: { type: "env-echo" } }, []);
+    const engine = new CookEngine(g, makeRegistry());
+    engine.cook({ ...ENV, createCanvas: () => ({ width: 3, height: 4 }) });
+    expect(cooked(engine, { ...ENV, createCanvas: () => ({ width: 3, height: 4 }) })).toEqual([]);
   });
 });
 
@@ -487,35 +629,116 @@ describe("per-node errors", () => {
   });
 });
 
-// ─── Known bugs ──────────────────────────────────────────────────
+// ─── The random stream ───────────────────────────────────────────
 //
-// Each test below is marked failing: it passes while its bug exists and
-// fails once the bug is fixed, so the fix must turn it into a plain test.
+// Every node draws from one stream per cook, in topological order. An
+// incremental cook must give each node exactly the draws a full cook
+// would, whichever nodes it re-cooks.
 
-describe("known bugs", () => {
-  test.failing("a dpr change re-cooks dpr readers", () => {
-    const g = graph({ r: { type: "dpr-reader" } }, []);
+/** The outputs of every node after a fresh engine's full cook. */
+function fullCook(
+  g: Graph,
+  params: Record<string, number> = {},
+  env: EnvValues = ENV,
+): Map<string, Record<string, unknown>> {
+  const engine = new CookEngine(g, makeRegistry());
+  engine.setParams(params);
+  return new Map(engine.cook(env));
+}
+
+// x draws `n` values; s draws nothing; y draws eight; c counts y's points
+const streamGraph = graph(
+  {
+    x: { type: "draws" },
+    s: { type: "source" },
+    y: { type: "scatter" },
+    c: { type: "count" },
+  },
+  [wire("y", "points", "c", "values")],
+);
+
+describe("random stream replay", () => {
+  test("incremental cook equals full cook with two rng nodes", () => {
+    const g = graph({ a: { type: "scatter" }, b: { type: "scatter" } }, []);
+    const expected = fullCook(g).get("b");
+
     const engine = new CookEngine(g, makeRegistry());
-    engine.cook({ ...ENV, dpr: 1 });
-    engine.cook({ ...ENV, dpr: 2 });
-    expect(engine.getOutput("r")).toEqual({ dpr: 2 });
+    engine.cook(ENV);
+    engine.setParams({ "b.margin": 110 });
+    engine.cook(ENV);
+    engine.setParams({ "b.margin": 100 });
+    engine.cook(ENV);
+    expect(engine.getOutput("b")).toEqual(expected);
   });
 
-  test.failing("incremental cook equals full cook with two rng nodes", () => {
-    const g = graph({ a: { type: "scatter" }, b: { type: "scatter" } }, []);
-    // Each cook gets a fresh RNG with the same seed, as Frame and EditorPreview do
-    const env = (): GraphEnv => ({ ...ENV, rng: new SeededRNG(42) });
+  test("a clean node that draws is skipped when the stream reaches it unchanged", () => {
+    const engine = new CookEngine(streamGraph, makeRegistry());
+    cooked(engine);
+    const y = engine.getOutput("y");
+    // x re-cooks but still draws three values, so y's draws start where they did
+    engine.setParams({ "x.fail": 0 });
+    expect(cooked(engine)).toEqual(["x"]);
+    expect(engine.getOutput("y")).toBe(y);
+  });
 
-    const full = new CookEngine(g, makeRegistry());
-    full.cook(env());
-    const expected = full.getOutput("b");
+  test("a node that draws a different amount re-cooks the drawing nodes after it", () => {
+    const engine = new CookEngine(streamGraph, makeRegistry());
+    cooked(engine);
+    engine.setParams({ "x.n": 5 });
+    // s draws nothing, so it stays cached; y's draws now start two values later
+    expect(cooked(engine)).toEqual(["x", "y", "c"]);
+    expect(new Map(engine.cook(ENV))).toEqual(fullCook(streamGraph, { "x.n": 5 }));
+  });
 
-    const engine = new CookEngine(g, makeRegistry());
-    engine.cook(env());
-    engine.setParams({ "b.margin": 110 });
-    engine.cook(env());
-    engine.setParams({ "b.margin": 100 });
-    engine.cook(env());
-    expect(engine.getOutput("b")).toEqual(expected);
+  test("a seed change re-cooks exactly the nodes that drew, and their descendants", () => {
+    const engine = new CookEngine(streamGraph, makeRegistry());
+    cooked(engine);
+    engine.setEnv({ ...ENV, seed: 7 });
+    expect(engine.needsCook).toBe(true);
+    engine.run();
+    expect([...engine.stats.timing.keys()]).toEqual(["x", "y", "c"]);
+    expect(new Map(engine.run())).toEqual(fullCook(streamGraph, {}, { ...ENV, seed: 7 }));
+  });
+
+  test("a seed change re-cooks nothing in a graph that never draws", () => {
+    const engine = new CookEngine(chain, makeRegistry());
+    cooked(engine);
+    engine.setEnv({ ...ENV, seed: 7 });
+    expect(engine.needsCook).toBe(false);
+  });
+
+  test("a node that fails mid-draw stays dirty, and the nodes after it match a full cook", () => {
+    const engine = new CookEngine(streamGraph, makeRegistry());
+    cooked(engine);
+
+    // x now draws one value and throws, so y's draws start two values earlier
+    engine.setParams({ "x.fail": 1 });
+    expect(cooked(engine)).toEqual(["y", "c"]);
+    expect([...engine.stats.errors.keys()]).toEqual(["x"]);
+    const failed = fullCook(streamGraph, { "x.fail": 1 });
+    expect(engine.getOutput("y")).toEqual(failed.get("y"));
+
+    // Nothing changed: x fails again from the same state, and y stays cached
+    const y = engine.getOutput("y");
+    expect(engine.needsCook).toBe(true);
+    expect(cooked(engine)).toEqual([]);
+    expect([...engine.stats.errors.keys()]).toEqual(["x"]);
+    expect(engine.getOutput("y")).toBe(y);
+
+    engine.setParams({ "x.fail": 0 });
+    expect(cooked(engine)).toEqual(["x", "y", "c"]);
+    expect(new Map(engine.cook(ENV))).toEqual(fullCook(streamGraph));
+  });
+
+  // Pinned, not a goal: the stream follows topological order, and Kahn's
+  // algorithm breaks ties by node key order, so listing the same nodes in
+  // another order hands out the draws differently. Per-node seeds, which
+  // would remove this, are deferred: they would change every random patch.
+  test("draws follow topological order, ties broken by node key order", () => {
+    const ab = fullCook(graph({ a: { type: "scatter" }, b: { type: "scatter" } }, []));
+    const ba = fullCook(graph({ b: { type: "scatter" }, a: { type: "scatter" } }, []));
+    expect(ba.get("b")).toEqual(ab.get("a"));
+    expect(ba.get("a")).toEqual(ab.get("b"));
+    expect(ab.get("a")).not.toEqual(ab.get("b"));
   });
 });

@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import type { Buffer2D, Graph } from "@node-td/kernel";
-import { CookEngine, OperatorRegistry, SeededRNG } from "@node-td/kernel";
+import { CookEngine, OperatorRegistry } from "@node-td/kernel";
 import { createDefaultRegistry } from "@node-td/operators";
 import { patches } from "../src/index";
 import { blitBuffer2D } from "@node-td/render-web";
@@ -107,7 +107,7 @@ function fingerprintingRegistry(seen: Map<object, Map<string, Fingerprint>>): Op
 function cookEnv() {
   return {
     ...SIZE,
-    rng: new SeededRNG(SEED),
+    seed: SEED,
     createCanvas: createRecordingCanvasFactory().createCanvas,
   };
 }

@@ -250,7 +250,7 @@ export class RecordingContext2D {
 }
 
 export interface RecordingCanvasFactory {
-  /** Typed as an OffscreenCanvas factory so it drops into GraphEnv.createCanvas. */
+  /** Typed as an OffscreenCanvas factory so it drops into Capabilities.createCanvas. */
   createCanvas: (width: number, height: number) => OffscreenCanvas;
   /** Every recorded call, across all canvases this factory created, in call order. */
   log: LogEntry[];

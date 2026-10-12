@@ -1,5 +1,5 @@
 import type { Graph, OperatorRegistry } from "@node-td/kernel";
-import { CookEngine, SeededRNG } from "@node-td/kernel";
+import { CookEngine } from "@node-td/kernel";
 import { type Digest, digest, digestLog } from "./digest";
 import { createRecordingCanvasFactory, type LogEntry } from "./recording-canvas";
 
@@ -28,7 +28,7 @@ export interface CookResult {
 /**
  * Cook a graph headless, the way Frame does (frame.tsx draw()): a fresh
  * CookEngine over the given registry, setParams, then one full cook with
- * env {width, height, dpr, rng, createCanvas}. Canvases are
+ * env {width, height, dpr, seed, createCanvas}. Canvases are
  * RecordingCanvases.
  *
  * A node that throws fails the cook loudly, with the first error as the
@@ -47,7 +47,7 @@ export function cookGraph(graph: Graph, opts: CookOptions): CookResult {
     width: opts.width,
     height: opts.height,
     dpr: opts.dpr,
-    rng: new SeededRNG(opts.seed),
+    seed: opts.seed,
     createCanvas,
   });
 

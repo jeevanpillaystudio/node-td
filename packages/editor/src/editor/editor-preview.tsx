@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Graph, Buffer2D, NodeError, OperatorRegistry } from "@node-td/kernel";
-import { CookEngine, GraphValidationError, SeededRNG } from "@node-td/kernel";
+import { CookEngine, GraphValidationError } from "@node-td/kernel";
 import { blitBuffer2D } from "@node-td/render-web";
 
 interface EditorPreviewProps {
@@ -69,7 +69,7 @@ export function EditorPreview({ graph, registry, seed, values }: EditorPreviewPr
         width: virtualW,
         height: virtualH,
         dpr: 1, // Preview handles its own scaling via canvas transform
-        rng: new SeededRNG(inputs.seed),
+        seed: inputs.seed,
         createCanvas: (cw: number, ch: number) => new OffscreenCanvas(cw, ch),
       });
 

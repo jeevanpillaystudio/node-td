@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { CookEngine, type Graph, SeededRNG } from "@node-td/kernel";
+import { CookEngine, type Graph } from "@node-td/kernel";
 import { createDefaultRegistry } from "@node-td/operators";
 import { cookGraph, digest } from "@node-td/testing";
 import { subscapesTerrain3dGraph } from "../src/index";
@@ -20,7 +20,7 @@ const INDEPENDENT = ["normals", "cull", "proj", "shade"];
 describe("a failing node does not stop independent branches", () => {
   test("subscapes without createCanvas: the 3D branch cooks, the renderers report errors", () => {
     const engine = new CookEngine(subscapesTerrain3dGraph, createDefaultRegistry());
-    engine.cook({ ...SIZE, rng: new SeededRNG(SEED) });
+    engine.cook({ ...SIZE, seed: SEED });
     const { errors } = engine.stats;
 
     const thrown = [...errors].flatMap(([key, failure]) =>

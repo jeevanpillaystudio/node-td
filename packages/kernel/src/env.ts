@@ -1,4 +1,4 @@
-import type { PortType } from "./types";
+import type { EnvKey, PortType } from "./types";
 
 // ─── The environment source ──────────────────────────────────────
 
@@ -10,11 +10,14 @@ import type { PortType } from "./types";
  */
 export const ENV_SOURCE = "$env";
 
-/** The outputs the environment source declares, with their port types. */
+/**
+ * The outputs the environment source declares, with their port types.
+ * Each is an env value (EnvValues), so the engine diffs it in setEnv.
+ */
 export const ENV_OUTPUTS = {
   width: "number",
   height: "number",
-} as const satisfies Record<string, PortType>;
+} as const satisfies Partial<Record<EnvKey, PortType>>;
 
 export type EnvOutput = keyof typeof ENV_OUTPUTS;
 

@@ -1,6 +1,15 @@
-import { isEnvSource } from "./env";
+import { type EnvOutput, isEnvSource } from "./env";
 import type { Graph, Wire } from "./graph";
-import type { Operator, GraphEnv, PortType } from "./types";
+import { type RngState, SeededRNG } from "./rng";
+import type {
+  Capabilities,
+  EnvKey,
+  EnvValues,
+  NodeEnv,
+  NodeRng,
+  Operator,
+  PortType,
+} from "./types";
 import { topoSort, validateGraph } from "./graph";
 
 // ─── Registry interface (avoids circular import) ─────────────────
@@ -18,6 +27,26 @@ interface RegistryLike {
  * declares only the part of the global it reads.
  */
 declare const performance: { now(): number };
+
+// ─── Environment ─────────────────────────────────────────────────
+
+/** Every env value setEnv diffs; the Record type keeps the list complete. */
+const ENV_KEYS = Object.keys({
+  width: true,
+  height: true,
+  dpr: true,
+  seed: true,
+} satisfies Record<EnvKey, true>) as EnvKey[];
+
+/** Where the random stream stood when a node last cooked, and where the node left it. */
+interface StreamSpan {
+  start: RngState;
+  end: RngState;
+}
+
+function sameState(a: RngState, b: RngState): boolean {
+  return a[0] === b[0] && a[1] === b[1] && a[2] === b[2] && a[3] === b[3];
+}
 
 // ─── Cook Stats ──────────────────────────────────────────────────
 
@@ -49,9 +78,12 @@ export interface CookStats {
  * Incremental graph evaluation engine with dirty-flag propagation.
  *
  * Modelled after TouchDesigner's cook loop:
- * - Nodes only re-evaluate when an upstream dependency changed.
+ * - Nodes only re-evaluate when an upstream dependency changed: a param
+ *   (setParams), an env value they read (setEnv), or the random stream.
  * - Outputs are cached per node between cooks.
  * - Dirty flags propagate forward through the DAG.
+ * - An incremental cook gives every node the output a full cook would,
+ *   random draws included (see run).
  * - A node that throws is flagged with its error, and so are the nodes
  *   downstream of it, which are skipped; independent branches still cook.
  *   They stay dirty and keep no output, so the next cook tries them again.
@@ -62,7 +94,7 @@ export interface CookStats {
  * Usage:
  *   const engine = new CookEngine(graph, registry);
  *   engine.setParams(values);        // diff against previous — dirty only what changed
- *   engine.cook(env);                // evaluate dirty nodes, cache results
+ *   engine.cook(env);                // setEnv(values, capabilities), then run()
  *   const buf = engine.findTerminalOutput<Buffer2D>("buffer");
  *   console.log(engine.stats);       // { cooked: 3, cached: 12, total: 15, errors, ... }
  */
@@ -75,8 +107,8 @@ export class CookEngine {
   private readonly downstream: Map<string, Set<string>>;
   /** Per-node inbound wires — O(1) lookup during cook */
   private readonly wiresTo: Map<string, Wire[]>;
-  /** For each $env output name → node keys directly wired to it */
-  private readonly envDependents: Map<string, Set<string>>;
+  /** For each env key → nodes that read it, through a $env wire or their operator's envReads */
+  private readonly envReaders: Map<EnvKey, Set<string>>;
   /** Node keys with no downstream consumers */
   private readonly terminalKeys: Set<string>;
 
@@ -84,7 +116,11 @@ export class CookEngine {
   private readonly cache = new Map<string, Record<string, unknown>>();
   private readonly dirty = new Set<string>();
   private prevParams: Record<string, number> = {};
-  private prevEnvWires: Record<string, unknown> = {};
+  /** The env values of the last setEnv; undefined before the first */
+  private values: EnvValues | undefined;
+  private capabilities: Capabilities = {};
+  /** Node key → the random stream around its last successful cook */
+  private readonly streamAt = new Map<string, StreamSpan>();
   private _stats: CookStats = {
     cooked: 0,
     cached: 0,
@@ -117,14 +153,14 @@ export class CookEngine {
       this.wiresTo.get(w.to)?.push(w);
     }
 
-    // Build env-wire dependents
-    this.envDependents = new Map();
+    // Build env readers: $env wires, then each operator's envReads
+    this.envReaders = new Map(ENV_KEYS.map((envKey) => [envKey, new Set<string>()]));
     for (const w of graph.wires) {
-      if (!isEnvSource(w.from)) continue;
-      if (!this.envDependents.has(w.output)) {
-        this.envDependents.set(w.output, new Set());
-      }
-      this.envDependents.get(w.output)!.add(w.to);
+      if (isEnvSource(w.from)) this.envReaders.get(w.output as EnvOutput)!.add(w.to);
+    }
+    for (const key of this.order) {
+      const op = registry.resolve(graph.nodes[key]!.type);
+      for (const envKey of op.envReads ?? []) this.envReaders.get(envKey)?.add(key);
     }
 
     // Pre-compute terminal nodes (no downstream consumers)
@@ -188,37 +224,79 @@ export class CookEngine {
     this.prevParams = { ...params };
   }
 
+  /**
+   * Set the env values and capabilities the next run cooks with, diffing
+   * the values against the previous ones. A changed value dirties the
+   * nodes that read it, through a $env wire or their operator's envReads,
+   * and everything downstream. A changed seed also dirties every node
+   * that drew from the random stream. Capabilities are never diffed. Both
+   * are copied, so needsCook is accurate as soon as this returns.
+   */
+  setEnv(values: EnvValues, capabilities: Capabilities = {}): void {
+    const prev = this.values;
+    const next: EnvValues = {
+      width: values.width,
+      height: values.height,
+      dpr: values.dpr,
+      seed: values.seed,
+    };
+    this.values = next;
+    this.capabilities = { ...capabilities };
+    // Nothing has cooked before the first setEnv, so every node is dirty
+    if (!prev) return;
+
+    for (const envKey of ENV_KEYS) {
+      if (Object.is(prev[envKey], next[envKey])) continue;
+      for (const nodeKey of this.envReaders.get(envKey)!) this.propagate(nodeKey);
+      if (envKey !== "seed") continue;
+      for (const [nodeKey, span] of this.streamAt) {
+        if (!sameState(span.start, span.end)) this.propagate(nodeKey);
+      }
+    }
+  }
+
   // ── Cook ───────────────────────────────────────────────────────
 
   /**
-   * Evaluate the graph incrementally.
+   * setEnv, then run: the env values are diffed, the capabilities
+   * replaced, and the dirty nodes cooked. Returns what run returns.
+   */
+  cook(env: EnvValues & Capabilities): ReadonlyMap<string, Record<string, unknown>> {
+    const { width, height, dpr, seed, ...capabilities } = env;
+    this.setEnv({ width, height, dpr, seed }, capabilities);
+    return this.run();
+  }
+
+  /**
+   * Evaluate the graph incrementally, with the env of the last setEnv.
    *
-   * 1. Diffs env wire values (width, height, dpr) — dirties dependents.
-   * 2. Walks topological order, skipping clean nodes.
-   * 3. Cooks each dirty node (cookNode), unless a node upstream of it
-   *    failed in this cook, and caches its outputs.
-   * 4. Clears the dirty flag of every node that cooked; records stats,
+   * 1. Walks topological order, skipping clean nodes.
+   * 2. Cooks each dirty node (cookNode), unless a node upstream of it
+   *    failed in this run, and caches its outputs.
+   * 3. Clears the dirty flag of every node that cooked; records stats,
    *    with any failures in stats.errors.
    *
-   * Never throws for a failing node. Returns a read-only view of the
-   * cache: node key → outputs keyed by port name. A node that failed or
-   * was skipped has no entry.
+   * Every run draws from a fresh SeededRNG(seed), as a full cook does,
+   * and records the stream's state before and after each node cooks. A
+   * clean node that drew nothing is skipped. A clean node that drew is
+   * skipped when the stream reaches it in the state it last cooked from,
+   * and the stream jumps to where the node left it. Otherwise a node
+   * before it now draws a different amount, so it and everything
+   * downstream cook again. Either way every node draws what it would in a
+   * full cook, so an incremental run gives a full cook's outputs.
+   *
+   * Never throws for a failing node. A failed node keeps no output and
+   * stays dirty, so the next run cooks it again from where the stream
+   * then stands. Returns a read-only view of the cache: node key →
+   * outputs keyed by port name. A node that failed or was skipped has no
+   * entry. Throws if setEnv was never called.
    */
-  cook(env: GraphEnv): ReadonlyMap<string, Record<string, unknown>> {
+  run(): ReadonlyMap<string, Record<string, unknown>> {
+    const values = this.values;
+    if (!values) throw new Error("CookEngine.run: call setEnv (or cook) first");
     const t0 = performance.now();
 
-    // Diff env wire values against previous
-    for (const [envKey, dependents] of this.envDependents) {
-      if (this.prevEnvWires[envKey] !== env[envKey]) {
-        for (const nodeKey of dependents) this.propagate(nodeKey);
-      }
-    }
-    // Snapshot env wire values for next diff
-    const snap: Record<string, unknown> = {};
-    for (const envKey of this.envDependents.keys()) snap[envKey] = env[envKey];
-    this.prevEnvWires = snap;
-
-    // Nothing dirty → no-op
+    // Nothing dirty → no-op: every clean node would replay its own span
     if (this.dirty.size === 0) {
       this._stats = {
         cooked: 0,
@@ -231,31 +309,51 @@ export class CookEngine {
       return this.cache;
     }
 
+    // One stream per run, shared by every node in cook order
+    const stream = new SeededRNG(values.seed);
+    const rng: NodeRng = { random: () => stream.random() };
+    const env: NodeEnv = Object.freeze({ ...this.capabilities, ...values, rng });
+
     // Walk in topological order, skip clean nodes
     let cooked = 0;
     const timing = new Map<string, number>();
     const errors = new Map<string, NodeError>();
 
     for (const key of this.order) {
-      if (!this.dirty.has(key)) continue;
+      if (!this.dirty.has(key)) {
+        const span = this.streamAt.get(key);
+        // It drew nothing, so its output does not depend on the stream
+        if (span && sameState(span.start, span.end)) continue;
+        // The stream reaches it where it last cooked from: replay its draws
+        if (span && sameState(span.start, stream.getState())) {
+          stream.setState(span.end);
+          continue;
+        }
+        // A node before it drew a different amount: cook it and its descendants again
+        this.propagate(key);
+      }
 
       // Downstream of a failure: keep no stale output, and stay dirty
       const cause = this.failedUpstream(key, errors);
       if (cause !== undefined) {
         this.cache.delete(key);
+        this.streamAt.delete(key);
         errors.set(key, { kind: "skipped", cause });
         continue;
       }
 
+      const start = stream.getState();
       const nt0 = performance.now();
       try {
         this.cache.set(key, this.cookNode(key, env));
       } catch (error) {
         this.cache.delete(key);
+        this.streamAt.delete(key);
         errors.set(key, { kind: "error", error });
         continue;
       }
       timing.set(key, performance.now() - nt0);
+      this.streamAt.set(key, { start, end: stream.getState() });
       this.dirty.delete(key);
       cooked++;
     }
@@ -277,7 +375,7 @@ export class CookEngine {
    * sources' cached outputs and the env, resolve its params, and call its
    * operator. Throws whatever the operator throws.
    */
-  private cookNode(key: string, env: GraphEnv): Record<string, unknown> {
+  private cookNode(key: string, env: NodeEnv): Record<string, unknown> {
     const instance = this.graph.nodes[key]!;
     const op = this.registry.resolve(instance.type);
     if (!op.evaluate) throw new Error(`Operator "${op.id}" has no evaluate`);
@@ -294,7 +392,7 @@ export class CookEngine {
     for (const w of wires) {
       let value: unknown;
       if (isEnvSource(w.from)) {
-        value = env[w.output];
+        value = env[w.output as EnvOutput];
       } else {
         const src = this.cache.get(w.from);
         if (src) value = src[w.output];
@@ -381,6 +479,7 @@ export class CookEngine {
    */
   clearCache(): void {
     this.cache.clear();
+    this.streamAt.clear();
     for (const key of this.order) this.dirty.add(key);
   }
 

@@ -1,19 +1,18 @@
 import { describe, it, expect } from "bun:test";
 import { meridianGraph } from "./meridian";
-import { CookEngine, SeededRNG } from "@node-td/kernel";
+import { CookEngine } from "@node-td/kernel";
 import { createDefaultRegistry } from "@node-td/operators";
 import { createRecordingCanvasFactory } from "@node-td/testing";
 
 describe("meridian patch", () => {
   it("cooks without errors and produces a rendered buffer", () => {
     const registry = createDefaultRegistry();
-    const rng = new SeededRNG(42);
-
     const env = {
       width: 256,
       height: 256,
+      dpr: 1,
+      seed: 42,
       createCanvas: createRecordingCanvasFactory().createCanvas,
-      rng,
     };
 
     const engine = new CookEngine(meridianGraph, registry);
@@ -31,13 +30,12 @@ describe("meridian patch", () => {
 
   it("surface-raymarch produces hit geometry with all expected attributes", () => {
     const registry = createDefaultRegistry();
-    const rng = new SeededRNG(12345);
-
     const env = {
       width: 256,
       height: 256,
+      dpr: 1,
+      seed: 12345,
       createCanvas: createRecordingCanvasFactory().createCanvas,
-      rng,
     };
 
     const engine = new CookEngine(meridianGraph, registry);
@@ -72,13 +70,12 @@ describe("meridian patch", () => {
 
   it("point-orient adds angle and length attributes", () => {
     const registry = createDefaultRegistry();
-    const rng = new SeededRNG(99);
-
     const env = {
       width: 256,
       height: 256,
+      dpr: 1,
+      seed: 99,
       createCanvas: createRecordingCanvasFactory().createCanvas,
-      rng,
     };
 
     const engine = new CookEngine(meridianGraph, registry);
