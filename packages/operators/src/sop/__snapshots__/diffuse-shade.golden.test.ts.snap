@@ -257,7 +257,7 @@ exports[`diffuse-shade golden one-colour palette (subscapes) 1`] = `
     "shade": {
       "geometry": {
         "attributes": null,
-        "colors": "81ba537f",
+        "colors": "364789b9",
         "dim": 3,
         "indices": "7cb8bb68",
         "kind": "geometry",

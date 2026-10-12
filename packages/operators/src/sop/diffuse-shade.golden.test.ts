@@ -21,7 +21,7 @@ const upstreamWires = [
 const shaded = [...upstreamWires, w("normals.geometry", "shade.geometry")];
 const withPalette = [...shaded, w("palette.palette", "shade.palette")];
 // biome-ignore lint/suspicious/noApproximativeNumericConstant: the Subscapes patch's light, as written
-const subscapes = { lightX: -0.5, lightY: -0.707, lightZ: -0.5, steps: 4, ambient: 0.7 };
+const subscapes = { lightX: 0.5, lightY: -0.707, lightZ: 0.5, steps: 4, ambient: 0.7 };
 
 opGolden(diffuseShade, {
   "no palette": { nodes: { ...upstream, shade: { type: "diffuse-shade" } }, wires: shaded },
