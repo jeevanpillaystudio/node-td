@@ -9,10 +9,6 @@
       "types": "./src/index.ts",
       "default": "./src/index.ts"
     },
-    "./operators": {
-      "types": "./src/operators/index.ts",
-      "default": "./src/operators/index.ts"
-    },
     "./render": {
       "types": "./src/render/index.ts",
       "default": "./src/render/index.ts"
