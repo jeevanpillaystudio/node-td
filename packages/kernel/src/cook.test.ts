@@ -423,7 +423,12 @@ describe("per-node errors", () => {
   test("records the error, skips the nodes downstream, and counts them in stats", () => {
     // bad → p1 → p2, plus an independent good
     const g = graph(
-      { bad: { type: "broken" }, p1: { type: "pass" }, p2: { type: "pass" }, good: { type: "source" } },
+      {
+        bad: { type: "broken" },
+        p1: { type: "pass" },
+        p2: { type: "pass" },
+        good: { type: "source" },
+      },
       [wire("bad", "n", "p1", "n"), wire("p1", "n", "p2", "n")],
     );
     const engine = new CookEngine(g, makeRegistry());

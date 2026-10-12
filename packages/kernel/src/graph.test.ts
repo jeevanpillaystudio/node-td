@@ -129,7 +129,9 @@ describe("topoSort", () => {
 
   test("throws on a cycle, naming the nodes on it", () => {
     const loop = [wire("a", "n", "b", "n"), wire("b", "n", "a", "n"), wire("b", "n", "c", "n")];
-    expect(() => topoSort(["a", "b", "c"], loop)).toThrow('Graph contains a cycle through "a", "b"');
+    expect(() => topoSort(["a", "b", "c"], loop)).toThrow(
+      'Graph contains a cycle through "a", "b"',
+    );
     expect(() => topoSort(["a"], [wire("a", "n", "a", "n")])).toThrow(
       'Graph contains a cycle through "a"',
     );
@@ -185,18 +187,17 @@ describe("validateGraph", () => {
       wire("x", "n", "y", "extra"),
     ]);
     expect(validationError(g)).toBe(
-      ['Node "x" references unknown type "nope"', 'Wire: source node "ghost" not found'].join(
-        "\n",
-      ),
+      ['Node "x" references unknown type "nope"', 'Wire: source node "ghost" not found'].join("\n"),
     );
   });
 
   test("rejects a node key that contains '.' or starts with '$'", () => {
     const g = graph({ "a.b": { type: "num-source" }, $env: { type: "num-source" } }, []);
     expect(validationError(g)).toBe(
-      ['Node "a.b": a node key cannot contain "."', 'Node "$env": a node key cannot start with "$"'].join(
-        "\n",
-      ),
+      [
+        'Node "a.b": a node key cannot contain "."',
+        'Node "$env": a node key cannot start with "$"',
+      ].join("\n"),
     );
   });
 
