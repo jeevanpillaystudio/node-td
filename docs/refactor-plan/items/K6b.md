@@ -16,7 +16,7 @@ Do the same as K6a for packages/operators/src/sop/**.
 
 ## Verification
 Each of these must hold:
-- `grep -rnE 'params\.[A-Za-z0-9]+ \?\?' packages/operators/src/sop` prints nothing.
+- `grep -rnE 'params\.[A-Za-z0-9]+[[:space:]]*\?\?' packages/operators/src/sop` prints nothing.
 - `./node_modules/.bin/turbo run typecheck test` exits 0, with snapshots unchanged.
 
 ## Risk

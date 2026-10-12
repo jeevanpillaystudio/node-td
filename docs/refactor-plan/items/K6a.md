@@ -20,7 +20,7 @@ Make declared ParamDefs the only source of defaults in these families. This remo
 
 ## Verification
 Each of these must hold:
-- `grep -rnE 'params\.[A-Za-z0-9]+ \?\?' packages/operators/src/{field,top,chop,mat,comp}` prints nothing.
+- `grep -rnE 'params\.[A-Za-z0-9]+[[:space:]]*\?\?' packages/operators/src/{field,top,chop,mat,comp}` prints nothing.
 - `./node_modules/.bin/turbo run typecheck test` exits 0, with snapshots unchanged.
 
 ## Risk
