@@ -1,4 +1,4 @@
-import type { Buffer2D, Camera2D, Camera3D, Geometry, Palette } from "../../src/index";
+import type { Buffer2D, Camera2D, Camera3D, Geometry, Palette } from "@node-td/kernel";
 
 /**
  * Digests — compact, snapshot-friendly fingerprints of each data currency.

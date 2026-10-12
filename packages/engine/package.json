@@ -31,6 +31,7 @@
     "@node-td/kernel": "workspace:*"
   },
   "devDependencies": {
+    "@node-td/testing": "workspace:*",
     "@node-td/typescript-config": "workspace:*",
     "@types/bun": "1.3.9",
     "typescript": "^5.9.0"

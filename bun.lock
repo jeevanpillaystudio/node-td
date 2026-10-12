@@ -33,6 +33,18 @@
         "vite-tsconfig-paths": "^4.0.0",
       },
     },
+    "internal/testing": {
+      "name": "@node-td/testing",
+      "version": "0.0.0",
+      "dependencies": {
+        "@node-td/kernel": "workspace:*",
+      },
+      "devDependencies": {
+        "@node-td/typescript-config": "workspace:*",
+        "@types/bun": "1.3.9",
+        "typescript": "^5.9.0",
+      },
+    },
     "internal/typescript": {
       "name": "@node-td/typescript-config",
       "version": "0.0.0",
@@ -44,6 +56,7 @@
         "@node-td/kernel": "workspace:*",
       },
       "devDependencies": {
+        "@node-td/testing": "workspace:*",
         "@node-td/typescript-config": "workspace:*",
         "@types/bun": "1.3.9",
         "typescript": "^5.9.0",
@@ -214,6 +227,8 @@
     "@node-td/frame": ["@node-td/frame@workspace:packages/frame"],
 
     "@node-td/kernel": ["@node-td/kernel@workspace:packages/kernel"],
+
+    "@node-td/testing": ["@node-td/testing@workspace:internal/testing"],
 
     "@node-td/typescript-config": ["@node-td/typescript-config@workspace:internal/typescript"],
 

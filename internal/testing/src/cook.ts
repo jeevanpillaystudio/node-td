@@ -1,5 +1,5 @@
-import type { Graph, OperatorRegistry } from "../../src/index";
-import { CookEngine, SeededRNG } from "../../src/index";
+import type { Graph, OperatorRegistry } from "@node-td/kernel";
+import { CookEngine, SeededRNG } from "@node-td/kernel";
 import { type Digest, digest, digestLog } from "./digest";
 import { createRecordingCanvasFactory, type LogEntry } from "./recording-canvas";
 

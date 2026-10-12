@@ -1,7 +1,7 @@
 import { describe, it, expect } from "bun:test";
 import { meridianGraph } from "./meridian";
 import { createDefaultRegistry, CookEngine, SeededRNG } from "../index";
-import { createRecordingCanvasFactory } from "../../test/support";
+import { createRecordingCanvasFactory } from "@node-td/testing";
 
 describe("meridian patch", () => {
   it("cooks without errors and produces a rendered buffer", () => {

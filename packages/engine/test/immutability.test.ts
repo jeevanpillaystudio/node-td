@@ -15,7 +15,7 @@ import {
   digest,
   digestLog,
   withImageData,
-} from "./support";
+} from "@node-td/testing";
 
 /**
  * Cook outputs are immutable. Neither a downstream operator nor a host

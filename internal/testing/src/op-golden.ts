@@ -8,8 +8,8 @@ import type {
   Operator,
   OperatorRegistry,
   Wire,
-} from "../../src/index";
-import { isEnumParam, validateGraph } from "../../src/index";
+} from "@node-td/kernel";
+import { isEnumParam, validateGraph } from "@node-td/kernel";
 import { cookGraph } from "./cook";
 
 /**

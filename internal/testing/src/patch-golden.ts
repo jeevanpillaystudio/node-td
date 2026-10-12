@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import type { Buffer2D, Graph, OperatorRegistry } from "../../src/index";
+import type { Buffer2D, Graph, OperatorRegistry } from "@node-td/kernel";
 import { cookGraph } from "./cook";
 import { type Digest, digest, digestLog } from "./digest";
 import { createRecordingCanvasFactory } from "./recording-canvas";
