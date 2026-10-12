@@ -12,9 +12,12 @@ interface EditorPreviewProps {
 }
 
 /**
- * Draws the same way Frame does: one full cook per rAF draw, requested once
- * per change of graph or values, and by one ResizeObserver per mount when the
- * size or dpr changes.
+ * Draws the way Frame does, so it shows what a Frame of the preview's size
+ * shows: one cook per rAF draw at the display size and devicePixelRatio,
+ * requested once per change of graph or values, and by one ResizeObserver
+ * per mount when the size or dpr changes. Unlike Frame it keeps its
+ * engine's cache between draws, so an edit re-cooks only the nodes it
+ * affects; the engine makes that cook equal a full one.
  */
 export function EditorPreview({ graph, registry, seed, values }: EditorPreviewProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -37,16 +40,10 @@ export function EditorPreview({ graph, registry, seed, values }: EditorPreviewPr
 
     const size = measure(wrapper);
     sizeRef.current = size;
-    const { width: displayW, height: displayH, dpr } = size;
+    const { width, height, dpr } = size;
     // A collapsed panel has no pixels to draw, and the rasterisers cannot
     // read back an empty canvas.
-    if (displayW === 0 || displayH === 0) return;
-
-    // Render at a larger virtual size so the art looks like a miniature,
-    // not a zoomed-in crop of a tiny canvas.
-    const scale = 4;
-    const virtualW = displayW * scale;
-    const virtualH = displayH * scale;
+    if (width === 0 || height === 0) return;
 
     const inputs = inputsRef.current;
     let message: string | null = null;
@@ -60,48 +57,31 @@ export function EditorPreview({ graph, registry, seed, values }: EditorPreviewPr
       engineRef.current = { graph, registry, engine };
       engine.setParams(inputs.values);
 
-      canvas.width = displayW * dpr;
-      canvas.height = displayH * dpr;
-      const ctx = canvas.getContext("2d");
-      ctx?.setTransform(dpr / scale, 0, 0, dpr / scale, 0, 0);
-
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
       engine.cook({
-        width: virtualW,
-        height: virtualH,
-        dpr: 1, // Preview handles its own scaling via canvas transform
+        width,
+        height,
+        dpr,
         seed: inputs.seed,
         createCanvas: (cw: number, ch: number) => new OffscreenCanvas(cw, ch),
       });
 
       // As in Frame: a node that threw shows as an error, not a partial image
       const failure = reportNodeErrors(graph.name, engine.stats.errors);
+      // The buffer is already at full pixel resolution (DPR-aware)
       const buf = engine.findTerminalOutput<Buffer2D>("buffer");
-      if (failure) {
-        message = failure;
-      } else if (!buf) {
-        message = "No image output";
-      } else {
-        // putImageData ignores canvas transforms, so we blit to a temp canvas
-        // then drawImage it through the current transform (dpr/scale)
-        const tmp = new OffscreenCanvas(buf.width, buf.height);
-        const tmpCtx = tmp.getContext("2d");
-        if (!ctx || !tmpCtx) {
-          message = "No 2D canvas context";
-        } else {
-          blitBuffer2D(tmpCtx, buf);
-          ctx.drawImage(tmp, 0, 0);
-        }
-      }
+      const ctx = canvas.getContext("2d");
+      if (failure) message = failure;
+      else if (!buf) message = "No image output";
+      else if (!ctx) message = "No 2D canvas context";
+      else blitBuffer2D(ctx, buf);
     } catch (err) {
       console.error(err);
       message =
         err instanceof GraphValidationError
           ? `Invalid graph: ${err.issues.join("; ")}`
           : `Cook failed: ${errorMessage(err)}`;
-    } finally {
-      // As in Frame: every draw is a full cook, since a partial re-cook
-      // replays the shared random stream differently.
-      engineRef.current?.engine.clearCache();
     }
     setError(message);
   }, []);
