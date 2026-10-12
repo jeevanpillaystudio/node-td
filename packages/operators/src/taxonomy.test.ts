@@ -29,7 +29,8 @@ describe("taxonomy", () => {
     for (const op of allOperators) {
       const primary = op.outputs[0];
       const family = primary ? FAMILY[primary.type] : undefined;
-      if (op.category !== family) mismatched.push(`${op.id}: ${op.category}, primary output ${primary?.type}`);
+      if (op.category !== family)
+        mismatched.push(`${op.id}: ${op.category}, primary output ${primary?.type}`);
     }
     expect(mismatched).toEqual([]);
   });

@@ -1,5 +1,5 @@
+import { type Buffer2D, defineOperator, forEachStrip } from "@node-td/kernel";
 import { asOffscreen } from "../canvas-handle";
-import { defineOperator, forEachStrip, type Buffer2D } from "@node-td/kernel";
 
 type Outputs = { buffer: Buffer2D };
 
@@ -39,7 +39,8 @@ export const strokeRenderer = defineOperator({
     { key: "bgB", label: "BG Blue", min: 0, max: 255, step: 1, default: 26 },
     { key: "bgAlpha", label: "BG Alpha", min: 0, max: 1, step: 0.01, default: 1 },
     {
-      key: "renderMode", label: "Mode",
+      key: "renderMode",
+      label: "Mode",
       kind: "enum" as const,
       options: [
         { label: "Stroke", value: 0 },
@@ -71,7 +72,9 @@ export const strokeRenderer = defineOperator({
     const fillB = params.fillB;
 
     // Resolve uniform stroke color from palette or default
-    let sr = 217, sg = 217, sb = 217;
+    let sr = 217,
+      sg = 217,
+      sb = 217;
     if (palette && palette.count > 0) {
       sr = Math.round((palette.colors[0] ?? 0.85) * 255);
       sg = Math.round((palette.colors[1] ?? 0.85) * 255);
@@ -96,9 +99,8 @@ export const strokeRenderer = defineOperator({
 
     // Background fill
     if (bgAlpha > 0) {
-      ctx.fillStyle = bgAlpha >= 1
-        ? `rgb(${bgR},${bgG},${bgB})`
-        : `rgba(${bgR},${bgG},${bgB},${bgAlpha})`;
+      ctx.fillStyle =
+        bgAlpha >= 1 ? `rgb(${bgR},${bgG},${bgB})` : `rgba(${bgR},${bgG},${bgB},${bgAlpha})`;
       ctx.fillRect(0, 0, worldW, worldH);
     }
 
@@ -123,7 +125,9 @@ export const strokeRenderer = defineOperator({
     // ── Fill mode ─────────────────────────────────────────────────
     if (renderMode === 1) {
       // Resolve fill color: palette[0] if wired, else fillR/G/B params
-      let fr = fillR, fg = fillG, fb = fillB;
+      let fr = fillR,
+        fg = fillG,
+        fb = fillB;
       if (palette && palette.count > 0) {
         fr = Math.round((palette.colors[0] ?? 0.1) * 255);
         fg = Math.round((palette.colors[1] ?? 0.1) * 255);
@@ -137,9 +141,7 @@ export const strokeRenderer = defineOperator({
         if (stripOffsets) {
           for (let s = 0; s < stripOffsets.length; s++) {
             const start = stripOffsets[s] as number;
-            const end = s < stripOffsets.length - 1
-              ? (stripOffsets[s + 1] as number)
-              : vertexCount;
+            const end = s < stripOffsets.length - 1 ? (stripOffsets[s + 1] as number) : vertexCount;
             if (end - start < 3) continue;
             ctx.moveTo(positions[start * dim] as number, positions[start * dim + 1] as number);
             for (let i = start + 1; i < end; i++) {
@@ -178,16 +180,16 @@ export const strokeRenderer = defineOperator({
     // own per-vertex colour when it has one, else indexed from the palette
     // by normalized depth (attributes.depth).
     if (renderMode === 2 && topology === "points") {
-      const angAttr  = geometry.attributes?.angle;
-      const lenAttr  = geometry.attributes?.length;
-      const depAttr  = geometry.attributes?.depth;
+      const angAttr = geometry.attributes?.angle;
+      const lenAttr = geometry.attributes?.length;
+      const depAttr = geometry.attributes?.depth;
 
       ctx.lineCap = "round";
       ctx.lineWidth = lineWidth;
 
       // Per-vertex (r,g,b) from the geometry, else from palette + depth, else uniform
-      const colors    = geometry.colors;
-      const depthIdx  = palette && depAttr && !colors;
+      const colors = geometry.colors;
+      const depthIdx = palette && depAttr && !colors;
 
       // Batch strokes by color key to minimize state changes
       const batches = new Map<string, [number, number, number, number][]>();
@@ -196,20 +198,22 @@ export const strokeRenderer = defineOperator({
         const cx = positions[i * dim]!;
         const cy = positions[i * dim + 1]!;
         const angle = angAttr ? angAttr[i]! : 0;
-        const len   = lenAttr ? lenAttr[i]! : lineWidth * 4;
-        const hl    = len / 2;
+        const len = lenAttr ? lenAttr[i]! : lineWidth * 4;
+        const hl = len / 2;
 
-        let cr = sr, cg = sg, cb = sb;
+        let cr = sr,
+          cg = sg,
+          cb = sb;
         if (colors) {
           const off = i * 3;
           cr = Math.round(colors[off]! * 255);
           cg = Math.round(colors[off + 1]! * 255);
           cb = Math.round(colors[off + 2]! * 255);
         } else if (depthIdx && palette && depAttr) {
-          const t   = depAttr[i]!;
+          const t = depAttr[i]!;
           const idx = Math.min(Math.floor(t * palette.count), palette.count - 1);
           const off = idx * 4;
-          cr = Math.round((palette.colors[off]!   ?? 0.85) * 255);
+          cr = Math.round((palette.colors[off]! ?? 0.85) * 255);
           cg = Math.round((palette.colors[off + 1]! ?? 0.85) * 255);
           cb = Math.round((palette.colors[off + 2]! ?? 0.85) * 255);
         }
@@ -218,7 +222,10 @@ export const strokeRenderer = defineOperator({
         const cosA = Math.cos(angle);
         const sinA = Math.sin(angle);
         let batch = batches.get(key);
-        if (!batch) { batch = []; batches.set(key, batch); }
+        if (!batch) {
+          batch = [];
+          batches.set(key, batch);
+        }
         // Store [x0, y0, x1, y1] for the segment
         batch.push([cx + cosA * hl, cy + sinA * hl, cx - cosA * hl, cy - sinA * hl]);
       }
@@ -284,15 +291,9 @@ export const strokeRenderer = defineOperator({
           ctx.strokeStyle = `rgba(${key},${alpha})`;
           ctx.beginPath();
           for (const [start, end] of strips) {
-            ctx.moveTo(
-              positions[start * dim] as number,
-              positions[start * dim + 1] as number,
-            );
+            ctx.moveTo(positions[start * dim] as number, positions[start * dim + 1] as number);
             for (let i = start + 1; i < end; i++) {
-              ctx.lineTo(
-                positions[i * dim] as number,
-                positions[i * dim + 1] as number,
-              );
+              ctx.lineTo(positions[i * dim] as number, positions[i * dim + 1] as number);
             }
           }
           ctx.stroke();
@@ -304,28 +305,17 @@ export const strokeRenderer = defineOperator({
         if (stripOffsets) {
           for (let s = 0; s < stripOffsets.length; s++) {
             const start = stripOffsets[s] as number;
-            const end = s < stripOffsets.length - 1
-              ? (stripOffsets[s + 1] as number)
-              : vertexCount;
+            const end = s < stripOffsets.length - 1 ? (stripOffsets[s + 1] as number) : vertexCount;
             if (end - start < 2) continue;
-            ctx.moveTo(
-              positions[start * dim] as number,
-              positions[start * dim + 1] as number,
-            );
+            ctx.moveTo(positions[start * dim] as number, positions[start * dim + 1] as number);
             for (let i = start + 1; i < end; i++) {
-              ctx.lineTo(
-                positions[i * dim] as number,
-                positions[i * dim + 1] as number,
-              );
+              ctx.lineTo(positions[i * dim] as number, positions[i * dim + 1] as number);
             }
           }
         } else if (vertexCount >= 2) {
           ctx.moveTo(positions[0] as number, positions[1] as number);
           for (let i = 1; i < vertexCount; i++) {
-            ctx.lineTo(
-              positions[i * dim] as number,
-              positions[i * dim + 1] as number,
-            );
+            ctx.lineTo(positions[i * dim] as number, positions[i * dim + 1] as number);
           }
         }
         ctx.stroke();
@@ -363,11 +353,7 @@ export const strokeRenderer = defineOperator({
  * would exhaust GPU memory (10 panels × 5 canvases × 6.9 MB = 350 MB at
  * 2× DPR), which is why Frame clears its cache after every draw.
  */
-function canvasBuffer(
-  canvas: OffscreenCanvas,
-  pixelW: number,
-  pixelH: number,
-): Outputs {
+function canvasBuffer(canvas: OffscreenCanvas, pixelW: number, pixelH: number): Outputs {
   const ctx = canvas.getContext("2d")!;
   const imageData = ctx.getImageData(0, 0, pixelW, pixelH);
   const rgba = imageData.data;

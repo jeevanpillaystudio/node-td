@@ -1,7 +1,18 @@
 import { defineOperator, type Field2D } from "@node-td/kernel";
 import {
-  createField, getFieldExpr, apply, sub, mul, add, div, c, u, X, Y,
-  fatan2, neg,
+  add,
+  apply,
+  c,
+  createField,
+  div,
+  fatan2,
+  getFieldExpr,
+  mul,
+  neg,
+  sub,
+  u,
+  X,
+  Y,
 } from "@node-td/kernel/field";
 
 /**
@@ -44,17 +55,11 @@ export const curlAngle = defineOperator({
 
       // Central differences for gradient
       const dfdx = mul(
-        sub(
-          apply(inputExpr, add(sx, uEps), sy),
-          apply(inputExpr, sub(sx, uEps), sy),
-        ),
+        sub(apply(inputExpr, add(sx, uEps), sy), apply(inputExpr, sub(sx, uEps), sy)),
         uInvEps2,
       );
       const dfdy = mul(
-        sub(
-          apply(inputExpr, sx, add(sy, uEps)),
-          apply(inputExpr, sx, sub(sy, uEps)),
-        ),
+        sub(apply(inputExpr, sx, add(sy, uEps)), apply(inputExpr, sx, sub(sy, uEps))),
         uInvEps2,
       );
 

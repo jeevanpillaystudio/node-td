@@ -17,7 +17,10 @@ export const dashStroke = defineOperator({
     // Points are strips of one vertex each, which hold no dash
     const strips =
       geometry.topology === "points"
-        ? { ...geometry, stripOffsets: Uint32Array.from({ length: geometry.vertexCount }, (_, i) => i) }
+        ? {
+            ...geometry,
+            stripOffsets: Uint32Array.from({ length: geometry.vertexCount }, (_, i) => i),
+          }
         : geometry;
 
     // Each dash keeps `seg` vertices and the `gap` after it is dropped, so

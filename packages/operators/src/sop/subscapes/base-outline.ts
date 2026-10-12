@@ -67,11 +67,11 @@ export const baseOutline = defineOperator({
     const frTerrain = edgePts[edgePts.length - 1]!;
 
     const polygon: [number, number, number][] = [
-      frTerrain,                    // front-right at terrain surface
-      [w, baseY, 0],               // front-right at base
-      [w, baseY, h],               // back-right at base
-      [0, baseY, h],               // back-left at base
-      ...edgePts,                   // terrain surface boundary samples
+      frTerrain, // front-right at terrain surface
+      [w, baseY, 0], // front-right at base
+      [w, baseY, h], // back-right at base
+      [0, baseY, h], // back-left at base
+      ...edgePts, // terrain surface boundary samples
     ];
 
     return { geometry: pathsGeometry3([polygon]) };

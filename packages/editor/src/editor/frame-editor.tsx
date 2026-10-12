@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
-import { Button } from "../ui/button";
 import { useFrameContext } from "../frame-provider";
-import { EditorSidebar } from "./editor-sidebar";
+import { Button } from "../ui/button";
 import { EditorCanvas } from "./editor-canvas";
 import { EditorInspector } from "./editor-inspector";
 import { EditorPreview } from "./editor-preview";
+import { EditorSidebar } from "./editor-sidebar";
 
 interface FrameEditorProps {
   onClose: () => void;
@@ -43,9 +43,7 @@ export function FrameEditor({ onClose }: FrameEditorProps) {
         {/* Top bar */}
         <div className="flex items-center justify-between border-b border-border/50 px-4 py-2">
           <div className="flex items-center gap-3">
-            <span className="font-mono text-sm font-medium text-foreground">
-              {entry.name}
-            </span>
+            <span className="font-mono text-sm font-medium text-foreground">{entry.name}</span>
             <span className="font-mono text-xs text-muted-foreground">
               {Object.keys(graph.nodes).length} nodes
             </span>

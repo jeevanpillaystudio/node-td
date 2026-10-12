@@ -11,9 +11,7 @@ export const gridSampler = defineOperator({
     { name: "height", type: "number" },
   ],
   outputs: [{ name: "buffer", type: "grid" }],
-  params: [
-    { key: "resolution", label: "Resolution (px)", min: 5, max: 60, step: 1, default: 20 },
-  ],
+  params: [{ key: "resolution", label: "Resolution (px)", min: 5, max: 60, step: 1, default: 20 }],
   evaluate({ field, width, height }, params) {
     const resolution = params.resolution;
     const cols = Math.ceil(width / resolution);

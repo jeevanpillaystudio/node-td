@@ -1,8 +1,8 @@
-import { describe, it, expect } from "bun:test";
-import { meridianGraph } from "./meridian";
+import { describe, expect, it } from "bun:test";
 import { CookEngine } from "@node-td/kernel";
 import { createDefaultRegistry } from "@node-td/operators";
 import { createRecordingCanvasFactory } from "@node-td/testing";
+import { meridianGraph } from "./meridian";
 
 describe("meridian patch", () => {
   it("cooks without errors and produces a rendered buffer", () => {
@@ -21,7 +21,9 @@ describe("meridian patch", () => {
     // Check rendered buffer exists
     const renderOut = outputs.get("render") as Record<string, unknown>;
     expect(renderOut).toBeDefined();
-    const buf = renderOut?.buffer as { width: number; height: number; channels: number } | undefined;
+    const buf = renderOut?.buffer as
+      | { width: number; height: number; channels: number }
+      | undefined;
     expect(buf).toBeDefined();
     expect(buf?.width).toBe(256);
     expect(buf?.height).toBe(256);

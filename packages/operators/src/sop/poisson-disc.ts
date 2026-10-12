@@ -1,5 +1,4 @@
-import { defineOperator } from "@node-td/kernel";
-import { pointsGeometry } from "@node-td/kernel";
+import { defineOperator, pointsGeometry } from "@node-td/kernel";
 
 /** Random source — draws from env.rng, the graph's seeded stream */
 type RandFn = () => number;
@@ -103,7 +102,14 @@ export const poissonDisc = defineOperator({
   params: [
     { key: "minRadius", label: "Min Seed Radius", min: 1, max: 150, step: 1, default: 40 },
     { key: "margin", label: "Edge Margin", min: 0, max: 300, step: 10, default: 100 },
-    { key: "densityScale", label: "Partition Density Scale", min: 0.1, max: 3, step: 0.1, default: 1.5 },
+    {
+      key: "densityScale",
+      label: "Partition Density Scale",
+      min: 0.1,
+      max: 3,
+      step: 0.1,
+      default: 1.5,
+    },
   ],
   evaluate({ width, height, partitions }, params, env) {
     const minRadius = params.minRadius;
@@ -162,8 +168,10 @@ export const poissonDisc = defineOperator({
 
 /** Find which triangle in the partition mesh contains point (px, py) */
 function findContainingTriangle(
-  px: number, py: number,
-  positions: Float32Array, indices: Uint32Array,
+  px: number,
+  py: number,
+  positions: Float32Array,
+  indices: Uint32Array,
 ): number {
   const triCount = indices.length / 3;
   for (let t = 0; t < triCount; t++) {
@@ -171,14 +179,20 @@ function findContainingTriangle(
     const i1 = indices[t * 3 + 1]! * 2;
     const i2 = indices[t * 3 + 2]! * 2;
 
-    const ax = positions[i0]!, ay = positions[i0 + 1]!;
-    const bx = positions[i1]!, by = positions[i1 + 1]!;
-    const cx = positions[i2]!, cy = positions[i2 + 1]!;
+    const ax = positions[i0]!,
+      ay = positions[i0 + 1]!;
+    const bx = positions[i1]!,
+      by = positions[i1 + 1]!;
+    const cx = positions[i2]!,
+      cy = positions[i2 + 1]!;
 
     // Barycentric coordinate test
-    const v0x = cx - ax, v0y = cy - ay;
-    const v1x = bx - ax, v1y = by - ay;
-    const v2x = px - ax, v2y = py - ay;
+    const v0x = cx - ax,
+      v0y = cy - ay;
+    const v1x = bx - ax,
+      v1y = by - ay;
+    const v2x = px - ax,
+      v2y = py - ay;
 
     const d00 = v0x * v0x + v0y * v0y;
     const d01 = v0x * v1x + v0y * v1y;

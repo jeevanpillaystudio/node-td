@@ -1,5 +1,6 @@
 import { type EnvOutput, isEnvSource } from "./env";
 import type { Graph, Wire } from "./graph";
+import { topoSort, validateGraph } from "./graph";
 import { type RngState, SeededRNG } from "./rng";
 import type {
   Capabilities,
@@ -10,7 +11,6 @@ import type {
   Operator,
   PortType,
 } from "./types";
-import { topoSort, validateGraph } from "./graph";
 
 // ─── Registry interface (avoids circular import) ─────────────────
 

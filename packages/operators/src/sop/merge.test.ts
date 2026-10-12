@@ -13,7 +13,17 @@ const polyline = (...xs: number[]): Geometry<2> => {
 
 describe("merge", () => {
   it("keeps an implicit strip a strip of its own, wherever it comes", () => {
-    const explicit = pathsGeometry([[[0, 0], [1, 0]], [[2, 0], [3, 0], [4, 0]]]);
+    const explicit = pathsGeometry([
+      [
+        [0, 0],
+        [1, 0],
+      ],
+      [
+        [2, 0],
+        [3, 0],
+        [4, 0],
+      ],
+    ]);
     expect([...run(explicit, polyline(5, 6)).stripOffsets!]).toEqual([0, 2, 5]);
     expect([...run(polyline(5, 6), explicit).stripOffsets!]).toEqual([0, 2, 4]);
   });
@@ -31,9 +41,18 @@ describe("merge", () => {
   });
 
   it("rejects inputs of another topology or dimension", () => {
-    const points = pointsGeometry([[0, 0], [1, 1]]);
-    expect(() => run(polyline(0, 1), points)).toThrow(/input 1 is points in 2D, but the first is line-strip in 2D/);
-    const lifted = { ...polyline(0, 1), positions: new Float32Array(6), dim: 3 } as unknown as Geometry<2>;
+    const points = pointsGeometry([
+      [0, 0],
+      [1, 1],
+    ]);
+    expect(() => run(polyline(0, 1), points)).toThrow(
+      /input 1 is points in 2D, but the first is line-strip in 2D/,
+    );
+    const lifted = {
+      ...polyline(0, 1),
+      positions: new Float32Array(6),
+      dim: 3,
+    } as unknown as Geometry<2>;
     expect(() => run(polyline(0, 1), lifted)).toThrow(/input 1 is line-strip in 3D/);
   });
 

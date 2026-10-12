@@ -1,5 +1,5 @@
-import { FrameProvider, useFrameContext } from "./frame-provider";
 import { FrameEditor } from "./editor/frame-editor";
+import { FrameProvider, useFrameContext } from "./frame-provider";
 
 interface FrameShellProps {
   /** Whether to mount the editor. Off, the children render alone and no Frame registers. */

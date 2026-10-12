@@ -51,11 +51,7 @@ function hslToRgb(h: number, s: number, l: number): [number, number, number] {
   const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
   const p = 2 * l - q;
 
-  return [
-    hue2rgb(p, q, h + 1 / 3),
-    hue2rgb(p, q, h),
-    hue2rgb(p, q, h - 1 / 3),
-  ];
+  return [hue2rgb(p, q, h + 1 / 3), hue2rgb(p, q, h), hue2rgb(p, q, h - 1 / 3)];
 }
 
 function hue2rgb(p: number, q: number, t: number): number {

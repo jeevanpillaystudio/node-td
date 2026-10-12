@@ -153,9 +153,7 @@ export function validateGraph(graph: Graph, registry: RegistryLike): void {
     for (const port of op.inputs) {
       if (port.optional) continue;
       if (!wired.has(`${key}.${port.name}`)) {
-        errors.push(
-          `Node "${key}": required input "${port.name}" is not wired`,
-        );
+        errors.push(`Node "${key}": required input "${port.name}" is not wired`);
       }
     }
   }
@@ -325,10 +323,7 @@ function cycleMessage(cycle: string[]): string {
  * Collect every exposed parameter from a graph,
  * prefixed by instance key (e.g. "noise.noiseScale").
  */
-export function collectParams(
-  graph: Graph,
-  registry: RegistryLike,
-): ParamDef[] {
+export function collectParams(graph: Graph, registry: RegistryLike): ParamDef[] {
   const result: ParamDef[] = [];
   for (const [key, instance] of Object.entries(graph.nodes)) {
     const op = registry.resolve(instance.type);

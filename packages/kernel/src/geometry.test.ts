@@ -32,7 +32,13 @@ function strips(): Geometry<3> {
 
 describe("pathsGeometry3", () => {
   test("lays the polylines end to end as line strips", () => {
-    const geo = pathsGeometry3([[[1, 2, 3]], [[4, 5, 6], [7, 8, 9]]]);
+    const geo = pathsGeometry3([
+      [[1, 2, 3]],
+      [
+        [4, 5, 6],
+        [7, 8, 9],
+      ],
+    ]);
     expect(geo.dim).toBe(3);
     expect(geo.topology).toBe("line-strip");
     expect(geo.vertexCount).toBe(3);
@@ -57,9 +63,20 @@ describe("withPositions", () => {
   });
 
   test("adds no key the source does not have", () => {
-    const src = pathsGeometry([[[0, 0], [1, 1]]]);
+    const src = pathsGeometry([
+      [
+        [0, 0],
+        [1, 1],
+      ],
+    ]);
     const out = withPositions(src, f32(0, 0, 0, 1, 1, 1), 3);
-    expect(Object.keys(out).sort()).toEqual(["dim", "positions", "stripOffsets", "topology", "vertexCount"]);
+    expect(Object.keys(out).sort()).toEqual([
+      "dim",
+      "positions",
+      "stripOffsets",
+      "topology",
+      "vertexCount",
+    ]);
   });
 });
 
@@ -78,7 +95,12 @@ describe("forEachStrip", () => {
   });
 
   test("treats a geometry without stripOffsets as one strip, and an empty one as none", () => {
-    const one: Geometry<2> = { positions: f32(0, 0, 1, 1), vertexCount: 2, dim: 2, topology: "line-strip" };
+    const one: Geometry<2> = {
+      positions: f32(0, 0, 1, 1),
+      vertexCount: 2,
+      dim: 2,
+      topology: "line-strip",
+    };
     expect(visit(one)).toEqual([[0, 2, 0]]);
     expect(visit({ ...one, positions: f32(), vertexCount: 0 })).toEqual([]);
   });
@@ -102,7 +124,15 @@ describe("filterVertices", () => {
   });
 
   test("keeps the two-vertex pieces either side of a dropped vertex as separate strips", () => {
-    const geo = pathsGeometry([[[0, 0], [1, 0], [2, 0], [3, 0], [4, 0]]]);
+    const geo = pathsGeometry([
+      [
+        [0, 0],
+        [1, 0],
+        [2, 0],
+        [3, 0],
+        [4, 0],
+      ],
+    ]);
     const out = filterVertices(geo, (i) => i !== 2);
     expect([...out.stripOffsets!]).toEqual([0, 2]);
     expect([...out.positions]).toEqual([0, 0, 1, 0, 3, 0, 4, 0]);

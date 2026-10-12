@@ -1,7 +1,11 @@
 {
   "name": "node-td",
   "private": true,
-  "workspaces": ["apps/*", "packages/*", "internal/*"],
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "internal/*"
+  ],
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",

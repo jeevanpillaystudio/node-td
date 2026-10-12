@@ -14,7 +14,14 @@ export const transform2d = defineOperator({
   params: [
     { key: "translateX", label: "Translate X", min: -2000, max: 2000, step: 1, default: 0 },
     { key: "translateY", label: "Translate Y", min: -2000, max: 2000, step: 1, default: 0 },
-    { key: "rotation", label: "Rotation (rad)", min: -Math.PI, max: Math.PI, step: 0.01, default: 0 },
+    {
+      key: "rotation",
+      label: "Rotation (rad)",
+      min: -Math.PI,
+      max: Math.PI,
+      step: 0.01,
+      default: 0,
+    },
     { key: "scaleX", label: "Scale X", min: 0.01, max: 10, step: 0.01, default: 1 },
     { key: "scaleY", label: "Scale Y", min: 0.01, max: 10, step: 0.01, default: 1 },
   ],

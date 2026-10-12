@@ -21,7 +21,14 @@ export const camera2d = defineOperator({
     { key: "centerX", label: "Center X", min: -2000, max: 2000, step: 1, default: 0 },
     { key: "centerY", label: "Center Y", min: -2000, max: 2000, step: 1, default: 0 },
     { key: "zoom", label: "Zoom", min: 0.1, max: 10, step: 0.1, default: 1 },
-    { key: "rotation", label: "Rotation (rad)", min: -Math.PI, max: Math.PI, step: 0.01, default: 0 },
+    {
+      key: "rotation",
+      label: "Rotation (rad)",
+      min: -Math.PI,
+      max: Math.PI,
+      step: 0.01,
+      default: 0,
+    },
   ],
   evaluate({ width, height }, params) {
     return {

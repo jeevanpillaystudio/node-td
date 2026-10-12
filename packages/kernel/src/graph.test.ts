@@ -245,9 +245,7 @@ describe("validateGraph", () => {
     const g = graph({ g: { type: "geo-source" }, b: { type: "num-sink" } }, [
       wire("g", "geometry", "b", "n"),
     ]);
-    expect(validationError(g)).toBe(
-      'Wire: type mismatch — "g.geometry" (geo2) → "b.n" (number)',
-    );
+    expect(validationError(g)).toBe('Wire: type mismatch — "g.geometry" (geo2) → "b.n" (number)');
   });
 
   test("reports a cycle by the names of the nodes on it", () => {

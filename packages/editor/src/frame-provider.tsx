@@ -1,12 +1,5 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { FrameHostContext, type FrameEntry, type FrameHost } from "@node-td/frame";
+import { type FrameEntry, type FrameHost, FrameHostContext } from "@node-td/frame";
+import { createContext, useCallback, useContext, useMemo, useRef, useState } from "react";
 import { cn } from "./ui/utils";
 
 /* ------------------------------------------------------------------ */
@@ -52,15 +45,12 @@ export function FrameProvider({ children }: { children: React.ReactNode }) {
     bump((n) => n + 1);
   }, []);
 
-  const unregister = useCallback(
-    (id: string) => {
-      framesRef.current.delete(id);
-      setActiveId((prev) => (prev === id ? null : prev));
-      setEditingId((prev) => (prev === id ? null : prev));
-      bump((n) => n + 1);
-    },
-    [],
-  );
+  const unregister = useCallback((id: string) => {
+    framesRef.current.delete(id);
+    setActiveId((prev) => (prev === id ? null : prev));
+    setEditingId((prev) => (prev === id ? null : prev));
+    bump((n) => n + 1);
+  }, []);
 
   const setActive = useCallback((id: string | null) => {
     setActiveId(id);

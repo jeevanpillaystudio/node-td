@@ -1,6 +1,6 @@
-import type * as React from "react";
-import { cva } from "class-variance-authority";
 import type { VariantProps } from "class-variance-authority";
+import { cva } from "class-variance-authority";
+import type * as React from "react";
 
 import { cn } from "./utils";
 
@@ -9,8 +9,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        ghost:
-          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent",
+        ghost: "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent",
       },
       size: {
         sm: "h-7 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",

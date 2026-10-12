@@ -66,11 +66,13 @@ export const contrastFilter = defineOperator({
     const refLums: number[] = [];
     for (let i = 0; i < ref.count; i++) {
       const off = i * 4;
-      refLums.push(luminance(
-        ref.colors[off] as number,
-        ref.colors[off + 1] as number,
-        ref.colors[off + 2] as number,
-      ));
+      refLums.push(
+        luminance(
+          ref.colors[off] as number,
+          ref.colors[off + 1] as number,
+          ref.colors[off + 2] as number,
+        ),
+      );
     }
 
     // Test each candidate against ALL reference colors at a given ratio
@@ -83,7 +85,7 @@ export const contrastFilter = defineOperator({
           candidates.colors[off + 1] as number,
           candidates.colors[off + 2] as number,
         );
-        if (refLums.every(rl => contrastRatio(lum, rl) >= ratio)) {
+        if (refLums.every((rl) => contrastRatio(lum, rl) >= ratio)) {
           passing.push(i);
         }
       }

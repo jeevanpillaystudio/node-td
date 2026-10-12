@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import type { Graph, Buffer2D, NodeError, OperatorRegistry } from "@node-td/kernel";
+import type { Buffer2D, Graph, NodeError, OperatorRegistry } from "@node-td/kernel";
 import { CookEngine, GraphValidationError } from "@node-td/kernel";
 import { blitBuffer2D } from "@node-td/render-web";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface EditorPreviewProps {
   graph: Graph;

@@ -1,5 +1,5 @@
-import { asOffscreen } from "./canvas-handle";
 import type { Buffer2D } from "@node-td/kernel";
+import { asOffscreen } from "./canvas-handle";
 
 /**
  * Blit a Buffer2D onto a CanvasRenderingContext2D.

@@ -1,5 +1,5 @@
-import { asOffscreen } from "../canvas-handle";
 import { defineOperator } from "@node-td/kernel";
+import { asOffscreen } from "../canvas-handle";
 
 /**
  * Blend mode → Canvas2D globalCompositeOperation mapping.
@@ -9,9 +9,7 @@ import { defineOperator } from "@node-td/kernel";
  *   2 = multiply → "multiply"
  *   3 = screen   → "screen"
  */
-const BLEND_OPS: GlobalCompositeOperation[] = [
-  "source-over", "lighter", "multiply", "screen",
-];
+const BLEND_OPS: GlobalCompositeOperation[] = ["source-over", "lighter", "multiply", "screen"];
 
 /**
  * Composite — blends multiple Buffer2D layers using a selected blend mode.
@@ -67,7 +65,7 @@ export const composite = defineOperator({
     // Inputs are cached outputs: they are read, never modified. Their
     // canvases are released when the host clears the cook cache.
     const createCanvas = env.createCanvas;
-    if (createCanvas && layers.every(l => l._canvas)) {
+    if (createCanvas && layers.every((l) => l._canvas)) {
       const canvas = asOffscreen(createCanvas(width, height));
       const ctx = canvas.getContext("2d")!;
 
@@ -94,7 +92,9 @@ export const composite = defineOperator({
             }
             return _data;
           },
-          set data(v: Float32Array) { _data = v; },
+          set data(v: Float32Array) {
+            _data = v;
+          },
           width,
           height,
           channels: 4,

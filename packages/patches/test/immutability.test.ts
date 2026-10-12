@@ -2,7 +2,6 @@ import { describe, expect, test } from "bun:test";
 import type { Buffer2D, Graph } from "@node-td/kernel";
 import { CookEngine, OperatorRegistry } from "@node-td/kernel";
 import { createDefaultRegistry } from "@node-td/operators";
-import { patches } from "../src/index";
 import { blitBuffer2D } from "@node-td/render-web";
 import {
   createRecordingCanvasFactory,
@@ -11,6 +10,7 @@ import {
   digestLog,
   withImageData,
 } from "@node-td/testing";
+import { patches } from "../src/index";
 
 /**
  * Cook outputs are immutable. Neither a downstream operator nor a host

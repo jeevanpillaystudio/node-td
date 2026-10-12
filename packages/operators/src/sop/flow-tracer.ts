@@ -1,5 +1,4 @@
-import { defineOperator, type Buffer2D } from "@node-td/kernel";
-import { pathsGeometry } from "@node-td/kernel";
+import { type Buffer2D, defineOperator, pathsGeometry } from "@node-td/kernel";
 
 function bufferAngle(x: number, y: number, buf: Buffer2D, resX: number, resY: number): number {
   const col = Math.max(0, Math.min(buf.width - 1, Math.floor(x / resX)));
@@ -52,10 +51,8 @@ export const flowTracer = defineOperator({
         const angle = bufferAngle(bx, by, buffer, resX, resY);
         bx -= stepLength * Math.cos(angle);
         by -= stepLength * Math.sin(angle);
-        if (
-          bx < -exitMargin || bx > w + exitMargin ||
-          by < -exitMargin || by > h + exitMargin
-        ) break;
+        if (bx < -exitMargin || bx > w + exitMargin || by < -exitMargin || by > h + exitMargin)
+          break;
         back.push([bx, by]);
       }
       for (let i = back.length - 1; i >= 0; i--) pts.push(back[i]!);
@@ -69,10 +66,8 @@ export const flowTracer = defineOperator({
         const angle = bufferAngle(fx, fy, buffer, resX, resY);
         fx += stepLength * Math.cos(angle);
         fy += stepLength * Math.sin(angle);
-        if (
-          fx < -exitMargin || fx > w + exitMargin ||
-          fy < -exitMargin || fy > h + exitMargin
-        ) break;
+        if (fx < -exitMargin || fx > w + exitMargin || fy < -exitMargin || fy > h + exitMargin)
+          break;
         pts.push([fx, fy]);
       }
 

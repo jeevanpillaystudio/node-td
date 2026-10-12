@@ -48,12 +48,10 @@ export const geometricNormal = defineOperator({
       // The rise over one eps step along +x and along +z: a backward
       // difference, or a forward one where the step back would leave the
       // grid at x or z = 0
-      const dx = px >= eps
-        ? hCenter - field(px - eps, pz) * amp
-        : field(px + eps, pz) * amp - hCenter;
-      const dz = pz >= eps
-        ? hCenter - field(px, pz - eps) * amp
-        : field(px, pz + eps) * amp - hCenter;
+      const dx =
+        px >= eps ? hCenter - field(px - eps, pz) * amp : field(px + eps, pz) * amp - hCenter;
+      const dz =
+        pz >= eps ? hCenter - field(px, pz - eps) * amp : field(px, pz + eps) * amp - hCenter;
 
       // The surface y = h(x, z) has normal (-∂h/∂x, 1, -∂h/∂z): up, and
       // tilted away from the slope. Here scaled by eps², as the cross

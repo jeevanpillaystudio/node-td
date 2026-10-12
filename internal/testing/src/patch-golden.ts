@@ -177,7 +177,9 @@ function nodesGolden(graph: Graph, deps: PatchGoldenDeps): void {
         sizeLabel(size),
         () => {
           const registry = deps.createRegistry();
-          expect(cookGraph(graph, { ...size, seed: GOLDEN_SEED, registry }).nodes).toMatchSnapshot();
+          expect(
+            cookGraph(graph, { ...size, seed: GOLDEN_SEED, registry }).nodes,
+          ).toMatchSnapshot();
         },
         TIMEOUT_MS,
       );

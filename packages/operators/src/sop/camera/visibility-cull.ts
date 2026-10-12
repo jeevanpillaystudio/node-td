@@ -81,9 +81,15 @@ export const visibilityCull = defineOperator({
       const i1 = meshIdx[t * 3 + 1]! * 3;
       const i2 = meshIdx[t * 3 + 2]! * 3;
 
-      const ax = meshPos[i0]!, ay = meshPos[i0 + 1]!, az = meshPos[i0 + 2]!;
-      const bx = meshPos[i1]!, by = meshPos[i1 + 1]!, bz = meshPos[i1 + 2]!;
-      const cx = meshPos[i2]!, cy = meshPos[i2 + 1]!, cz = meshPos[i2 + 2]!;
+      const ax = meshPos[i0]!,
+        ay = meshPos[i0 + 1]!,
+        az = meshPos[i0 + 2]!;
+      const bx = meshPos[i1]!,
+        by = meshPos[i1 + 1]!,
+        bz = meshPos[i1 + 2]!;
+      const cx = meshPos[i2]!,
+        cy = meshPos[i2 + 1]!,
+        cz = meshPos[i2 + 2]!;
 
       triVerts[t] = new Float64Array([ax, ay, az, bx, by, bz, cx, cy, cz]);
 
@@ -91,8 +97,12 @@ export const visibilityCull = defineOperator({
       // Use e2 x e1 (not e1 x e2) because parametric-surface produces
       // CW winding (TL, TR, BL) which after surface-lift gives downward
       // normals with the standard cross. Swapping gives outward (upward) normals.
-      const e1x = bx - ax, e1y = by - ay, e1z = bz - az;
-      const e2x = cx - ax, e2y = cy - ay, e2z = cz - az;
+      const e1x = bx - ax,
+        e1y = by - ay,
+        e1z = bz - az;
+      const e2x = cx - ax,
+        e2y = cy - ay,
+        e2z = cz - az;
       const nx = e2y * e1z - e2z * e1y;
       const ny = e2z * e1x - e2x * e1z;
       const nz = e2x * e1y - e2y * e1x;
@@ -120,8 +130,10 @@ export const visibilityCull = defineOperator({
     // (algorithm.js lines 182-193) which uses a direct grid index.
 
     // Find mesh bounding box in XZ
-    let minX = Infinity, maxX = -Infinity;
-    let minZ = Infinity, maxZ = -Infinity;
+    let minX = Infinity,
+      maxX = -Infinity;
+    let minZ = Infinity,
+      maxZ = -Infinity;
     for (let i = 0; i < mesh.vertexCount; i++) {
       const x = meshPos[i * 3]!;
       const z = meshPos[i * 3 + 2]!;
@@ -156,13 +168,19 @@ export const visibilityCull = defineOperator({
       for (const t of [tri0, tri1]) {
         if (t >= triCount) continue;
         const v = triVerts[t]!;
-        const ax = v[0]!, az = v[2]!;
-        const bx = v[3]!, bz = v[5]!;
-        const cx2 = v[6]!, cz2 = v[8]!;
+        const ax = v[0]!,
+          az = v[2]!;
+        const bx = v[3]!,
+          bz = v[5]!;
+        const cx2 = v[6]!,
+          cz2 = v[8]!;
 
-        const v0x = cx2 - ax, v0z = cz2 - az;
-        const v1x = bx - ax, v1z = bz - az;
-        const v2x = px - ax, v2z = pz - az;
+        const v0x = cx2 - ax,
+          v0z = cz2 - az;
+        const v1x = bx - ax,
+          v1z = bz - az;
+        const v2x = px - ax,
+          v2z = pz - az;
 
         const d00 = v0x * v0x + v0z * v0z;
         const d01 = v0x * v1x + v0z * v1z;
@@ -186,19 +204,26 @@ export const visibilityCull = defineOperator({
       for (let dr = -1; dr <= 1; dr++) {
         for (let dc = -1; dc <= 1; dc++) {
           if (dr === 0 && dc === 0) continue;
-          const nc = col + dc, nr = row + dr;
+          const nc = col + dc,
+            nr = row + dr;
           if (nc < 0 || nc >= uSeg || nr < 0 || nr >= vSeg) continue;
           const nq = nr * uSeg + nc;
           for (const t of [nq * 2, nq * 2 + 1]) {
             if (t >= triCount) continue;
             const v = triVerts[t]!;
-            const ax = v[0]!, az = v[2]!;
-            const bx = v[3]!, bz = v[5]!;
-            const cx2 = v[6]!, cz2 = v[8]!;
+            const ax = v[0]!,
+              az = v[2]!;
+            const bx = v[3]!,
+              bz = v[5]!;
+            const cx2 = v[6]!,
+              cz2 = v[8]!;
 
-            const v0x = cx2 - ax, v0z = cz2 - az;
-            const v1x = bx - ax, v1z = bz - az;
-            const v2x = px - ax, v2z = pz - az;
+            const v0x = cx2 - ax,
+              v0z = cz2 - az;
+            const v1x = bx - ax,
+              v1z = bz - az;
+            const v2x = px - ax,
+              v2z = pz - az;
 
             const d00 = v0x * v0x + v0z * v0z;
             const d01 = v0x * v1x + v0z * v1z;
@@ -225,12 +250,20 @@ export const visibilityCull = defineOperator({
 
     // ── Moller-Trumbore ray-triangle intersection ────────────────
     function rayTriangleIntersect(
-      ox: number, oy: number, oz: number,
-      dx: number, dy: number, dz: number,
+      ox: number,
+      oy: number,
+      oz: number,
+      dx: number,
+      dy: number,
+      dz: number,
       v: Float64Array,
     ): number {
-      const e1x = v[3]! - v[0]!, e1y = v[4]! - v[1]!, e1z = v[5]! - v[2]!;
-      const e2x = v[6]! - v[0]!, e2y = v[7]! - v[1]!, e2z = v[8]! - v[2]!;
+      const e1x = v[3]! - v[0]!,
+        e1y = v[4]! - v[1]!,
+        e1z = v[5]! - v[2]!;
+      const e2x = v[6]! - v[0]!,
+        e2y = v[7]! - v[1]!,
+        e2z = v[8]! - v[2]!;
 
       const pvx = dy * e2z - dz * e2y;
       const pvy = dz * e2x - dx * e2z;
@@ -245,7 +278,9 @@ export const visibilityCull = defineOperator({
       if (det < 1e-10) return -1;
       const invDet = 1 / det;
 
-      const tvx = ox - v[0]!, tvy = oy - v[1]!, tvz = oz - v[2]!;
+      const tvx = ox - v[0]!,
+        tvy = oy - v[1]!,
+        tvz = oz - v[2]!;
       const u = (tvx * pvx + tvy * pvy + tvz * pvz) * invDet;
       if (u < 0 || u > 1) return -1;
 
@@ -271,13 +306,20 @@ export const visibilityCull = defineOperator({
     const [, , refDepth] = project([0, 0, 0]);
 
     const candidates: [number, number, number][] = [
-      [1, 1, -1], [-1, 1, -1], [1, 1, 1], [-1, 1, 1],
+      [1, 1, -1],
+      [-1, 1, -1],
+      [1, 1, 1],
+      [-1, 1, 1],
     ];
-    let eyeDirX = 0, eyeDirY = 1, eyeDirZ = 0;
+    let eyeDirX = 0,
+      eyeDirY = 1,
+      eyeDirZ = 0;
     let bestDepthDecrease = 0;
     for (const c of candidates) {
       const len = Math.sqrt(c[0] * c[0] + c[1] * c[1] + c[2] * c[2]);
-      const cx = c[0] / len, cy = c[1] / len, cz = c[2] / len;
+      const cx = c[0] / len,
+        cy = c[1] / len,
+        cz = c[2] / len;
       const [, , depthTest] = project([cx * 50, cy * 50, cz * 50]);
       const decrease = refDepth - depthTest; // positive = toward camera
       if (decrease > bestDepthDecrease) {
@@ -307,11 +349,7 @@ export const visibilityCull = defineOperator({
 
       for (let t = 0; t < triCount; t++) {
         if (t === triIdx) continue;
-        const hit = rayTriangleIntersect(
-          ox, oy, oz,
-          eyeDirX, eyeDirY, eyeDirZ,
-          triVerts[t]!,
-        );
+        const hit = rayTriangleIntersect(ox, oy, oz, eyeDirX, eyeDirY, eyeDirZ, triVerts[t]!);
         if (hit > 0) {
           triVisible[triIdx] = 0;
           return false;

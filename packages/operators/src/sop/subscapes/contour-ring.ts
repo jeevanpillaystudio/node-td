@@ -39,7 +39,7 @@ export const contourRing = defineOperator({
 
     // -- Sample terrain height along the two visible edges ---------------
     const edgeCoords: [number, number][] = []; // [x, z]
-    const edgeHeights: number[] = [];          // clamped terrain height above baseY
+    const edgeHeights: number[] = []; // clamped terrain height above baseY
 
     // Back edge: x from 0 -> w, z = h
     for (let i = 0; i < samples; i++) {
@@ -71,9 +71,7 @@ export const contourRing = defineOperator({
         const [x, z] = edgeCoords[i]!;
         const terrainH = edgeHeights[i]!;
         // Last level snaps exactly to baseY; others lerp from terrain to base
-        const y = lvl === levels - 1
-          ? baseY
-          : baseY + terrainH * (1 - eased);
+        const y = lvl === levels - 1 ? baseY : baseY + terrainH * (1 - eased);
         ring.push([x, y, z]);
       }
       paths.push(ring);

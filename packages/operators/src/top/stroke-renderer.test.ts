@@ -5,7 +5,12 @@ import { strokeRenderer } from "./stroke-renderer";
 
 type Params = Parameters<typeof strokeRenderer.evaluate>[1];
 const params = Object.fromEntries(strokeRenderer.params.map((p) => [p.key, p.default])) as Params;
-const line = pathsGeometry([[[10, 10], [90, 90]]]);
+const line = pathsGeometry([
+  [
+    [10, 10],
+    [90, 90],
+  ],
+]);
 
 function render(camera: Camera2D) {
   const recorder = createRecordingCanvasFactory();
@@ -17,12 +22,19 @@ function render(camera: Camera2D) {
     rng: { random: () => 0 },
     createCanvas: recorder.createCanvas,
   } satisfies NodeEnv;
-  const { buffer } = strokeRenderer.evaluate({ geometry: line, camera, palette: undefined }, params, env);
+  const { buffer } = strokeRenderer.evaluate(
+    { geometry: line, camera, palette: undefined },
+    params,
+    env,
+  );
   return { buffer, log: recorder.log };
 }
 // The camera's transforms, after the dpr scale every render starts with
 const transforms = (log: ReturnType<typeof render>["log"]) =>
-  log.filter((e) => ["translate", "rotate", "scale"].includes(e[1])).map((e) => e.slice(1)).slice(1);
+  log
+    .filter((e) => ["translate", "rotate", "scale"].includes(e[1]))
+    .map((e) => e.slice(1))
+    .slice(1);
 const camera = (center: [number, number], zoom = 1, rotation = 0): Camera2D => ({
   center,
   zoom,
@@ -55,7 +67,11 @@ describe("stroke-renderer camera", () => {
 
 describe("stroke-renderer size", () => {
   it("returns an empty image for a canvas with no pixels, making no canvas", () => {
-    for (const viewport of [[0, 80], [100, 0], [-5, 10]] as [number, number][]) {
+    for (const viewport of [
+      [0, 80],
+      [100, 0],
+      [-5, 10],
+    ] as [number, number][]) {
       const { buffer, log } = render({ ...camera([0, 0]), viewport });
       expect(buffer.data.length).toBe(0);
       expect(buffer.width * buffer.height).toBe(0);

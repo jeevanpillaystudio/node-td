@@ -1,7 +1,5 @@
 import { defineOperator, type Field2D } from "@node-td/kernel";
-import {
-  createField, getFieldExpr, apply, sub, mul, add, u, X, Y,
-} from "@node-td/kernel/field";
+import { add, apply, createField, getFieldExpr, mul, sub, u, X, Y } from "@node-td/kernel/field";
 
 /**
  * Field Gradient — computes the partial derivatives of a Field2D
@@ -25,9 +23,7 @@ export const fieldGradient = defineOperator({
     { name: "dx", type: "field" },
     { name: "dy", type: "field" },
   ],
-  params: [
-    { key: "epsilon", label: "Epsilon", min: 0.01, max: 10, step: 0.01, default: 1.0 },
-  ],
+  params: [{ key: "epsilon", label: "Epsilon", min: 0.01, max: 10, step: 0.01, default: 1.0 }],
   evaluate({ field: input }, params) {
     const eps = params.epsilon;
     const invEps2 = 1 / (2 * eps);
@@ -39,19 +35,13 @@ export const fieldGradient = defineOperator({
 
       // dx = (input(x+eps, y) - input(x-eps, y)) / (2*eps)
       const dxExpr = mul(
-        sub(
-          apply(inputExpr, add(X, uEps), Y),
-          apply(inputExpr, sub(X, uEps), Y),
-        ),
+        sub(apply(inputExpr, add(X, uEps), Y), apply(inputExpr, sub(X, uEps), Y)),
         uInvEps2,
       );
 
       // dy = (input(x, y+eps) - input(x, y-eps)) / (2*eps)
       const dyExpr = mul(
-        sub(
-          apply(inputExpr, X, add(Y, uEps)),
-          apply(inputExpr, X, sub(Y, uEps)),
-        ),
+        sub(apply(inputExpr, X, add(Y, uEps)), apply(inputExpr, X, sub(Y, uEps))),
         uInvEps2,
       );
 

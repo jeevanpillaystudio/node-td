@@ -18,9 +18,7 @@ export const fieldRender = defineOperator({
     { name: "height", type: "number" },
   ],
   outputs: [{ name: "buffer", type: "image" }],
-  params: [
-    { key: "scale", label: "Resolution Scale", min: 0.25, max: 2, step: 0.25, default: 1 },
-  ],
+  params: [{ key: "scale", label: "Resolution Scale", min: 0.25, max: 2, step: 0.25, default: 1 }],
   envReads: ["dpr"],
 
   evaluate({ field, width, height }, params, env) {

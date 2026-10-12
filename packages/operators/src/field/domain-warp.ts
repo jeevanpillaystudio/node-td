@@ -1,5 +1,5 @@
 import { defineOperator, type Field2D } from "@node-td/kernel";
-import { createField, getFieldExpr, warpExpr, u } from "@node-td/kernel/field";
+import { createField, getFieldExpr, u, warpExpr } from "@node-td/kernel/field";
 
 /**
  * Domain Warp — displaces the sampling coordinates of one field

@@ -19,12 +19,7 @@ import type { CompiledField } from "@node-td/kernel/field";
 
 // ─── Fullscreen quad geometry ────────────────────────────────────
 
-const QUAD_VERTS = new Float32Array([
-  -1, -1,
-   1, -1,
-  -1,  1,
-   1,  1,
-]);
+const QUAD_VERTS = new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]);
 
 // ─── Shader compilation ─────────────────────────────────────────
 
@@ -82,10 +77,7 @@ interface CachedProgram {
 
 const programCache = new WeakMap<WebGL2RenderingContext, Map<string, CachedProgram>>();
 
-function getOrCreateProgram(
-  gl: WebGL2RenderingContext,
-  compiled: CompiledField,
-): CachedProgram {
+function getOrCreateProgram(gl: WebGL2RenderingContext, compiled: CompiledField): CachedProgram {
   let cache = programCache.get(gl);
   if (!cache) {
     cache = new Map();
@@ -158,11 +150,7 @@ interface CachedFBO {
 
 const fboCache = new WeakMap<WebGL2RenderingContext, CachedFBO>();
 
-function getOrCreateFBO(
-  gl: WebGL2RenderingContext,
-  width: number,
-  height: number,
-): CachedFBO {
+function getOrCreateFBO(gl: WebGL2RenderingContext, width: number, height: number): CachedFBO {
   const existing = fboCache.get(gl);
   if (existing && existing.width === width && existing.height === height) {
     return existing;

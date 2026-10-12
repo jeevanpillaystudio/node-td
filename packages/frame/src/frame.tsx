@@ -1,3 +1,7 @@
+import type { Buffer2D, Graph, NodeError, OperatorRegistry, ParamDef } from "@node-td/kernel";
+import { CookEngine, collectParams, GraphValidationError } from "@node-td/kernel";
+import { defaultRegistry } from "@node-td/operators";
+import { blitBuffer2D } from "@node-td/render-web";
 import {
   Component,
   type CSSProperties,
@@ -10,10 +14,6 @@ import {
   useRef,
   useState,
 } from "react";
-import type { Graph, Buffer2D, NodeError, OperatorRegistry, ParamDef } from "@node-td/kernel";
-import { collectParams, CookEngine, GraphValidationError } from "@node-td/kernel";
-import { defaultRegistry } from "@node-td/operators";
-import { blitBuffer2D } from "@node-td/render-web";
 import { FrameHostContext } from "./frame-host";
 
 /** The seed for a graph that names none: every gallery artwork was tuned with it. */
@@ -99,7 +99,9 @@ function FrameView({ graph, frameId, registry, seed }: FrameViewProps) {
     const el = wrapperRef.current;
     if (!el) return;
     const io = new IntersectionObserver(
-      ([entry]) => { if (entry) setVisible(entry.isIntersecting); },
+      ([entry]) => {
+        if (entry) setVisible(entry.isIntersecting);
+      },
       { threshold: 0 },
     );
     io.observe(el);
@@ -235,7 +237,13 @@ function FrameView({ graph, frameId, registry, seed }: FrameViewProps) {
         <div
           aria-hidden="true"
           ref={coverRef}
-          style={{ position: "absolute", inset: 0, background: "#1a1a1a", pointerEvents: "none", zIndex: 3 }}
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "#1a1a1a",
+            pointerEvents: "none",
+            zIndex: 3,
+          }}
         />
       </div>
       {error !== null && <FrameError message={error} />}

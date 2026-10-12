@@ -1,6 +1,16 @@
 import { defineOperator, type Field2D } from "@node-td/kernel";
-import { createField, getFieldExpr, add as fAdd, mul, fmin, fmax, mix as fMix, c, u } from "@node-td/kernel/field";
 import type { FieldExpr } from "@node-td/kernel/field";
+import {
+  c,
+  createField,
+  add as fAdd,
+  mix as fMix,
+  fmax,
+  fmin,
+  getFieldExpr,
+  mul,
+  u,
+} from "@node-td/kernel/field";
 
 /** Binary operations on two Field2D inputs */
 const MODES = [
@@ -46,12 +56,23 @@ export const fieldMath = defineOperator({
     if (aExpr && bExpr) {
       let expr: FieldExpr;
       switch (mode) {
-        case 0: expr = fmin(fAdd(aExpr, bExpr), c(1)); break;  // add (clamped)
-        case 1: expr = mul(aExpr, bExpr); break;                 // multiply
-        case 2: expr = fmin(aExpr, bExpr); break;                // min
-        case 3: expr = fmax(aExpr, bExpr); break;                // max
-        case 4: expr = fMix(aExpr, bExpr, u("mix", mixVal)); break;     // lerp
-        default: expr = aExpr;
+        case 0:
+          expr = fmin(fAdd(aExpr, bExpr), c(1));
+          break; // add (clamped)
+        case 1:
+          expr = mul(aExpr, bExpr);
+          break; // multiply
+        case 2:
+          expr = fmin(aExpr, bExpr);
+          break; // min
+        case 3:
+          expr = fmax(aExpr, bExpr);
+          break; // max
+        case 4:
+          expr = fMix(aExpr, bExpr, u("mix", mixVal));
+          break; // lerp
+        default:
+          expr = aExpr;
       }
       return { field: createField(expr) };
     }
@@ -60,12 +81,18 @@ export const fieldMath = defineOperator({
       const va = a(x, y);
       const vb = b(x, y);
       switch (mode) {
-        case 0: return Math.min(va + vb, 1);        // add (clamped)
-        case 1: return va * vb;                       // multiply
-        case 2: return Math.min(va, vb);              // min
-        case 3: return Math.max(va, vb);              // max
-        case 4: return va + (vb - va) * mixVal;       // lerp
-        default: return va;
+        case 0:
+          return Math.min(va + vb, 1); // add (clamped)
+        case 1:
+          return va * vb; // multiply
+        case 2:
+          return Math.min(va, vb); // min
+        case 3:
+          return Math.max(va, vb); // max
+        case 4:
+          return va + (vb - va) * mixVal; // lerp
+        default:
+          return va;
       }
     };
 

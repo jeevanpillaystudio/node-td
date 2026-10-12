@@ -202,7 +202,10 @@ export interface Camera3D {
    * Unproject a screen pixel to a world-space ray.
    * Returns the ray origin and normalized direction for sphere-tracing.
    */
-  unproject: (screenX: number, screenY: number) => {
+  unproject: (
+    screenX: number,
+    screenY: number,
+  ) => {
     origin: [number, number, number];
     dir: [number, number, number];
   };

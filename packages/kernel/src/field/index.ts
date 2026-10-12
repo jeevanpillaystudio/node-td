@@ -1,20 +1,38 @@
 // ─── FieldExpr — reified field computation ──────────────────────
 export type { FieldExpr } from "./expr";
-export { FIELD_EXPR, createField, getFieldExpr, evalExpr } from "./expr";
-
 // ─── Algebraic builders ──────────────────────────────────────────
 export {
-  X, Y, c, u,
-  perlin, simplex,
-  add, sub, mul, div, fmin, fmax, fpow, fatan2,
-  mix, clamp, smoothstep,
-  abs, neg, floor, round,
-  apply, fbmExpr, warpExpr,
+  abs,
+  add,
+  apply,
+  c,
+  clamp,
+  createField,
+  div,
+  evalExpr,
+  FIELD_EXPR,
+  fatan2,
+  fbmExpr,
+  floor,
+  fmax,
+  fmin,
+  fpow,
+  getFieldExpr,
+  mix,
+  mul,
+  neg,
+  perlin,
+  round,
+  simplex,
+  smoothstep,
+  sub,
+  u,
+  warpExpr,
+  X,
+  Y,
 } from "./expr";
-
-// ─── CPU noise ───────────────────────────────────────────────────
-export { P, pnoise, simplex2 } from "./noise";
-
 // ─── GLSL field compiler ─────────────────────────────────────────
 export type { CompiledField } from "./glsl";
 export { compileField } from "./glsl";
+// ─── CPU noise ───────────────────────────────────────────────────
+export { P, pnoise, simplex2 } from "./noise";

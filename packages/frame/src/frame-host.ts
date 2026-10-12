@@ -1,5 +1,5 @@
-import { createContext, type ReactNode } from "react";
 import type { Graph, OperatorRegistry, ParamDef } from "@node-td/kernel";
+import { createContext, type ReactNode } from "react";
 
 /** What a mounted Frame tells its host: enough to list, inspect and re-cook it. */
 export interface FrameEntry {

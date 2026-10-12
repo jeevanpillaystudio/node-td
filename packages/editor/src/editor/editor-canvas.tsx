@@ -1,21 +1,21 @@
-import { useCallback, useMemo } from "react";
 import {
-  ReactFlow,
   Background,
-  Controls,
-  useNodesState,
-  useEdgesState,
   BackgroundVariant,
+  Controls,
   type NodeChange,
   type NodeTypes,
   type OnEdgesChange,
   type OnNodesChange,
   type OnSelectionChangeFunc,
+  ReactFlow,
+  useEdgesState,
+  useNodesState,
 } from "@xyflow/react";
+import { useCallback, useMemo } from "react";
 import "@xyflow/react/dist/style.css";
 import { type Graph, isEnvSource, type OperatorRegistry } from "@node-td/kernel";
 import { toReactFlowElements } from "../graph-adapter";
-import { GenNode, EnvNode } from "./gen-node";
+import { EnvNode, GenNode } from "./gen-node";
 
 const nodeTypes: NodeTypes = {
   gen: GenNode,

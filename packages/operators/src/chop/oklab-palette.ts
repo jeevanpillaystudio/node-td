@@ -28,7 +28,7 @@ function oklchToSrgb(L: number, C: number, hDeg: number): [number, number, numbe
 
   // LMS → linear sRGB (Oklab M⁻¹ matrix)
   const rLin = +4.0767245293 * l - 3.3072168827 * m + 0.2307590544 * s;
-  const gLin = -1.2681437731 * l + 2.6093323231 * m - 0.3411344290 * s;
+  const gLin = -1.2681437731 * l + 2.6093323231 * m - 0.341134429 * s;
   const bLin = -0.0041119885 * l - 0.7034763098 * m + 1.7068625689 * s;
 
   return [linearToSrgb(rLin), linearToSrgb(gLin), linearToSrgb(bLin)];
@@ -78,9 +78,7 @@ export const oklabPalette = defineOperator({
     const GOLDEN_ANGLE = 137.508;
 
     for (let i = 0; i < count; i++) {
-      const hue = spread > 0
-        ? (baseHue + (i * GOLDEN_ANGLE) % spread) % 360
-        : baseHue;
+      const hue = spread > 0 ? (baseHue + ((i * GOLDEN_ANGLE) % spread)) % 360 : baseHue;
 
       const [r, g, b] = oklchToSrgb(L, C, hue);
 

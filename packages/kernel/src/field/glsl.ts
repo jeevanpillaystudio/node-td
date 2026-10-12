@@ -113,12 +113,20 @@ interface CompileCtx {
 /** The direct sub-expressions of a node. */
 function children(expr: FieldExpr): readonly FieldExpr[] {
   switch (expr.tag) {
-    case "x": case "y": case "const": case "uniform":
+    case "x":
+    case "y":
+    case "const":
+    case "uniform":
       return [];
-    case "perlin": case "simplex":
+    case "perlin":
+    case "simplex":
       return [expr.px, expr.py];
-    case "add": case "sub": case "mul": case "div":
-    case "min": case "max":
+    case "add":
+    case "sub":
+    case "mul":
+    case "div":
+    case "min":
+    case "max":
       return [expr.a, expr.b];
     case "pow":
       return [expr.base, expr.exp];
@@ -130,7 +138,10 @@ function children(expr: FieldExpr): readonly FieldExpr[] {
       return [expr.a, expr.lo, expr.hi];
     case "smoothstep":
       return [expr.edge0, expr.edge1, expr.x];
-    case "abs": case "neg": case "floor": case "round":
+    case "abs":
+    case "neg":
+    case "floor":
+    case "round":
       return [expr.a];
     case "apply":
       return [expr.fn, expr.ax, expr.ay];
@@ -242,41 +253,60 @@ function genExpr(expr: FieldExpr, scope: Scope): string {
  */
 function genInline(expr: FieldExpr, scope: Scope): string {
   switch (expr.tag) {
-    case "x": return "x";
-    case "y": return "y";
-    case "const": return glFloat(expr.value);
+    case "x":
+      return "x";
+    case "y":
+      return "y";
+    case "const":
+      return glFloat(expr.value);
     case "uniform": {
       const uName = scope.gen.uniforms.get(expr);
       if (!uName) throw new Error("uniform not registered during analysis");
       return uName;
     }
 
-    case "perlin": return `perlinNoise(${genExpr(expr.px, scope)}, ${genExpr(expr.py, scope)})`;
-    case "simplex": return `simplexNoise(${genExpr(expr.px, scope)}, ${genExpr(expr.py, scope)})`;
+    case "perlin":
+      return `perlinNoise(${genExpr(expr.px, scope)}, ${genExpr(expr.py, scope)})`;
+    case "simplex":
+      return `simplexNoise(${genExpr(expr.px, scope)}, ${genExpr(expr.py, scope)})`;
 
-    case "add": return `(${genExpr(expr.a, scope)} + ${genExpr(expr.b, scope)})`;
-    case "sub": return `(${genExpr(expr.a, scope)} - ${genExpr(expr.b, scope)})`;
-    case "mul": return `(${genExpr(expr.a, scope)} * ${genExpr(expr.b, scope)})`;
+    case "add":
+      return `(${genExpr(expr.a, scope)} + ${genExpr(expr.b, scope)})`;
+    case "sub":
+      return `(${genExpr(expr.a, scope)} - ${genExpr(expr.b, scope)})`;
+    case "mul":
+      return `(${genExpr(expr.a, scope)} * ${genExpr(expr.b, scope)})`;
     case "div": {
       // The denominator is used twice: bind it unless it is a leaf
       const d = genExpr(expr.b, scope);
       const den = isLeaf(expr.b) ? d : bind(d, scope);
       return `(${den} == 0.0 ? 0.0 : ${genExpr(expr.a, scope)} / ${den})`;
     }
-    case "min": return `min(${genExpr(expr.a, scope)}, ${genExpr(expr.b, scope)})`;
-    case "max": return `max(${genExpr(expr.a, scope)}, ${genExpr(expr.b, scope)})`;
-    case "pow": return `pow(max(0.0, ${genExpr(expr.base, scope)}), ${genExpr(expr.exp, scope)})`;
-    case "atan2": return `atan(${genExpr(expr.y, scope)}, ${genExpr(expr.x, scope)})`;
+    case "min":
+      return `min(${genExpr(expr.a, scope)}, ${genExpr(expr.b, scope)})`;
+    case "max":
+      return `max(${genExpr(expr.a, scope)}, ${genExpr(expr.b, scope)})`;
+    case "pow":
+      return `pow(max(0.0, ${genExpr(expr.base, scope)}), ${genExpr(expr.exp, scope)})`;
+    case "atan2":
+      return `atan(${genExpr(expr.y, scope)}, ${genExpr(expr.x, scope)})`;
 
-    case "mix": return `mix(${genExpr(expr.a, scope)}, ${genExpr(expr.b, scope)}, ${genExpr(expr.t, scope)})`;
-    case "clamp": return `clamp(${genExpr(expr.a, scope)}, ${genExpr(expr.lo, scope)}, ${genExpr(expr.hi, scope)})`;
-    case "smoothstep": return `smoothstep(${genExpr(expr.edge0, scope)}, ${genExpr(expr.edge1, scope)}, ${genExpr(expr.x, scope)})`;
+    case "mix":
+      return `mix(${genExpr(expr.a, scope)}, ${genExpr(expr.b, scope)}, ${genExpr(expr.t, scope)})`;
+    case "clamp":
+      return `clamp(${genExpr(expr.a, scope)}, ${genExpr(expr.lo, scope)}, ${genExpr(expr.hi, scope)})`;
+    case "smoothstep":
+      return `smoothstep(${genExpr(expr.edge0, scope)}, ${genExpr(expr.edge1, scope)}, ${genExpr(expr.x, scope)})`;
 
-    case "abs": return `abs(${genExpr(expr.a, scope)})`;
+    case "abs":
+      return `abs(${genExpr(expr.a, scope)})`;
     // Parenthesized, so a negative operand never forms "--"
-    case "neg": return `(-(${genExpr(expr.a, scope)}))`;
-    case "floor": return `floor(${genExpr(expr.a, scope)})`;
-    case "round": return `(floor(${genExpr(expr.a, scope)} + 0.5))`;
+    case "neg":
+      return `(-(${genExpr(expr.a, scope)}))`;
+    case "floor":
+      return `floor(${genExpr(expr.a, scope)})`;
+    case "round":
+      return `(floor(${genExpr(expr.a, scope)} + 0.5))`;
 
     case "apply": {
       const fnN = scope.gen.fnNames.get(expr.fn);

@@ -1,5 +1,5 @@
 import { defineOperator, type Field2D } from "@node-td/kernel";
-import { createField, getFieldExpr, fbmExpr, u } from "@node-td/kernel/field";
+import { createField, fbmExpr, getFieldExpr, u } from "@node-td/kernel/field";
 
 /**
  * Fractional Brownian Motion — sums an input Field2D at multiple
@@ -19,17 +19,24 @@ export const fbm = defineOperator({
   inputs: [{ name: "field", type: "field" }],
   outputs: [{ name: "field", type: "field" }],
   params: [
-    { key: "octaves",        label: "Octaves",             min: 1,     max: 10,   step: 1,    default: 6 },
-    { key: "lacunarity",     label: "Lacunarity",           min: 1.0,   max: 4.0,  step: 0.1,  default: 2.0 },
-    { key: "gain",           label: "Gain",                 min: 0.1,   max: 0.9,  step: 0.05, default: 0.5 },
-    { key: "amplitude",      label: "Amplitude",            min: 0.1,   max: 5.0,  step: 0.1,  default: 1.0 },
-    { key: "domainRotation", label: "Domain Rotation (rad)",min: -3.14, max: 3.14, step: 0.01, default: 0 },
+    { key: "octaves", label: "Octaves", min: 1, max: 10, step: 1, default: 6 },
+    { key: "lacunarity", label: "Lacunarity", min: 1.0, max: 4.0, step: 0.1, default: 2.0 },
+    { key: "gain", label: "Gain", min: 0.1, max: 0.9, step: 0.05, default: 0.5 },
+    { key: "amplitude", label: "Amplitude", min: 0.1, max: 5.0, step: 0.1, default: 1.0 },
+    {
+      key: "domainRotation",
+      label: "Domain Rotation (rad)",
+      min: -3.14,
+      max: 3.14,
+      step: 0.01,
+      default: 0,
+    },
   ],
   evaluate({ field: input }, params) {
-    const octaves  = Math.round(params.octaves);
-    const lac      = params.lacunarity;
-    const gain     = params.gain;
-    const amp      = params.amplitude;
+    const octaves = Math.round(params.octaves);
+    const lac = params.lacunarity;
+    const gain = params.gain;
+    const amp = params.amplitude;
     const rotation = params.domainRotation;
 
     // FieldExpr path: the tree carries no domain rotation, so a rotated

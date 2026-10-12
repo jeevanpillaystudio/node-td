@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import {
-  collectParams,
   CookEngine,
+  collectParams,
   type EnvValues,
   type Graph,
   isEnumParam,

@@ -41,11 +41,11 @@ export const surfaceRaymarch = defineOperator({
   ],
   evaluate({ seeds, camera3d, field }, params) {
     const amplitude = params.amplitude;
-    const maxSteps  = Math.round(params.maxSteps);
-    const maxDist   = params.maxDist;
-    const epsilon   = params.epsilon;
-    const aoSteps   = Math.round(params.aoSteps);
-    const aoRadius  = params.aoRadius;
+    const maxSteps = Math.round(params.maxSteps);
+    const maxDist = params.maxDist;
+    const epsilon = params.epsilon;
+    const aoSteps = Math.round(params.aoSteps);
+    const aoRadius = params.aoRadius;
 
     // Height at world (x, z) — scales [0..1] field to world units
     const height = (x: number, z: number): number => field(x, z) * amplitude;
@@ -84,12 +84,15 @@ export const surfaceRaymarch = defineOperator({
 
     const hitSeed = new Uint8Array(seedCount);
     const outDepth: number[] = [];
-    const outAO: number[]    = [];
-    const outWX: number[]    = [];
-    const outWZ: number[]    = [];
+    const outAO: number[] = [];
+    const outWX: number[] = [];
+    const outWZ: number[] = [];
 
     for (let i = 0; i < seedCount; i++) {
-      const { origin: [ox, oy, oz], dir: [dx, dy, dz] } = rays[i]!;
+      const {
+        origin: [ox, oy, oz],
+        dir: [dx, dy, dz],
+      } = rays[i]!;
 
       // Sphere-trace along ray
       let t = 0;
@@ -148,10 +151,10 @@ export const surfaceRaymarch = defineOperator({
         ...hits,
         attributes: {
           ...hits.attributes,
-          depth:   new Float32Array(outDepth),
-          ao:      new Float32Array(outAO),
-          worldX:  new Float32Array(outWX),
-          worldZ:  new Float32Array(outWZ),
+          depth: new Float32Array(outDepth),
+          ao: new Float32Array(outAO),
+          worldX: new Float32Array(outWX),
+          worldZ: new Float32Array(outWZ),
         },
       },
     };

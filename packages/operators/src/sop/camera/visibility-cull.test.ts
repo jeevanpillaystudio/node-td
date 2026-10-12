@@ -1,5 +1,11 @@
 import { describe, expect, it } from "bun:test";
-import { CookEngine, type Camera3D, type Geometry, type NodeEnv, pathsGeometry3 } from "@node-td/kernel";
+import {
+  type Camera3D,
+  CookEngine,
+  type Geometry,
+  type NodeEnv,
+  pathsGeometry3,
+} from "@node-td/kernel";
 import { createDefaultRegistry } from "../../index";
 import { visibilityCull } from "./visibility-cull";
 
@@ -17,7 +23,12 @@ const mesh: Geometry<3> = {
   topology: "triangles",
   indices: new Uint32Array([0, 1, 2, 1, 3, 2]),
 };
-const stroke = pathsGeometry3([[[0.2, 0, 0.2], [0.8, 0, 0.8]]]);
+const stroke = pathsGeometry3([
+  [
+    [0.2, 0, 0.2],
+    [0.8, 0, 0.8],
+  ],
+]);
 const cull = (geometry: Geometry<3>, m: Geometry<3> = mesh, bypass = 0) =>
   visibilityCull.evaluate({ geometry, mesh: m, camera3d }, { bypass }, env).geometry;
 
@@ -38,7 +49,12 @@ describe("visibility-cull", () => {
   });
 
   it("passes empty geometry, and anything when bypassed", () => {
-    const empty: Geometry<3> = { positions: new Float32Array(0), vertexCount: 0, dim: 3, topology: "points" };
+    const empty: Geometry<3> = {
+      positions: new Float32Array(0),
+      vertexCount: 0,
+      dim: 3,
+      topology: "points",
+    };
     expect(cull(empty)).toBe(empty);
     const points = { ...stroke, topology: "points" as const };
     expect(cull(points, mesh, 1)).toBe(points);
@@ -82,6 +98,8 @@ describe("visibility-cull", () => {
     expect(outputs.get("cull")).toBeUndefined();
     const failure = engine.stats.errors.get("cull");
     expect(failure?.kind).toBe("error");
-    expect(String(failure?.kind === "error" && failure.error)).toMatch(/visibility-cull: geometry is points/);
+    expect(String(failure?.kind === "error" && failure.error)).toMatch(
+      /visibility-cull: geometry is points/,
+    );
   });
 });

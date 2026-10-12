@@ -62,8 +62,7 @@ export function geometryToPaths(geo: Geometry<2>): [number, number][][] {
   const offsets = geo.stripOffsets;
   for (let s = 0; s < offsets.length; s++) {
     const start = offsets[s] as number;
-    const end =
-      s < offsets.length - 1 ? (offsets[s + 1] as number) : geo.vertexCount;
+    const end = s < offsets.length - 1 ? (offsets[s + 1] as number) : geo.vertexCount;
     const path: [number, number][] = [];
     for (let i = start; i < end; i++) {
       path.push([p[i * 2] as number, p[i * 2 + 1] as number]);
@@ -82,9 +81,7 @@ export function vertexAt<D extends 2 | 3>(
   const base = i * d;
   const px = geo.positions[base] as number;
   const py = geo.positions[base + 1] as number;
-  return (
-    d === 2 ? [px, py] : [px, py, geo.positions[base + 2] as number]
-  ) as any;
+  return (d === 2 ? [px, py] : [px, py, geo.positions[base + 2] as number]) as any;
 }
 
 /** Create a line-strip Geometry<3> from an array of 3D polylines */

@@ -1,7 +1,7 @@
-import { Slider } from "../ui/slider";
-import { Label } from "../ui/label";
-import { isEnumParam } from "@node-td/kernel";
 import type { FrameEntry } from "@node-td/frame";
+import { isEnumParam } from "@node-td/kernel";
+import { Label } from "../ui/label";
+import { Slider } from "../ui/slider";
 
 interface EditorInspectorProps {
   entry: FrameEntry;
@@ -10,16 +10,12 @@ interface EditorInspectorProps {
 }
 
 export function EditorInspector({ entry, selectedNode, onClose }: EditorInspectorProps) {
-  const nodeParams = entry.params.filter((p) =>
-    p.key.startsWith(`${selectedNode}.`),
-  );
+  const nodeParams = entry.params.filter((p) => p.key.startsWith(`${selectedNode}.`));
 
   return (
     <div className="w-60 rounded-md border border-border/50 bg-card/80 shadow-lg backdrop-blur-md">
       <div className="flex items-center justify-between border-b border-border/50 px-3 py-2">
-        <span className="font-mono text-xs font-medium text-foreground">
-          {selectedNode}
-        </span>
+        <span className="font-mono text-xs font-medium text-foreground">{selectedNode}</span>
         <button
           type="button"
           onClick={onClose}
@@ -31,17 +27,13 @@ export function EditorInspector({ entry, selectedNode, onClose }: EditorInspecto
 
       <div className="p-3">
         {nodeParams.length === 0 ? (
-          <span className="font-mono text-xs text-muted-foreground">
-            No parameters
-          </span>
+          <span className="font-mono text-xs text-muted-foreground">No parameters</span>
         ) : (
           <div className="space-y-3">
             {nodeParams.map((p) => (
               <div key={p.key} className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <Label className="font-mono text-xs">
-                    {p.label.split(" / ").pop()}
-                  </Label>
+                  <Label className="font-mono text-xs">{p.label.split(" / ").pop()}</Label>
                   <span className="font-mono text-xs text-muted-foreground">
                     {isEnumParam(p)
                       ? p.options.find((o) => o.value === entry.values[p.key])?.label

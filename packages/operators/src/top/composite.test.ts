@@ -70,7 +70,8 @@ describe("composite, canvas path", () => {
         _canvas: recorder.createCanvas(1, 1),
       });
       const layers = [layer(1), layer(0), layer(0.5)];
-      for (const l of layers) (l._canvas as unknown as { getContext(k: string): unknown }).getContext("2d");
+      for (const l of layers)
+        (l._canvas as unknown as { getContext(k: string): unknown }).getContext("2d");
       composite.evaluate({ layers }, { mode }, { ...env, createCanvas: recorder.createCanvas });
       const calls = recorder.log.filter((e) => e[0] === 3).map((e) => e.slice(1));
       expect(calls).toEqual([

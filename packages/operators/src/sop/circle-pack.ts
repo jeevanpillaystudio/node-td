@@ -1,5 +1,4 @@
-import { defineOperator } from "@node-td/kernel";
-import { pointsGeometry } from "@node-td/kernel";
+import { defineOperator, pointsGeometry } from "@node-td/kernel";
 
 type RandFn = () => number;
 

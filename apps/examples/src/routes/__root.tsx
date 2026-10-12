@@ -1,10 +1,5 @@
+import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import {
-  createRootRoute,
-  HeadContent,
-  Outlet,
-  Scripts,
-} from "@tanstack/react-router";
 
 import "~/styles/app.css";
 

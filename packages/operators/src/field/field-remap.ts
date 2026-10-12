@@ -1,9 +1,19 @@
 import { defineOperator, type Field2D } from "@node-td/kernel";
-import {
-  createField, getFieldExpr, clamp as fClamp, abs as fAbs,
-  mul, sub, c, u, div, round as fRound, fpow, smoothstep as fSmooth,
-} from "@node-td/kernel/field";
 import type { FieldExpr } from "@node-td/kernel/field";
+import {
+  c,
+  createField,
+  div,
+  abs as fAbs,
+  clamp as fClamp,
+  fpow,
+  round as fRound,
+  smoothstep as fSmooth,
+  getFieldExpr,
+  mul,
+  sub,
+  u,
+} from "@node-td/kernel/field";
 
 /** Unary transfer functions for Field2D values */
 const MODES = [
