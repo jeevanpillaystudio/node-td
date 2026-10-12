@@ -24,7 +24,7 @@ type Outputs = { buffer: Buffer2D };
  */
 export const strokeRenderer: Operator<Inputs, Outputs> = {
   id: "stroke-renderer",
-  category: "rop",
+  category: "top",
   label: "Stroke Renderer",
   inputs: [
     { name: "geometry", type: "geometry" },

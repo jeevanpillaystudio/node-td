@@ -21,7 +21,7 @@ type Outputs = { dx: Field2D; dy: Field2D };
  */
 export const fieldGradient: Operator<Inputs, Outputs> = {
   id: "field-gradient",
-  category: "top",
+  category: "field",
   label: "Field Gradient",
   inputs: [{ name: "field", type: "field" }],
   outputs: [

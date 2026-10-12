@@ -34,7 +34,7 @@ const BLEND_OPS: GlobalCompositeOperation[] = [
  */
 export const composite: Operator<Inputs, Outputs> = {
   id: "composite",
-  category: "rop",
+  category: "top",
   label: "Composite",
   inputs: [{ name: "layers", type: "buffer", variadic: true }],
   outputs: [{ name: "buffer", type: "buffer" }],

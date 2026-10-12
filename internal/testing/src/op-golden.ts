@@ -64,7 +64,7 @@ function splitPort(ref: string): [string, string] {
 /** Wraps a field in a plain closure, dropping its FieldExpr, so consumers take their closure path. */
 const opaqueField: Operator<{ field: Field2D }, { field: Field2D }> = {
   id: "fixture-opaque-field",
-  category: "top",
+  category: "field",
   label: "Opaque Field (fixture)",
   inputs: [{ name: "field", type: "field" }],
   outputs: [{ name: "field", type: "field" }],

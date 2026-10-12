@@ -37,7 +37,7 @@ function smoothstep(lo: number, hi: number, x: number): number {
  */
 export const fieldRemap: Operator<Inputs, Outputs> = {
   id: "field-remap",
-  category: "top",
+  category: "field",
   label: "Field Remap",
   inputs: [{ name: "field", type: "field" }],
   outputs: [{ name: "field", type: "field" }],

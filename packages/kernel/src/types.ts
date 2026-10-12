@@ -1,15 +1,21 @@
 // ─── Operator Categories ─────────────────────────────────────────
 
 /**
- * Operator categories — mirrors TouchDesigner's taxonomy.
+ * Operator families, after TouchDesigner's. A family is a label that
+ * follows from what the operator outputs on its first port.
  *
- * TOP  — Texture operators (field/buffer)
- * SOP  — Surface operators (geometry)
- * MAT  — Material operators (palette)
- * CHOP — Channel operators (none yet)
- * ROP  — Render operators (geometry + camera + material → buffer)
+ * FIELD — resolution-free scalar functions. TD has no such family; the
+ *         nearest is a Noise or GLSL TOP before it is rasterised. SOPs
+ *         sample fields point by point.
+ * TOP   — rasterised 2D data and images: rasterisers, renderers and
+ *         compositing, as TD's Render and Composite TOPs
+ * SOP   — geometry
+ * CHOP  — palettes, as channel tables of r, g, b, a per sample
+ * MAT   — diffuse-shade only: it outputs a palette of per-vertex colours,
+ *         until that colour moves onto the geometry
+ * COMP  — camera objects, as TD's Camera COMP
  */
-export type OperatorCategory = "top" | "sop" | "mat" | "chop" | "rop";
+export type OperatorCategory = "field" | "top" | "sop" | "chop" | "mat" | "comp";
 
 // ─── Port Types ──────────────────────────────────────────────────
 
@@ -238,11 +244,7 @@ export type NodeEnv = EnvValues & Capabilities & { rng: NodeRng };
 
 /**
  * An operator type: pure function with typed I/O and tunable parameters.
- *
- * Categories:
- *   TOP  → Buffer2D, Field2D   (texture / buffer processing)
- *   SOP  → Geometry             (surface / geometry operations)
- *   MAT  → Palette              (material / color operations)
+ * Its category is the family its outputs put it in (see OperatorCategory).
  *
  * CPU operators implement `evaluate`.
  */

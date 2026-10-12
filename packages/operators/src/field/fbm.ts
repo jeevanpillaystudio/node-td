@@ -17,7 +17,7 @@ type Outputs = { field: Field2D };
  */
 export const fbm: Operator<Inputs, Outputs> = {
   id: "fbm",
-  category: "top",
+  category: "field",
   label: "fBm (Fractal Noise)",
   inputs: [{ name: "field", type: "field" }],
   outputs: [{ name: "field", type: "field" }],

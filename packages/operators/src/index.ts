@@ -38,18 +38,21 @@ import { composite } from "./top/composite";
 
 /** All built-in operators */
 export const allOperators: Operator[] = [
-  // TOP — sources
+  // FIELD — sources
   perlinNoise,
   simplexNoise,
-  gridSampler,
-  fieldRender,
-  // TOP — field algebra
+  // FIELD — algebra
   fbm,
   domainWarp,
   fieldMath,
   fieldRemap,
   fieldGradient,
   curlAngle,
+  // TOP
+  gridSampler,
+  fieldRender,
+  strokeRenderer,
+  composite,
   // SOP
   circlePack,
   poissonDisc,
@@ -68,16 +71,15 @@ export const allOperators: Operator[] = [
   contourRing,
   surfaceRaymarch,
   pointOrient,
-  // MAT
+  // CHOP
   proceduralPalette,
   oklabPalette,
   contrastFilter,
+  // MAT
   diffuseShade,
-  // ROP
+  // COMP
   camera2d,
   camera3d,
-  strokeRenderer,
-  composite,
 ];
 
 /** Create a registry pre-loaded with all built-in operators */

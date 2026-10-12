@@ -57,7 +57,7 @@ function linearToSrgb(x: number): number {
  */
 export const oklabPalette: Operator<Inputs, Outputs> = {
   id: "oklab-palette",
-  category: "mat",
+  category: "chop",
   label: "OKLAB Palette",
   inputs: [],
   outputs: [{ name: "palette", type: "palette" }],

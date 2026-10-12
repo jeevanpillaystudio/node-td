@@ -50,7 +50,7 @@ function contrastRatio(l1: number, l2: number): number {
  */
 export const contrastFilter: Operator<Inputs, Outputs> = {
   id: "contrast-filter",
-  category: "mat",
+  category: "chop",
   label: "Contrast Filter",
   inputs: [
     { name: "palette", type: "palette" },

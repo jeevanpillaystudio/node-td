@@ -11,7 +11,7 @@ type Outputs = { camera: Camera2D };
  */
 export const camera2d: Operator<Inputs, Outputs> = {
   id: "camera-2d",
-  category: "rop",
+  category: "comp",
   label: "Camera 2D",
   inputs: [
     { name: "width", type: "number" },

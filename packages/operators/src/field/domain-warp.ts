@@ -17,7 +17,7 @@ type Outputs = { field: Field2D };
  */
 export const domainWarp: Operator<Inputs, Outputs> = {
   id: "domain-warp",
-  category: "top",
+  category: "field",
   label: "Domain Warp",
   inputs: [
     { name: "field", type: "field" },

@@ -23,7 +23,7 @@ const MODES = [
  */
 export const fieldMath: Operator<Inputs, Outputs> = {
   id: "field-math",
-  category: "top",
+  category: "field",
   label: "Field Math",
   inputs: [
     { name: "a", type: "field" },

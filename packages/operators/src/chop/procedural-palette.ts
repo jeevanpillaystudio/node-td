@@ -12,7 +12,7 @@ type Outputs = { palette: Palette };
  */
 export const proceduralPalette: Operator<Inputs, Outputs> = {
   id: "procedural-palette",
-  category: "mat",
+  category: "chop",
   label: "Procedural Palette",
   inputs: [],
   outputs: [{ name: "palette", type: "palette" }],

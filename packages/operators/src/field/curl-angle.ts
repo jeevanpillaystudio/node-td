@@ -23,7 +23,7 @@ type Outputs = { field: Field2D };
  */
 export const curlAngle: Operator<Inputs, Outputs> = {
   id: "curl-angle",
-  category: "top",
+  category: "field",
   label: "Curl Angle",
   inputs: [{ name: "field", type: "field" }],
   outputs: [{ name: "field", type: "field" }],

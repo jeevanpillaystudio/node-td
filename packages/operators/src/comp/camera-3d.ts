@@ -193,7 +193,7 @@ function mul4(a: Float64Array, b: Float64Array): Float64Array {
  */
 export const camera3d: Operator<Inputs, Outputs> = {
   id: "camera-3d",
-  category: "rop",
+  category: "comp",
   label: "Camera 3D",
   inputs: [
     { name: "width", type: "number" },

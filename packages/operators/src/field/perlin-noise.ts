@@ -6,7 +6,7 @@ type Outputs = { field: Field2D };
 
 export const perlinNoise: Operator<Inputs, Outputs> = {
   id: "perlin-noise",
-  category: "top",
+  category: "field",
   label: "Perlin Noise",
   inputs: [],
   outputs: [{ name: "field", type: "field" }],

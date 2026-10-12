@@ -1,13 +1,16 @@
-import { ENV_SOURCE, type PortDef } from "@node-td/kernel";
+import { ENV_SOURCE, type OperatorCategory, type PortDef } from "@node-td/kernel";
 import { Handle, Position } from "@xyflow/react";
 import { memo, type ReactNode } from "react";
 import { type EnvNodeData, type GenNodeData, handleId } from "../graph-adapter";
 
-const CATEGORY_DOT: Record<string, string> = {
-  top: "bg-cyan-400",
-  sop: "bg-amber-400",
-  mat: "bg-violet-400",
-  chop: "bg-emerald-400",
+/** Family colours, after TouchDesigner's; FIELD has no TD family, so it takes teal. */
+const CATEGORY_DOT: Record<OperatorCategory, string> = {
+  field: "bg-teal-400",
+  top: "bg-purple-400",
+  sop: "bg-blue-400",
+  chop: "bg-green-400",
+  mat: "bg-yellow-400",
+  comp: "bg-zinc-400",
 };
 
 function InputPorts({ nodeKey, ports }: { nodeKey: string; ports: PortDef[] }) {
@@ -87,7 +90,7 @@ function GenNodeComponent({ data, selected }: { data: GenNodeData; selected?: bo
     <NodeCard
       title={instanceKey}
       subtitle={nodeType.id}
-      dotColor={CATEGORY_DOT[nodeType.category] ?? "bg-muted-foreground"}
+      dotColor={CATEGORY_DOT[nodeType.category]}
       selected={selected}
       inputs={<InputPorts nodeKey={instanceKey} ports={nodeType.inputs} />}
       outputs={<OutputPorts nodeKey={instanceKey} ports={nodeType.outputs} />}

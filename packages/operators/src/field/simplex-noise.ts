@@ -6,7 +6,7 @@ type Outputs = { field: Field2D };
 
 export const simplexNoise: Operator<Inputs, Outputs> = {
   id: "simplex-noise",
-  category: "top",
+  category: "field",
   label: "Simplex Noise",
   inputs: [],
   outputs: [{ name: "field", type: "field" }],
