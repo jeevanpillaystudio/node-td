@@ -7,13 +7,19 @@ import type { FieldExpr } from "./expr";
 // gl_FragColor.r (grayscale).
 //
 // Architecture:
-//   1. Analysis pass — find sub-expressions used as functions
-//      (children of fbm/warp/apply that are called at varying coords)
-//   2. Codegen pass — emit GLSL functions for those sub-exprs,
+//   1. Analysis pass — one walk of the expression DAG, each node once.
+//      Finds sub-expressions used as functions (fbm and warp, and the
+//      fields they or apply call at varying coords) and lists every node
+//      in post order, so a node comes after all of its sub-expressions
+//   2. Codegen pass — emit a GLSL function per function node, in that
+//      post order, so each is defined before any function that calls it;
 //      then inline everything else into main()
 //   3. Library injection — include Perlin/Simplex noise when needed
 //   4. Uniform collection — param-driven values become GLSL uniforms
 //      so the shader can be reused across parameter changes
+//
+// compileField is a pure function of the expression: it keeps all of its
+// state in a context it creates per call, and never mutates the AST.
 
 // ─── Compiled output ─────────────────────────────────────────────
 
@@ -94,112 +100,88 @@ void main() {
 interface CompileCtx {
   needsPerlin: boolean;
   needsSimplex: boolean;
+  /** Every node analysed so far: a FieldExpr is a DAG, so shared sub-trees are walked once */
+  seen: Set<FieldExpr>;
+  /** Every node, in post order: each after all of its sub-expressions */
+  postOrder: FieldExpr[];
   /** Sub-expressions that need their own GLSL function (called at varying coords) */
-  functions: Map<FieldExpr, string>;
-  nextFnId: number;
+  fnNodes: Set<FieldExpr>;
   /** Uniform nodes → GLSL variable names */
   uniforms: Map<FieldExpr, string>;
-  nextUniformId: number;
 }
 
-/**
- * Identify sub-expressions that must be emitted as GLSL functions
- * because they're evaluated at varying coordinates (inside fbm/warp/apply).
- * Also collects uniform nodes for declaration.
- */
-function analyze(expr: FieldExpr, ctx: CompileCtx): void {
+/** The direct sub-expressions of a node. */
+function children(expr: FieldExpr): readonly FieldExpr[] {
   switch (expr.tag) {
-    case "perlin":
-      ctx.needsPerlin = true;
-      analyze(expr.px, ctx);
-      analyze(expr.py, ctx);
-      break;
-    case "simplex":
-      ctx.needsSimplex = true;
-      analyze(expr.px, ctx);
-      analyze(expr.py, ctx);
-      break;
-    case "fbm":
-      // source is called at (x*freq, y*freq) — needs its own function
-      registerFn(expr.source, ctx);
-      // fbm itself needs a function (loop can't be inlined)
-      registerFn(expr, ctx);
-      // Analyze param expressions (may contain uniforms)
-      analyze(expr.octaves, ctx);
-      analyze(expr.lacunarity, ctx);
-      analyze(expr.gain, ctx);
-      analyze(expr.amplitude, ctx);
-      break;
-    case "warp":
-      // source and warp are called at offset coords — need functions
-      registerFn(expr.source, ctx);
-      registerFn(expr.warp, ctx);
-      // warp itself also gets a function for cleanliness
-      registerFn(expr, ctx);
-      // Analyze param expressions
-      analyze(expr.amount, ctx);
-      analyze(expr.offsetX, ctx);
-      analyze(expr.offsetY, ctx);
-      break;
-    case "apply":
-      // fn is called at computed coords — needs function
-      registerFn(expr.fn, ctx);
-      analyze(expr.ax, ctx);
-      analyze(expr.ay, ctx);
-      break;
-    // Binary (a, b)
+    case "x": case "y": case "const": case "uniform":
+      return [];
+    case "perlin": case "simplex":
+      return [expr.px, expr.py];
     case "add": case "sub": case "mul": case "div":
     case "min": case "max":
-      analyze(expr.a, ctx);
-      analyze(expr.b, ctx);
-      break;
+      return [expr.a, expr.b];
     case "pow":
-      analyze(expr.base, ctx);
-      analyze(expr.exp, ctx);
-      break;
+      return [expr.base, expr.exp];
     case "atan2":
-      analyze(expr.y, ctx);
-      analyze(expr.x, ctx);
-      break;
-    // Ternary
+      return [expr.y, expr.x];
     case "mix":
-      analyze(expr.a, ctx);
-      analyze(expr.b, ctx);
-      analyze(expr.t, ctx);
-      break;
+      return [expr.a, expr.b, expr.t];
     case "clamp":
-      analyze(expr.a, ctx);
-      analyze(expr.lo, ctx);
-      analyze(expr.hi, ctx);
-      break;
+      return [expr.a, expr.lo, expr.hi];
     case "smoothstep":
-      analyze(expr.edge0, ctx);
-      analyze(expr.edge1, ctx);
-      analyze(expr.x, ctx);
-      break;
-    // Unary
+      return [expr.edge0, expr.edge1, expr.x];
     case "abs": case "neg": case "floor": case "round":
-      analyze(expr.a, ctx);
-      break;
-    // Leaves
-    case "x": case "y": case "const":
-      break;
-    // Uniform — collect for declaration
-    case "uniform":
-      if (!ctx.uniforms.has(expr)) {
-        ctx.uniforms.set(expr, `u_${ctx.nextUniformId++}`);
-      }
-      break;
+      return [expr.a];
+    case "apply":
+      return [expr.fn, expr.ax, expr.ay];
+    case "fbm":
+      return [expr.source, expr.octaves, expr.lacunarity, expr.gain, expr.amplitude];
+    case "warp":
+      return [expr.source, expr.warp, expr.amount, expr.offsetX, expr.offsetY];
   }
 }
 
-function registerFn(expr: FieldExpr, ctx: CompileCtx): void {
-  if (ctx.functions.has(expr)) return;
-  // Register BEFORE analyzing to prevent infinite recursion
-  // (fbm/warp analyze cases call registerFn on themselves)
-  const name = `field_fn_${ctx.nextFnId++}`;
-  ctx.functions.set(expr, name);
-  analyze(expr, ctx);
+/**
+ * Walk the expression once. Marks the sub-expressions that must be
+ * emitted as GLSL functions because they're evaluated at varying
+ * coordinates (inside fbm/warp/apply), collects uniform nodes and noise
+ * library needs, and records every node in post order.
+ */
+function analyze(expr: FieldExpr, ctx: CompileCtx): void {
+  if (ctx.seen.has(expr)) return;
+  ctx.seen.add(expr);
+
+  switch (expr.tag) {
+    case "perlin":
+      ctx.needsPerlin = true;
+      break;
+    case "simplex":
+      ctx.needsSimplex = true;
+      break;
+    case "fbm":
+      // source is called at (x*freq, y*freq); fbm itself is a loop,
+      // which can't be inlined
+      ctx.fnNodes.add(expr.source);
+      ctx.fnNodes.add(expr);
+      break;
+    case "warp":
+      // source and warp are called at offset coords; warp itself gets a
+      // function so its amount is evaluated once
+      ctx.fnNodes.add(expr.source);
+      ctx.fnNodes.add(expr.warp);
+      ctx.fnNodes.add(expr);
+      break;
+    case "apply":
+      // fn is called at computed coords
+      ctx.fnNodes.add(expr.fn);
+      break;
+    case "uniform":
+      ctx.uniforms.set(expr, `u_${ctx.uniforms.size}`);
+      break;
+  }
+
+  for (const child of children(expr)) analyze(child, ctx);
+  ctx.postOrder.push(expr);
 }
 
 // ─── Code generation ─────────────────────────────────────────────
@@ -210,135 +192,154 @@ function glFloat(n: number): string {
   return s.includes(".") ? s : s + ".0";
 }
 
+interface GenCtx {
+  /** Function nodes → GLSL function names */
+  fnNames: ReadonlyMap<FieldExpr, string>;
+  uniforms: ReadonlyMap<FieldExpr, string>;
+}
+
+/**
+ * The statements of one function body (or main) being generated:
+ * temporaries for values the body uses more than once.
+ */
+interface Scope {
+  readonly gen: GenCtx;
+  readonly temps: string[];
+}
+
+/** Bind a value to a fresh temporary of the scope, so it is evaluated once. */
+function bind(value: string, scope: Scope): string {
+  const name = `t_${scope.temps.length}`;
+  scope.temps.push(`float ${name} = ${value};`);
+  return name;
+}
+
+function isLeaf(expr: FieldExpr): boolean {
+  return children(expr).length === 0;
+}
+
 /**
  * Generate a GLSL expression string for a FieldExpr.
  * Sub-expressions registered as functions are emitted as function calls.
  */
-function genExpr(expr: FieldExpr, ctx: CompileCtx): string {
-  // Check if this expression was registered as a function
-  const fnName = ctx.functions.get(expr);
+function genExpr(expr: FieldExpr, scope: Scope): string {
+  const fnName = scope.gen.fnNames.get(expr);
   if (fnName) return `${fnName}(x, y)`;
+  return genInline(expr, scope);
+}
 
+/**
+ * Generate a FieldExpr in place, even when it is a function node itself:
+ * a function's body is its own expression with the function excluded.
+ */
+function genInline(expr: FieldExpr, scope: Scope): string {
   switch (expr.tag) {
     case "x": return "x";
     case "y": return "y";
     case "const": return glFloat(expr.value);
     case "uniform": {
-      const uName = ctx.uniforms.get(expr);
+      const uName = scope.gen.uniforms.get(expr);
       if (!uName) throw new Error("uniform not registered during analysis");
       return uName;
     }
 
-    case "perlin": return `perlinNoise(${genExpr(expr.px, ctx)}, ${genExpr(expr.py, ctx)})`;
-    case "simplex": return `simplexNoise(${genExpr(expr.px, ctx)}, ${genExpr(expr.py, ctx)})`;
+    case "perlin": return `perlinNoise(${genExpr(expr.px, scope)}, ${genExpr(expr.py, scope)})`;
+    case "simplex": return `simplexNoise(${genExpr(expr.px, scope)}, ${genExpr(expr.py, scope)})`;
 
-    case "add": return `(${genExpr(expr.a, ctx)} + ${genExpr(expr.b, ctx)})`;
-    case "sub": return `(${genExpr(expr.a, ctx)} - ${genExpr(expr.b, ctx)})`;
-    case "mul": return `(${genExpr(expr.a, ctx)} * ${genExpr(expr.b, ctx)})`;
+    case "add": return `(${genExpr(expr.a, scope)} + ${genExpr(expr.b, scope)})`;
+    case "sub": return `(${genExpr(expr.a, scope)} - ${genExpr(expr.b, scope)})`;
+    case "mul": return `(${genExpr(expr.a, scope)} * ${genExpr(expr.b, scope)})`;
     case "div": {
-      const d = genExpr(expr.b, ctx);
-      const n = genExpr(expr.a, ctx);
-      return `(${d} == 0.0 ? 0.0 : ${n} / ${d})`;
+      // The denominator is used twice: bind it unless it is a leaf
+      const d = genExpr(expr.b, scope);
+      const den = isLeaf(expr.b) ? d : bind(d, scope);
+      return `(${den} == 0.0 ? 0.0 : ${genExpr(expr.a, scope)} / ${den})`;
     }
-    case "min": return `min(${genExpr(expr.a, ctx)}, ${genExpr(expr.b, ctx)})`;
-    case "max": return `max(${genExpr(expr.a, ctx)}, ${genExpr(expr.b, ctx)})`;
-    case "pow": return `pow(max(0.0, ${genExpr(expr.base, ctx)}), ${genExpr(expr.exp, ctx)})`;
-    case "atan2": return `atan(${genExpr(expr.y, ctx)}, ${genExpr(expr.x, ctx)})`;
+    case "min": return `min(${genExpr(expr.a, scope)}, ${genExpr(expr.b, scope)})`;
+    case "max": return `max(${genExpr(expr.a, scope)}, ${genExpr(expr.b, scope)})`;
+    case "pow": return `pow(max(0.0, ${genExpr(expr.base, scope)}), ${genExpr(expr.exp, scope)})`;
+    case "atan2": return `atan(${genExpr(expr.y, scope)}, ${genExpr(expr.x, scope)})`;
 
-    case "mix": return `mix(${genExpr(expr.a, ctx)}, ${genExpr(expr.b, ctx)}, ${genExpr(expr.t, ctx)})`;
-    case "clamp": return `clamp(${genExpr(expr.a, ctx)}, ${genExpr(expr.lo, ctx)}, ${genExpr(expr.hi, ctx)})`;
-    case "smoothstep": return `smoothstep(${genExpr(expr.edge0, ctx)}, ${genExpr(expr.edge1, ctx)}, ${genExpr(expr.x, ctx)})`;
+    case "mix": return `mix(${genExpr(expr.a, scope)}, ${genExpr(expr.b, scope)}, ${genExpr(expr.t, scope)})`;
+    case "clamp": return `clamp(${genExpr(expr.a, scope)}, ${genExpr(expr.lo, scope)}, ${genExpr(expr.hi, scope)})`;
+    case "smoothstep": return `smoothstep(${genExpr(expr.edge0, scope)}, ${genExpr(expr.edge1, scope)}, ${genExpr(expr.x, scope)})`;
 
-    case "abs": return `abs(${genExpr(expr.a, ctx)})`;
-    case "neg": return `(-${genExpr(expr.a, ctx)})`;
-    case "floor": return `floor(${genExpr(expr.a, ctx)})`;
-    case "round": return `(floor(${genExpr(expr.a, ctx)} + 0.5))`;
+    case "abs": return `abs(${genExpr(expr.a, scope)})`;
+    case "neg": return `(-${genExpr(expr.a, scope)})`;
+    case "floor": return `floor(${genExpr(expr.a, scope)})`;
+    case "round": return `(floor(${genExpr(expr.a, scope)} + 0.5))`;
 
     case "apply": {
-      const fnN = ctx.functions.get(expr.fn);
+      const fnN = scope.gen.fnNames.get(expr.fn);
       if (!fnN) throw new Error("apply target not registered as function");
-      return `${fnN}(${genExpr(expr.ax, ctx)}, ${genExpr(expr.ay, ctx)})`;
+      return `${fnN}(${genExpr(expr.ax, scope)}, ${genExpr(expr.ay, scope)})`;
     }
 
-    // fbm and warp are always registered as functions during analyze
+    // fbm and warp are always function nodes: genFunction emits their bodies
     case "fbm":
-    case "warp": {
-      const fn = ctx.functions.get(expr);
-      if (!fn) throw new Error(`${expr.tag} not registered as function`);
-      return `${fn}(x, y)`;
-    }
+    case "warp":
+      throw new Error(`${expr.tag} is emitted as a function, never inline`);
   }
-
 }
 
-
-/** Generate GLSL function definitions for all registered sub-expressions. */
-function genFunctions(ctx: CompileCtx): string {
-  const lines: string[] = [];
-
-  for (const [expr, name] of ctx.functions) {
-    if (expr.tag === "fbm") {
-      // FBM wrapper function with loop — params may be uniforms or consts
-      const srcFn = ctx.functions.get(expr.source);
-      if (!srcFn) continue;
-      const octExpr = genExpr(expr.octaves, ctx);
-      const lacExpr = genExpr(expr.lacunarity, ctx);
-      const gainExpr = genExpr(expr.gain, ctx);
-      const ampExpr = genExpr(expr.amplitude, ctx);
-      lines.push(`float ${name}(float x, float y) {`);
-      lines.push(`  float sum = 0.0;`);
-      lines.push(`  float freq = 1.0;`);
-      lines.push(`  float amp = 1.0;`);
-      lines.push(`  float maxAmp = 0.0;`);
-      lines.push(`  for (int i = 0; i < int(${octExpr}); i++) {`);
-      lines.push(`    sum += ${srcFn}(x * freq, y * freq) * amp;`);
-      lines.push(`    maxAmp += amp;`);
-      lines.push(`    freq *= ${lacExpr};`);
-      lines.push(`    amp *= ${gainExpr};`);
-      lines.push(`  }`);
-      lines.push(`  return (sum / maxAmp) * ${ampExpr};`);
-      lines.push(`}`);
-      lines.push(``);
-    } else if (expr.tag === "warp") {
-      // Warp wrapper function — params may be uniforms or consts
-      const srcFn = ctx.functions.get(expr.source);
-      const warpFn = ctx.functions.get(expr.warp);
-      if (!srcFn || !warpFn) continue;
-      const amtExpr = genExpr(expr.amount, ctx);
-      const oxExpr = genExpr(expr.offsetX, ctx);
-      const oyExpr = genExpr(expr.offsetY, ctx);
-      lines.push(`float ${name}(float x, float y) {`);
-      lines.push(`  float wx = (${warpFn}(x, y) - 0.5) * 2.0 * ${amtExpr};`);
-      lines.push(`  float wy = (${warpFn}(x + ${oxExpr}, y + ${oyExpr}) - 0.5) * 2.0 * ${amtExpr};`);
-      lines.push(`  return ${srcFn}(x + wx, y + wy);`);
-      lines.push(`}`);
-      lines.push(``);
-    } else {
-      // Regular function — compile the body
-      const body = genExprAsBody(expr, ctx, name);
-      lines.push(`float ${name}(float x, float y) {`);
-      lines.push(`  return ${body};`);
-      lines.push(`}`);
-      lines.push(``);
-    }
-  }
-
-  return lines.join("\n");
+/** The name of a registered function node. */
+function fnNameOf(expr: FieldExpr, gen: GenCtx): string {
+  const name = gen.fnNames.get(expr);
+  if (!name) throw new Error(`${expr.tag} not registered as function`);
+  return name;
 }
 
-/**
- * Generate expression for a function body.
- * Unlike genExpr, this does NOT look up the current expression in ctx.functions
- * (to avoid infinite recursion when compiling the function's own body).
- */
-function genExprAsBody(expr: FieldExpr, ctx: CompileCtx, selfName: string): string {
-  // Temporarily remove self from functions map to avoid self-reference
-  const saved = ctx.functions.get(expr);
-  ctx.functions.delete(expr);
-  const result = genExpr(expr, ctx);
-  if (saved) ctx.functions.set(expr, saved);
-  else if (selfName) ctx.functions.set(expr, selfName);
-  return result;
+/** Generate the GLSL definition of one function node. */
+function genFunction(expr: FieldExpr, name: string, gen: GenCtx): string[] {
+  const scope: Scope = { gen, temps: [] };
+  const body: string[] = [];
+
+  if (expr.tag === "fbm") {
+    // FBM loop — params may be uniforms or consts, evaluated once at
+    // (x, y) as evalExpr does
+    const srcFn = fnNameOf(expr.source, gen);
+    const octExpr = genExpr(expr.octaves, scope);
+    const lacExpr = genExpr(expr.lacunarity, scope);
+    const gainExpr = genExpr(expr.gain, scope);
+    const ampExpr = genExpr(expr.amplitude, scope);
+    body.push(`  float octaves = ${octExpr};`);
+    body.push(`  float lacunarity = ${lacExpr};`);
+    body.push(`  float gain = ${gainExpr};`);
+    body.push(`  float amplitude = ${ampExpr};`);
+    body.push(`  float sum = 0.0;`);
+    body.push(`  float freq = 1.0;`);
+    body.push(`  float amp = 1.0;`);
+    body.push(`  float maxAmp = 0.0;`);
+    body.push(`  for (int i = 0; i < int(octaves); i++) {`);
+    body.push(`    sum += ${srcFn}(x * freq, y * freq) * amp;`);
+    body.push(`    maxAmp += amp;`);
+    body.push(`    freq *= lacunarity;`);
+    body.push(`    amp *= gain;`);
+    body.push(`  }`);
+    body.push(`  return (sum / maxAmp) * amplitude;`);
+  } else if (expr.tag === "warp") {
+    // Warp — params may be uniforms or consts; amount is used twice
+    const srcFn = fnNameOf(expr.source, gen);
+    const warpFn = fnNameOf(expr.warp, gen);
+    const amtExpr = genExpr(expr.amount, scope);
+    const oxExpr = genExpr(expr.offsetX, scope);
+    const oyExpr = genExpr(expr.offsetY, scope);
+    body.push(`  float amount = ${amtExpr};`);
+    body.push(`  float wx = (${warpFn}(x, y) - 0.5) * 2.0 * amount;`);
+    body.push(`  float wy = (${warpFn}(x + ${oxExpr}, y + ${oyExpr}) - 0.5) * 2.0 * amount;`);
+    body.push(`  return ${srcFn}(x + wx, y + wy);`);
+  } else {
+    // Regular function — its own expression, inlined
+    body.push(`  return ${genInline(expr, scope)};`);
+  }
+
+  return [
+    `float ${name}(float x, float y) {`,
+    ...scope.temps.map((t) => `  ${t}`),
+    ...body,
+    `}`,
+    ``,
+  ];
 }
 
 // ─── Public API ──────────────────────────────────────────────────
@@ -348,14 +349,19 @@ export function compileField(expr: FieldExpr): CompiledField {
   const ctx: CompileCtx = {
     needsPerlin: false,
     needsSimplex: false,
-    functions: new Map(),
-    nextFnId: 0,
+    seen: new Set(),
+    postOrder: [],
+    fnNodes: new Set(),
     uniforms: new Map(),
-    nextUniformId: 0,
   };
 
   // Analysis — collect function boundaries, library needs, and uniforms
   analyze(expr, ctx);
+
+  // Function nodes in post order, named in that order: callees first
+  const functions = ctx.postOrder.filter((node) => ctx.fnNodes.has(node));
+  const fnNames = new Map(functions.map((node, i) => [node, `field_fn_${i}`] as const));
+  const gen: GenCtx = { fnNames, uniforms: ctx.uniforms };
 
   // Build fragment shader
   const parts: string[] = [];
@@ -383,14 +389,18 @@ export function compileField(expr: FieldExpr): CompiledField {
   }
 
   // Generated field functions
-  const fnCode = genFunctions(ctx);
-  if (fnCode) parts.push(fnCode);
+  for (const node of functions) {
+    parts.push(...genFunction(node, fnNameOf(node, gen), gen));
+  }
 
   // Main
+  const scope: Scope = { gen, temps: [] };
+  const value = genExpr(expr, scope);
   parts.push(`void main() {`);
   parts.push(`  float x = gl_FragCoord.x;`);
   parts.push(`  float y = uResolution.y - gl_FragCoord.y;`); // Flip Y to match Canvas2D
-  parts.push(`  float value = ${genExpr(expr, ctx)};`);
+  for (const t of scope.temps) parts.push(`  ${t}`);
+  parts.push(`  float value = ${value};`);
   parts.push(`  fragColor = vec4(value, value, value, 1.0);`);
   parts.push(`}`);
 
