@@ -1,8 +1,5 @@
-import type { Operator, Field2D } from "@node-td/kernel";
+import { defineOperator, type Field2D } from "@node-td/kernel";
 import { createField, getFieldExpr, warpExpr, u } from "@node-td/kernel/field";
-
-type Inputs = { field: Field2D; warp: Field2D };
-type Outputs = { field: Field2D };
 
 /**
  * Domain Warp — displaces the sampling coordinates of one field
@@ -15,7 +12,7 @@ type Outputs = { field: Field2D };
  * Creates organic, turbulent distortion — the signature look of
  * warped terrain in generative landscapes.
  */
-export const domainWarp: Operator<Inputs, Outputs> = {
+export const domainWarp = defineOperator({
   id: "domain-warp",
   category: "field",
   label: "Domain Warp",
@@ -30,9 +27,9 @@ export const domainWarp: Operator<Inputs, Outputs> = {
     { key: "offsetY", label: "Offset Y", min: 0, max: 1000, step: 10, default: 100 },
   ],
   evaluate({ field: input, warp }, params) {
-    const amt = params.amount ?? 50;
-    const ox = params.offsetX ?? 100;
-    const oy = params.offsetY ?? 100;
+    const amt = params.amount;
+    const ox = params.offsetX;
+    const oy = params.offsetY;
 
     const inputExpr = getFieldExpr(input);
     const warpExprNode = getFieldExpr(warp);
@@ -55,4 +52,4 @@ export const domainWarp: Operator<Inputs, Outputs> = {
 
     return { field };
   },
-};
+});

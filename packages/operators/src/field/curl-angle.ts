@@ -1,10 +1,8 @@
-import type { Operator, Field2D } from "@node-td/kernel";
+import { defineOperator, type Field2D } from "@node-td/kernel";
 import {
   createField, getFieldExpr, apply, sub, mul, add, div, c, u, X, Y,
   fatan2, neg,
 } from "@node-td/kernel/field";
-type Inputs = { field: Field2D };
-type Outputs = { field: Field2D };
 
 /**
  * Curl Angle — the direction of the curl of a scalar Field2D: its
@@ -21,7 +19,7 @@ type Outputs = { field: Field2D };
  * This produces organic, contour-following flow: strokes naturally
  * orbit ridges and valleys of the input terrain.
  */
-export const curlAngle: Operator<Inputs, Outputs> = {
+export const curlAngle = defineOperator({
   id: "curl-angle",
   category: "field",
   label: "Curl Angle",
@@ -32,8 +30,8 @@ export const curlAngle: Operator<Inputs, Outputs> = {
     { key: "scale", label: "Scale", min: 0.1, max: 5.0, step: 0.1, default: 1.0 },
   ],
   evaluate({ field: input }, params) {
-    const eps = params.epsilon ?? 1.0;
-    const scale = params.scale ?? 1.0;
+    const eps = params.epsilon;
+    const scale = params.scale;
 
     const inputExpr = getFieldExpr(input);
     if (inputExpr) {
@@ -84,4 +82,4 @@ export const curlAngle: Operator<Inputs, Outputs> = {
 
     return { field };
   },
-};
+});

@@ -1,12 +1,9 @@
-import type { Operator, Field2D } from "@node-td/kernel";
+import { defineOperator, type Field2D } from "@node-td/kernel";
 import {
   createField, getFieldExpr, clamp as fClamp, abs as fAbs,
   mul, sub, add, c, u, div, round as fRound, fpow, smoothstep as fSmooth,
 } from "@node-td/kernel/field";
 import type { FieldExpr } from "@node-td/kernel/field";
-
-type Inputs = { field: Field2D };
-type Outputs = { field: Field2D };
 
 /** Unary transfer functions for Field2D values */
 const MODES = [
@@ -35,7 +32,7 @@ function smoothstep(lo: number, hi: number, x: number): number {
  * - Invert: 1 - v
  * - Abs: absolute value (folds negative noise values)
  */
-export const fieldRemap: Operator<Inputs, Outputs> = {
+export const fieldRemap = defineOperator({
   id: "field-remap",
   category: "field",
   label: "Field Remap",
@@ -55,11 +52,11 @@ export const fieldRemap: Operator<Inputs, Outputs> = {
     { key: "hi", label: "High", min: 0, max: 1, step: 0.01, default: 1 },
   ],
   evaluate({ field: input }, params) {
-    const mode = Math.round(params.mode ?? 2);
-    const steps = Math.round(params.steps ?? 6);
-    const power = params.power ?? 1.5;
-    const lo = params.lo ?? 0;
-    const hi = params.hi ?? 1;
+    const mode = Math.round(params.mode);
+    const steps = Math.round(params.steps);
+    const power = params.power;
+    const lo = params.lo;
+    const hi = params.hi;
 
     const inputExpr = getFieldExpr(input);
     if (inputExpr) {
@@ -116,4 +113,4 @@ export const fieldRemap: Operator<Inputs, Outputs> = {
 
     return { field };
   },
-};
+});

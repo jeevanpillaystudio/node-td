@@ -1,10 +1,7 @@
-import type { Operator, Field2D } from "@node-td/kernel";
+import { defineOperator, type Field2D } from "@node-td/kernel";
 import {
   createField, getFieldExpr, apply, sub, mul, add, u, X, Y,
 } from "@node-td/kernel/field";
-
-type Inputs = { field: Field2D };
-type Outputs = { dx: Field2D; dy: Field2D };
 
 /**
  * Field Gradient — computes the partial derivatives of a Field2D
@@ -19,7 +16,7 @@ type Outputs = { dx: Field2D; dy: Field2D };
  * - Diffuse lighting (dot product of normal and light direction)
  * - Curl noise (90-degree rotation of gradient)
  */
-export const fieldGradient: Operator<Inputs, Outputs> = {
+export const fieldGradient = defineOperator({
   id: "field-gradient",
   category: "field",
   label: "Field Gradient",
@@ -32,7 +29,7 @@ export const fieldGradient: Operator<Inputs, Outputs> = {
     { key: "epsilon", label: "Epsilon", min: 0.01, max: 10, step: 0.01, default: 1.0 },
   ],
   evaluate({ field: input }, params) {
-    const eps = params.epsilon ?? 1.0;
+    const eps = params.epsilon;
     const invEps2 = 1 / (2 * eps);
 
     const inputExpr = getFieldExpr(input);
@@ -66,4 +63,4 @@ export const fieldGradient: Operator<Inputs, Outputs> = {
 
     return { dx, dy };
   },
-};
+});

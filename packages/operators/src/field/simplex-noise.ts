@@ -1,10 +1,7 @@
-import type { Operator, Field2D } from "@node-td/kernel";
+import { defineOperator } from "@node-td/kernel";
 import { createField, X, Y, c, u, mul, add, simplex as sn } from "@node-td/kernel/field";
 
-type Inputs = Record<string, never>;
-type Outputs = { field: Field2D };
-
-export const simplexNoise: Operator<Inputs, Outputs> = {
+export const simplexNoise = defineOperator({
   id: "simplex-noise",
   category: "field",
   label: "Simplex Noise",
@@ -14,7 +11,7 @@ export const simplexNoise: Operator<Inputs, Outputs> = {
     { key: "noiseScale", label: "Noise Scale", min: 0.0001, max: 0.1, step: 0.00005, default: 0.03 },
   ],
   evaluate(_inputs, params) {
-    const scale = params.noiseScale ?? 0.03;
+    const scale = params.noiseScale;
 
     // (simplex2(x*scale, y*scale) + 1) * 0.5
     const s = u("noiseScale", scale);
@@ -22,4 +19,4 @@ export const simplexNoise: Operator<Inputs, Outputs> = {
 
     return { field: createField(expr) };
   },
-};
+});

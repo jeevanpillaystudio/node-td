@@ -1,10 +1,7 @@
-import type { Operator, Field2D } from "@node-td/kernel";
+import { defineOperator } from "@node-td/kernel";
 import { createField, X, Y, c, u, mul, add, perlin as pn } from "@node-td/kernel/field";
 
-type Inputs = Record<string, never>;
-type Outputs = { field: Field2D };
-
-export const perlinNoise: Operator<Inputs, Outputs> = {
+export const perlinNoise = defineOperator({
   id: "perlin-noise",
   category: "field",
   label: "Perlin Noise",
@@ -14,7 +11,7 @@ export const perlinNoise: Operator<Inputs, Outputs> = {
     { key: "noiseScale", label: "Noise Scale", min: 0.0001, max: 0.1, step: 0.00005, default: 0.035 },
   ],
   evaluate(_inputs, params) {
-    const scale = params.noiseScale ?? 0.035;
+    const scale = params.noiseScale;
     const scale2 = scale * 0.5;
 
     // (pnoise(x*s, y*s)*0.7 + pnoise(x*s2, y*s2)*0.3 + 1) * 0.5
@@ -26,4 +23,4 @@ export const perlinNoise: Operator<Inputs, Outputs> = {
 
     return { field: createField(expr) };
   },
-};
+});

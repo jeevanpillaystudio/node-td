@@ -1,9 +1,6 @@
-import type { Operator, Field2D } from "@node-td/kernel";
+import { defineOperator, type Field2D } from "@node-td/kernel";
 import { createField, getFieldExpr, add as fAdd, mul, fmin, fmax, mix as fMix, c, u } from "@node-td/kernel/field";
 import type { FieldExpr } from "@node-td/kernel/field";
-
-type Inputs = { a: Field2D; b: Field2D };
-type Outputs = { field: Field2D };
 
 /** Binary operations on two Field2D inputs */
 const MODES = [
@@ -21,7 +18,7 @@ const MODES = [
  * For lerp mode, the `mix` parameter controls the blend factor
  * (0 = field A, 1 = field B).
  */
-export const fieldMath: Operator<Inputs, Outputs> = {
+export const fieldMath = defineOperator({
   id: "field-math",
   category: "field",
   label: "Field Math",
@@ -41,8 +38,8 @@ export const fieldMath: Operator<Inputs, Outputs> = {
     { key: "mix", label: "Mix (Lerp)", min: 0, max: 1, step: 0.01, default: 0.5 },
   ],
   evaluate({ a, b }, params) {
-    const mode = Math.round(params.mode ?? 0);
-    const mixVal = params.mix ?? 0.5;
+    const mode = Math.round(params.mode);
+    const mixVal = params.mix;
 
     const aExpr = getFieldExpr(a);
     const bExpr = getFieldExpr(b);
@@ -74,4 +71,4 @@ export const fieldMath: Operator<Inputs, Outputs> = {
 
     return { field };
   },
-};
+});

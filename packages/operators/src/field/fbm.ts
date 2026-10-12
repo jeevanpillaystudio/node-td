@@ -1,8 +1,5 @@
-import type { Operator, Field2D } from "@node-td/kernel";
+import { defineOperator, type Field2D } from "@node-td/kernel";
 import { createField, getFieldExpr, fbmExpr, u } from "@node-td/kernel/field";
-
-type Inputs = { field: Field2D };
-type Outputs = { field: Field2D };
 
 /**
  * Fractional Brownian Motion — sums an input Field2D at multiple
@@ -15,7 +12,7 @@ type Outputs = { field: Field2D };
  * This is the foundation of all terrain generation — subscapes uses
  * 6-octave fBm of simplex noise.
  */
-export const fbm: Operator<Inputs, Outputs> = {
+export const fbm = defineOperator({
   id: "fbm",
   category: "field",
   label: "fBm (Fractal Noise)",
@@ -29,11 +26,11 @@ export const fbm: Operator<Inputs, Outputs> = {
     { key: "domainRotation", label: "Domain Rotation (rad)",min: -3.14, max: 3.14, step: 0.01, default: 0 },
   ],
   evaluate({ field: input }, params) {
-    const octaves  = Math.round(params.octaves ?? 6);
-    const lac      = params.lacunarity ?? 2.0;
-    const gain     = params.gain ?? 0.5;
-    const amp      = params.amplitude ?? 1.0;
-    const rotation = params.domainRotation ?? 0;
+    const octaves  = Math.round(params.octaves);
+    const lac      = params.lacunarity;
+    const gain     = params.gain;
+    const amp      = params.amplitude;
+    const rotation = params.domainRotation;
 
     // GPU path (FieldExpr) — domain rotation not yet supported in GLSL
     const inputExpr = getFieldExpr(input);
@@ -76,4 +73,4 @@ export const fbm: Operator<Inputs, Outputs> = {
 
     return { field };
   },
-};
+});
