@@ -7,8 +7,9 @@ import type { Field2D } from "../types";
 // produces a FieldExpr tree instead of an opaque closure.
 //
 // Two interpreters exist:
-//   1. evalExpr()     — CPU evaluation (backward compat)
-//   2. compileField() — GLSL codegen (GPU path, in field-compiler.ts)
+//   1. evalExpr()     — CPU evaluation, what every cook runs
+//   2. compileField() — GLSL codegen (in glsl.ts), with no runtime caller
+//      until the deferred GPU rasterizer
 //
 // A third (serialization to JSON) comes free from the data representation.
 
@@ -73,12 +74,12 @@ export type FieldExpr =
 //
 // Field2D stays `(x, y) => number`. We attach the FieldExpr as a
 // hidden property via a well-known symbol. Consumers that don't know
-// about FieldExpr call field(x, y) normally. GPU-aware consumers
-// call getFieldExpr(field) to extract the AST.
+// about FieldExpr call field(x, y) normally. Consumers that read the
+// tree (compileField, the tests) call getFieldExpr(field) to extract it.
 
 export const FIELD_EXPR = Symbol.for("node-td.field-expr");
 
-/** Create a Field2D that carries its FieldExpr for GPU compilation. */
+/** Create a Field2D that carries its FieldExpr, evaluated on the CPU. */
 export function createField(expr: FieldExpr): Field2D {
   const fn = (x: number, y: number) => evalExpr(expr, x, y);
   Object.defineProperty(fn, FIELD_EXPR, { value: expr, enumerable: false });

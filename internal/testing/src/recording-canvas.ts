@@ -15,8 +15,8 @@ import { hashValues, round3 } from "./digest";
  *
  * A canvas gets its id, and logs `[id, "create", width, height]`, when it
  * first hands out a 2D context. `getContext` for any other kind returns
- * null without logging, so a WebGL probe falls back to the CPU path and
- * leaves no trace: deleting such a probe cannot change the log.
+ * null without logging: no operator asks for another kind since the
+ * WebGL path went dormant, and a probe added later would leave no trace.
  *
  * `getImageData` returns zero-filled pixels.
  */

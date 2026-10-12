@@ -20,8 +20,8 @@ const BLEND_OPS: GlobalCompositeOperation[] = [
  * All layers must have the same dimensions and 4 channels (RGBA).
  *
  * Canvas-native fast path: when all layers carry `_canvas`, composites
- * via drawImage + globalCompositeOperation — hardware-accelerated,
- * O(1) GPU ops instead of O(w×h×layers) CPU pixel work.
+ * via drawImage + globalCompositeOperation, which the browser may
+ * accelerate, instead of blending every pixel on the CPU.
  *
  * Blend modes:
  *   0 = over  (standard alpha compositing, Porter-Duff)
@@ -63,7 +63,7 @@ export const composite = defineOperator({
     const { width, height } = layers[0]!;
 
     // ── Canvas-native fast path ───────────────────────────────
-    // All layers have _canvas → composite via drawImage (GPU-accelerated)
+    // All layers have _canvas → composite via drawImage
     // Inputs are cached outputs: they are read, never modified. Their
     // canvases are released when the host clears the cook cache.
     const createCanvas = env.createCanvas;

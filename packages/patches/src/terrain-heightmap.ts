@@ -3,9 +3,9 @@ import type { Graph } from "@node-td/kernel";
 /**
  * Terrain Heightmap patch — field visualization.
  *
- * Uses the same field algebra chain as subscapes (simplex → fbm → ridge)
- * but renders the scalar field directly to a full-resolution Buffer2D
- * via the field-render operator.
+ * Uses a field algebra chain like Subscapes' (simplex → fbm → remap),
+ * with a ridge where Subscapes takes a power, and renders the scalar
+ * field directly to a full-resolution Buffer2D via field-render.
  *
  * Terminal output: "render" node, port "buffer" (Buffer2D, grayscale).
  */

@@ -32,7 +32,8 @@ export const fbm = defineOperator({
     const amp      = params.amplitude;
     const rotation = params.domainRotation;
 
-    // GPU path (FieldExpr) — domain rotation not yet supported in GLSL
+    // FieldExpr path: the tree carries no domain rotation, so a rotated
+    // fbm stays an opaque closure
     const inputExpr = getFieldExpr(input);
     if (inputExpr && rotation === 0) {
       const expr = fbmExpr(

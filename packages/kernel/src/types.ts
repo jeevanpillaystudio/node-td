@@ -105,7 +105,7 @@ export interface CanvasHandle {
  *
  * On CPU: `data` is a Float32Array.
  * Canvas-native path: `_canvas` carries the source canvas,
- * enabling hardware-accelerated composite (drawImage) and blit.
+ * so composite and blit can drawImage it instead of copying pixels.
  * When `_canvas` is present, `data` may be a lazy getter that
  * only triggers readback when pixel data is actually needed.
  */
@@ -114,7 +114,7 @@ export interface Buffer2D {
   width: number; //   columns
   height: number; //  rows
   channels: number; // 1 = scalar, 2 = vec2, 3 = rgb, 4 = rgba
-  /** Source canvas for GPU-accelerated composite/blit (canvas-native pipeline) */
+  /** Source canvas for composite and blit by drawImage (canvas-native pipeline) */
   _canvas?: CanvasHandle;
 }
 

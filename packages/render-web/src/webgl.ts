@@ -7,8 +7,9 @@ import type { CompiledField } from "@node-td/kernel/field";
 // The field is evaluated per-pixel by a fragment shader on a
 // fullscreen quad. Result is read back as Float32Array.
 //
-// This is the GPU backend for field evaluation — the counterpart
-// to the CPU evalExpr() interpreter.
+// This is the dormant GPU backend for field evaluation, the
+// counterpart to the CPU evalExpr() interpreter: no operator or host
+// calls it yet, and every cook evaluates fields on the CPU.
 //
 // Performance notes:
 // - GL context is created externally and reused across cooks

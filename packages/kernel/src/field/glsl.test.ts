@@ -203,7 +203,7 @@ const CHAINS: Record<string, FieldExpr> = {
   "perlin-noise": perlinNoise,
   "fbm of simplex (Terrain Heightmap's terrain)": terrain,
   "ridge of fbm (Terrain Heightmap's ridge)": ridgeOf(terrain),
-  "power of fbm (Subscapes' ridge)": fpow(clamp(terrain, c(0), c(1)), u("power", 2)),
+  "power of fbm (Subscapes' height)": fpow(clamp(terrain, c(0), c(1)), u("power", 2)),
   "warp of fbm by simplex": warpOf(terrain, simplexNoise),
   "warp of simplex by fbm": warpOf(simplexNoise, terrain),
   "gradient of fbm": gradientXOf(terrain),

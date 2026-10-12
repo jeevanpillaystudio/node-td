@@ -5,7 +5,9 @@ import type { Graph } from "@node-td/kernel";
  * targeting Style 0 ("Dark-on-light") variant.
  *
  * Parameters reverse-engineered from algorithm.js (token #53) and
- * calibrated against the actual Subscapes coordinate conventions:
+ * calibrated against the actual Subscapes coordinate conventions. The
+ * node params below are the patch's own and differ from these in places
+ * (the noise scales, the power):
  *
  *   - Terrain: [-1,1]² XZ domain, noise scale ≈ 0.005/px (≈2-unit traverse)
  *   - Height: pow(fbm, 4.5) — power shaping, not ridge folding
@@ -16,7 +18,7 @@ import type { Graph } from "@node-td/kernel";
  *
  * Data flow:
  *
- *   simplex-noise → fbm (6 oct) → field-remap (power 4.5) ─┐
+ *   simplex-noise → fbm (6 oct) → field-remap (power) ─────┐
  *                                                            │
  *   ┌── FLOW BRANCH ────────────────────────────────────────┤
  *   │   flow-noise (independent simplex) → grid-sampler     │
