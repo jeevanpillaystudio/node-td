@@ -1,7 +1,4 @@
-import type { Operator, Camera3D, Geometry } from "@node-td/kernel";
-
-type Inputs = { geometry: Geometry<3>; camera3d: Camera3D };
-type Outputs = { geometry: Geometry<2> };
+import { defineOperator } from "@node-td/kernel";
 
 /**
  * Project 3D — the 3D-to-2D bridge operator.
@@ -16,7 +13,7 @@ type Outputs = { geometry: Geometry<2> };
  *
  * Topology, stripOffsets, and indices pass through unchanged.
  */
-export const project3d: Operator<Inputs, Outputs> = {
+export const project3d = defineOperator({
   id: "project-3d",
   category: "sop",
   label: "Project 3D → 2D",
@@ -47,11 +44,11 @@ export const project3d: Operator<Inputs, Outputs> = {
       geometry: {
         positions,
         vertexCount: geo.vertexCount,
-        dim: 2 as const,
+        dim: 2,
         topology: geo.topology,
         stripOffsets: geo.stripOffsets,
         indices: geo.indices,
       },
     };
   },
-};
+});

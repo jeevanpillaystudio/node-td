@@ -1,7 +1,4 @@
-import type { Operator, Camera3D, Geometry } from "@node-td/kernel";
-
-type Inputs = { geometry: Geometry<3>; mesh: Geometry<3>; camera3d: Camera3D };
-type Outputs = { geometry: Geometry<3> };
+import { defineOperator } from "@node-td/kernel";
 
 /**
  * Visibility Cull — removes occluded stroke vertices using raycasting.
@@ -25,7 +22,7 @@ type Outputs = { geometry: Geometry<3> };
  * General-purpose: works for any 3D-to-2D pen-plotter-style rendering
  * where you need hidden line removal.
  */
-export const visibilityCull: Operator<Inputs, Outputs> = {
+export const visibilityCull = defineOperator({
   id: "visibility-cull",
   category: "sop",
   label: "Visibility Cull",
@@ -49,7 +46,7 @@ export const visibilityCull: Operator<Inputs, Outputs> = {
   ],
   evaluate({ geometry: strokes, mesh, camera3d }, params) {
     // Debug bypass: when bypass=1, pass through all strokes without culling
-    if ((params.bypass ?? 0) >= 1) {
+    if (params.bypass >= 1) {
       return { geometry: strokes };
     }
 
@@ -395,11 +392,11 @@ export const visibilityCull: Operator<Inputs, Outputs> = {
       geometry: {
         positions,
         vertexCount: totalVerts,
-        dim: 3 as const,
-        topology: "line-strip" as const,
+        dim: 3,
+        topology: "line-strip",
         stripOffsets,
         normals,
       },
     };
   },
-};
+});
