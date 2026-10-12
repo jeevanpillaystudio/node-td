@@ -15,28 +15,35 @@ replaces it and deletes this folder.
   correct on 12 Oct 2026; recheck registry and GitHub reachability before reuse.
   Pass `{"title": "...", "items": ["C1", ...]}` as its args.
 
-## Where it stands (12 Oct 2026, after batch 3)
+## Where it stands (12 Oct 2026, paused inside batch 4)
 
 | Item | State |
 | --- | --- |
 | T1, S1, S2, S3, T2 tooling and safety net | done, reviewed |
 | C1, C2, C3, C4 dead code, kernel noise, CPU-only fields, immutable outputs | done, reviewed |
-| C5a @node-td/kernel (no DOM types) and @node-td/testing | done, reviewed |
-| C5b operators, render-web, patches; @node-td/engine deleted | done, reviewed |
-| K3 compileField terminates, ordered, tested | done, reviewed |
-| C6 patches registry drives the gallery; continuous-stroke removed | done, reviewed |
-| C7 frame (runtime) split from editor (dev) | done, reviewed |
-| everything else | not started |
+| C5a, C5b package split (kernel, testing, operators, render-web, patches) | done, reviewed |
+| K3, C6, C7 GLSL emitter, patches registry, frame/editor split | done, reviewed |
+| K1 graph validation in the constructor, per-node error isolation | done, reviewed |
+| C8 editor adapter: layout, handle ids, read-only canvas, frame/editor boundary tags | done, reviewed |
+| K2 typed env, seed on the graph, RNG stream replay (incremental = full cook) | done, reviewed |
+| K4 operator families and port types | done, reviewed |
+| K5 defineOperator, param lint, widened ranges | done, reviewed |
+| K6a, K6b, G1, B1, B2, B3, E2, E1, E3 | not started |
 
-At this point `turbo run typecheck test` (12 tasks), `bun test` (440 pass),
+At this point `turbo run typecheck test` (12 tasks), `bun test` (517 pass),
 `biome lint .`, `turbo boundaries` and the examples build pass; the five
-render goldens are byte-identical to the baseline.
+render goldens are byte-identical to the baseline; no `test.failing` remains.
+
+Jeevan paused all work on 12 Oct 2026 while he reworks which agents run which
+jobs: "Do not run any extra ultracode/workflow until I lift the restriction."
+The batch-4 workflow was stopped after K5's review, before K6a made any change.
 
 ## Next
 
-Owner: the agent resuming this branch. Run the orchestrator batch by batch:
+Owner: the agent resuming this branch, once Jeevan lifts the restriction and
+says which agents to use.
 
-1. K1, C8, K2, K4, K5, K6a, K6b, G1 (kernel semantics, taxonomy, typed ops).
+1. K6a, K6b, G1 (rest of batch 4: typed operators, geometry attributes).
 2. B1, B2, B3, E2, E1 (labelled output changes, bug fixes, docs, format pass).
 3. E3 (CI workflow): commit, but push only on Jeevan's go-ahead, because it
    adds a pull-request trigger.
