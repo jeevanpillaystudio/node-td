@@ -1,8 +1,17 @@
 # Roadmap
 
 What is still owed after the refactor (pull request #1), each with its next
-step. The refactor's plan lived in `docs/refactor-plan/`, deleted with this
-file's first version; git keeps it.
+step. The refactor's plan lived in `docs/refactor-plan/`, deleted once this
+file carried what it still owed; git keeps it.
+
+## Pull request #1
+
+Still to do on the branch: one format pass (`biome check --write .`) in a
+commit of its own, listed in `.git-blame-ignore-revs`, with `bun run lint`
+becoming `biome check .`; and a CI workflow for pull requests (lint,
+typecheck, tests, boundaries, the examples build, no file changed), which is
+committed but pushed only on Jeevan's go-ahead, since it adds a trigger.
+Merging the pull request waits for Jeevan: a merge commit, never a squash.
 
 ## v0.1: a working node-td
 
@@ -103,6 +112,12 @@ both ways and compare the pixels.
 - stroke-renderer split into a render TOP, a constant TOP and a line-style
   material; operator ids renamed to TouchDesigner's. Next: decide in the
   per-operator review.
+- An examples dev harness: a route per patch, seed and size controls, a stats
+  overlay, a reference image side by side. Next: the route and size controls
+  with v0.1's patch picker, the overlay with the performance review, the
+  reference images once the fidelity reference exists.
+- The editor's node layout saved with the graph: positions are laid out
+  afresh on every load. Next: with saving and loading files, after v0.1.
 - Vite 7 to match TanStack Start's peer range, and SPA or prerender mode.
   Next: try it; the registry is reachable from agent sandboxes, if slowly.
 
