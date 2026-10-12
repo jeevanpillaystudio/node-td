@@ -28,7 +28,8 @@ replaces it and deletes this folder.
 | K2 typed env, seed on the graph, RNG stream replay (incremental = full cook) | done, reviewed |
 | K4 operator families and port types | done, reviewed |
 | K5 defineOperator, param lint, widened ranges | done, reviewed |
-| K6a, K6b, G1, B1, B2, B3, E2, E1, E3 | not started |
+| K6a defineOperator for field, top, chop, mat, comp; restated defaults gone | done, reviewed by Sol |
+| K6b, G1, B1, B2, B3, E2, E1, E3 | not started |
 
 At this point `turbo run typecheck test` (12 tasks), `bun test` (517 pass),
 `biome lint .`, `turbo boundaries` and the examples build pass; the five
@@ -48,12 +49,21 @@ until that branch merges), run by a `claude-haiku-5-5` agent that only carries
 the claim and the verdict. A single Sol check from this worktree was run on
 12 Oct 2026 and passed in 40 s.
 
+Since the restriction holds only workflows, items now run by hand in the
+main session (Claude Opus 5.5), with Sol's three claims run through
+`sol_check.py` from a shell, and one repair round. K6a ran this way on
+12 Oct 2026: Sol's checks found the build, tests, lint, boundaries,
+examples build and snapshots green; its one open finding is that the field
+commit (7d4e98d) was amended twice before push, against the implementers'
+no-amend rule. Work done by hand follows the same shared rules as the
+workflow's implementers, including no amend.
+
 ## Next
 
 Owner: the agent resuming this branch, once Jeevan lifts the restriction and
 says which agents to use.
 
-1. K6a, K6b, G1 (rest of batch 4: typed operators, geometry attributes).
+1. K6b, G1 (rest of batch 4: typed SOPs, geometry attributes).
 2. B1, B2, B3, E2, E1 (labelled output changes, bug fixes, docs, format pass).
 3. E3 (CI workflow): commit, but push only on Jeevan's go-ahead, because it
    adds a pull-request trigger.
