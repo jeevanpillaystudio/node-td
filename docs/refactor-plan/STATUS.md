@@ -57,7 +57,10 @@ main session (Claude Opus 5.5), with Sol's three claims run through
 examples build and snapshots green; its one open finding is that the field
 commit (7d4e98d) was amended twice before push, against the implementers'
 no-amend rule. Work done by hand follows the same shared rules as the
-workflow's implementers, including no amend.
+workflow's implementers, including no amend. While Sol checks an item the
+worktree stays as it is, with no edit or commit until all three verdicts
+are in: a G1 conformance check failed on 12 Oct 2026 because B2 was being
+edited under it.
 
 ## Next
 
