@@ -178,16 +178,6 @@ exports[`subscapes-terrain-3d nodes resolved params 1`] = `
     },
     "type": "stroke-renderer",
   },
-  "ridge": {
-    "params": {
-      "hi": 1,
-      "lo": 0,
-      "mode": 4,
-      "power": 2,
-      "steps": 6,
-    },
-    "type": "field-remap",
-  },
   "seeds": {
     "params": {
       "densityScale": 1.5,
@@ -206,9 +196,15 @@ exports[`subscapes-terrain-3d nodes resolved params 1`] = `
     },
     "type": "diffuse-shade",
   },
-  "stroke": {
-    "params": {},
-    "type": "continuous-stroke",
+  "shape": {
+    "params": {
+      "hi": 1,
+      "lo": 0,
+      "mode": 4,
+      "power": 2,
+      "steps": 6,
+    },
+    "type": "field-remap",
   },
   "terrain": {
     "params": {
@@ -684,15 +680,6 @@ exports[`subscapes-terrain-3d nodes 256x256 dpr1 1`] = `
       "width": 256,
     },
   },
-  "ridge": {
-    "field": {
-      "hash": "97a4c421",
-      "kind": "field",
-      "max": 0.69,
-      "mean": 0.274,
-      "min": 0.036,
-    },
-  },
   "seeds": {
     "geometry": {
       "attributes": {
@@ -729,31 +716,13 @@ exports[`subscapes-terrain-3d nodes 256x256 dpr1 1`] = `
       "kind": "palette",
     },
   },
-  "stroke": {
-    "geometry": {
-      "attributes": null,
-      "dim": 2,
-      "indices": null,
-      "kind": "geometry",
-      "normals": null,
-      "positions": {
-        "hash": "0a6437e0",
-        "stats": [
-          {
-            "max": 273.39,
-            "mean": 126.622,
-            "min": -17.782,
-          },
-          {
-            "max": 271.724,
-            "mean": 128.246,
-            "min": -15.2,
-          },
-        ],
-      },
-      "stripOffsets": "0e5c88bf",
-      "topology": "line-strip",
-      "vertexCount": 25790,
+  "shape": {
+    "field": {
+      "hash": "97a4c421",
+      "kind": "field",
+      "max": 0.69,
+      "mean": 0.274,
+      "min": 0.036,
     },
   },
   "terrain": {
@@ -1248,15 +1217,6 @@ exports[`subscapes-terrain-3d nodes 400x400 dpr1 1`] = `
       "width": 400,
     },
   },
-  "ridge": {
-    "field": {
-      "hash": "4127cb9b",
-      "kind": "field",
-      "max": 0.688,
-      "mean": 0.262,
-      "min": 0.037,
-    },
-  },
   "seeds": {
     "geometry": {
       "attributes": {
@@ -1293,31 +1253,13 @@ exports[`subscapes-terrain-3d nodes 400x400 dpr1 1`] = `
       "kind": "palette",
     },
   },
-  "stroke": {
-    "geometry": {
-      "attributes": null,
-      "dim": 2,
-      "indices": null,
-      "kind": "geometry",
-      "normals": null,
-      "positions": {
-        "hash": "3f4117b9",
-        "stats": [
-          {
-            "max": 417.598,
-            "mean": 199.404,
-            "min": -17.648,
-          },
-          {
-            "max": 417.347,
-            "mean": 201.007,
-            "min": -16.505,
-          },
-        ],
-      },
-      "stripOffsets": "4473a946",
-      "topology": "line-strip",
-      "vertexCount": 61661,
+  "shape": {
+    "field": {
+      "hash": "4127cb9b",
+      "kind": "field",
+      "max": 0.688,
+      "mean": 0.262,
+      "min": 0.037,
     },
   },
   "terrain": {
@@ -1812,15 +1754,6 @@ exports[`subscapes-terrain-3d nodes 800x800 dpr1 1`] = `
       "width": 800,
     },
   },
-  "ridge": {
-    "field": {
-      "hash": "ec7334ea",
-      "kind": "field",
-      "max": 0.753,
-      "mean": 0.259,
-      "min": 0.037,
-    },
-  },
   "seeds": {
     "geometry": {
       "attributes": {
@@ -1857,31 +1790,13 @@ exports[`subscapes-terrain-3d nodes 800x800 dpr1 1`] = `
       "kind": "palette",
     },
   },
-  "stroke": {
-    "geometry": {
-      "attributes": null,
-      "dim": 2,
-      "indices": null,
-      "kind": "geometry",
-      "normals": null,
-      "positions": {
-        "hash": "97ded682",
-        "stats": [
-          {
-            "max": 817.326,
-            "mean": 398.729,
-            "min": -17.664,
-          },
-          {
-            "max": 817.91,
-            "mean": 400.516,
-            "min": -17.565,
-          },
-        ],
-      },
-      "stripOffsets": "b7e71fb3",
-      "topology": "line-strip",
-      "vertexCount": 244320,
+  "shape": {
+    "field": {
+      "hash": "ec7334ea",
+      "kind": "field",
+      "max": 0.753,
+      "mean": 0.259,
+      "min": 0.037,
     },
   },
   "terrain": {
@@ -2376,15 +2291,6 @@ exports[`subscapes-terrain-3d nodes 640x400 dpr1 1`] = `
       "width": 640,
     },
   },
-  "ridge": {
-    "field": {
-      "hash": "00d557a4",
-      "kind": "field",
-      "max": 0.674,
-      "mean": 0.265,
-      "min": 0.049,
-    },
-  },
   "seeds": {
     "geometry": {
       "attributes": {
@@ -2421,31 +2327,13 @@ exports[`subscapes-terrain-3d nodes 640x400 dpr1 1`] = `
       "kind": "palette",
     },
   },
-  "stroke": {
-    "geometry": {
-      "attributes": null,
-      "dim": 2,
-      "indices": null,
-      "kind": "geometry",
-      "normals": null,
-      "positions": {
-        "hash": "3f4117b9",
-        "stats": [
-          {
-            "max": 417.598,
-            "mean": 199.404,
-            "min": -17.648,
-          },
-          {
-            "max": 417.347,
-            "mean": 201.007,
-            "min": -16.505,
-          },
-        ],
-      },
-      "stripOffsets": "4473a946",
-      "topology": "line-strip",
-      "vertexCount": 61661,
+  "shape": {
+    "field": {
+      "hash": "00d557a4",
+      "kind": "field",
+      "max": 0.674,
+      "mean": 0.265,
+      "min": 0.049,
     },
   },
   "terrain": {
@@ -2940,15 +2828,6 @@ exports[`subscapes-terrain-3d nodes 400x400 dpr2 1`] = `
       "width": 800,
     },
   },
-  "ridge": {
-    "field": {
-      "hash": "4127cb9b",
-      "kind": "field",
-      "max": 0.688,
-      "mean": 0.262,
-      "min": 0.037,
-    },
-  },
   "seeds": {
     "geometry": {
       "attributes": {
@@ -2985,31 +2864,13 @@ exports[`subscapes-terrain-3d nodes 400x400 dpr2 1`] = `
       "kind": "palette",
     },
   },
-  "stroke": {
-    "geometry": {
-      "attributes": null,
-      "dim": 2,
-      "indices": null,
-      "kind": "geometry",
-      "normals": null,
-      "positions": {
-        "hash": "3f4117b9",
-        "stats": [
-          {
-            "max": 417.598,
-            "mean": 199.404,
-            "min": -17.648,
-          },
-          {
-            "max": 417.347,
-            "mean": 201.007,
-            "min": -16.505,
-          },
-        ],
-      },
-      "stripOffsets": "4473a946",
-      "topology": "line-strip",
-      "vertexCount": 61661,
+  "shape": {
+    "field": {
+      "hash": "4127cb9b",
+      "kind": "field",
+      "max": 0.688,
+      "mean": 0.262,
+      "min": 0.037,
     },
   },
   "terrain": {

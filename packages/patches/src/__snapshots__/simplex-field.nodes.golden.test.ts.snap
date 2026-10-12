@@ -46,10 +46,6 @@ exports[`simplex-field nodes resolved params 1`] = `
     },
     "type": "poisson-disc",
   },
-  "stroke": {
-    "params": {},
-    "type": "continuous-stroke",
-  },
   "trace": {
     "params": {
       "exitMargin": 80,
@@ -140,33 +136,6 @@ exports[`simplex-field nodes 256x256 dpr1 1`] = `
       "stripOffsets": null,
       "topology": "points",
       "vertexCount": 92,
-    },
-  },
-  "stroke": {
-    "geometry": {
-      "attributes": null,
-      "dim": 2,
-      "indices": null,
-      "kind": "geometry",
-      "normals": null,
-      "positions": {
-        "hash": "d9560fff",
-        "stats": [
-          {
-            "max": 350.618,
-            "mean": 84.565,
-            "min": -93.357,
-          },
-          {
-            "max": 345.763,
-            "mean": 144.052,
-            "min": -92.131,
-          },
-        ],
-      },
-      "stripOffsets": "a06d1754",
-      "topology": "line-strip",
-      "vertexCount": 17205,
     },
   },
   "trace": {
@@ -280,33 +249,6 @@ exports[`simplex-field nodes 400x400 dpr1 1`] = `
       "vertexCount": 152,
     },
   },
-  "stroke": {
-    "geometry": {
-      "attributes": null,
-      "dim": 2,
-      "indices": null,
-      "kind": "geometry",
-      "normals": null,
-      "positions": {
-        "hash": "469a8f5f",
-        "stats": [
-          {
-            "max": 482.208,
-            "mean": 202.183,
-            "min": -87.951,
-          },
-          {
-            "max": 483.114,
-            "mean": 179.14,
-            "min": -86.802,
-          },
-        ],
-      },
-      "stripOffsets": "8219516c",
-      "topology": "line-strip",
-      "vertexCount": 39214,
-    },
-  },
   "trace": {
     "geometry": {
       "attributes": null,
@@ -416,33 +358,6 @@ exports[`simplex-field nodes 800x800 dpr1 1`] = `
       "stripOffsets": null,
       "topology": "points",
       "vertexCount": 404,
-    },
-  },
-  "stroke": {
-    "geometry": {
-      "attributes": null,
-      "dim": 2,
-      "indices": null,
-      "kind": "geometry",
-      "normals": null,
-      "positions": {
-        "hash": "b968ac19",
-        "stats": [
-          {
-            "max": 888.554,
-            "mean": 412.008,
-            "min": -90.559,
-          },
-          {
-            "max": 887.871,
-            "mean": 402.907,
-            "min": -88.153,
-          },
-        ],
-      },
-      "stripOffsets": "fde137b1",
-      "topology": "line-strip",
-      "vertexCount": 132392,
     },
   },
   "trace": {
@@ -556,33 +471,6 @@ exports[`simplex-field nodes 640x400 dpr1 1`] = `
       "vertexCount": 212,
     },
   },
-  "stroke": {
-    "geometry": {
-      "attributes": null,
-      "dim": 2,
-      "indices": null,
-      "kind": "geometry",
-      "normals": null,
-      "positions": {
-        "hash": "53c2da2c",
-        "stats": [
-          {
-            "max": 726.134,
-            "mean": 291.707,
-            "min": -93.175,
-          },
-          {
-            "max": 491.712,
-            "mean": 193.867,
-            "min": -84.339,
-          },
-        ],
-      },
-      "stripOffsets": "e16bbc42",
-      "topology": "line-strip",
-      "vertexCount": 57534,
-    },
-  },
   "trace": {
     "geometry": {
       "attributes": null,
@@ -692,33 +580,6 @@ exports[`simplex-field nodes 400x400 dpr2 1`] = `
       "stripOffsets": null,
       "topology": "points",
       "vertexCount": 152,
-    },
-  },
-  "stroke": {
-    "geometry": {
-      "attributes": null,
-      "dim": 2,
-      "indices": null,
-      "kind": "geometry",
-      "normals": null,
-      "positions": {
-        "hash": "469a8f5f",
-        "stats": [
-          {
-            "max": 482.208,
-            "mean": 202.183,
-            "min": -87.951,
-          },
-          {
-            "max": 483.114,
-            "mean": 179.14,
-            "min": -86.802,
-          },
-        ],
-      },
-      "stripOffsets": "8219516c",
-      "topology": "line-strip",
-      "vertexCount": 39214,
     },
   },
   "trace": {
