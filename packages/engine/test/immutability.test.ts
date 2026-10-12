@@ -8,7 +8,7 @@ import {
   subscapesTerrain3dGraph,
   terrainHeightmapGraph,
 } from "../src/patches/index";
-import { blitBuffer2D } from "../src/render/canvas-2d";
+import { blitBuffer2D } from "@node-td/render-web";
 import {
   createRecordingCanvasFactory,
   type Digest,

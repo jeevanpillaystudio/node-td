@@ -57,6 +57,7 @@
         "@node-td/operators": "workspace:*",
       },
       "devDependencies": {
+        "@node-td/render-web": "workspace:*",
         "@node-td/testing": "workspace:*",
         "@node-td/typescript-config": "workspace:*",
         "@types/bun": "1.3.9",
@@ -68,6 +69,7 @@
       "version": "0.1.0",
       "dependencies": {
         "@node-td/engine": "workspace:*",
+        "@node-td/render-web": "workspace:*",
         "@radix-ui/react-label": "^2.1.0",
         "@radix-ui/react-slider": "^1.2.1",
         "@radix-ui/react-slot": "^1.1.0",
@@ -107,6 +109,17 @@
         "@node-td/testing": "workspace:*",
         "@node-td/typescript-config": "workspace:*",
         "@types/bun": "1.3.9",
+        "typescript": "^5.9.0",
+      },
+    },
+    "packages/render-web": {
+      "name": "@node-td/render-web",
+      "version": "0.0.0",
+      "dependencies": {
+        "@node-td/kernel": "workspace:*",
+      },
+      "devDependencies": {
+        "@node-td/typescript-config": "workspace:*",
         "typescript": "^5.9.0",
       },
     },
@@ -243,6 +256,8 @@
     "@node-td/kernel": ["@node-td/kernel@workspace:packages/kernel"],
 
     "@node-td/operators": ["@node-td/operators@workspace:packages/operators"],
+
+    "@node-td/render-web": ["@node-td/render-web@workspace:packages/render-web"],
 
     "@node-td/testing": ["@node-td/testing@workspace:internal/testing"],
 

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import type { Graph, Geometry, Buffer2D } from "@node-td/engine";
 import { createDefaultRegistry, CookEngine, SeededRNG } from "@node-td/engine";
-import { drawCanvas2D, blitBuffer2D } from "@node-td/engine/render";
+import { drawCanvas2D, blitBuffer2D } from "@node-td/render-web";
 
 const registry = createDefaultRegistry();
 

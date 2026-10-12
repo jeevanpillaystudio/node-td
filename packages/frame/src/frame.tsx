@@ -2,7 +2,7 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react"
 import { cn } from "./ui/utils";
 import type { Graph, Geometry, Buffer2D } from "@node-td/engine";
 import { collectParams, createDefaultRegistry, CookEngine, SeededRNG } from "@node-td/engine";
-import { drawCanvas2D, blitBuffer2D } from "@node-td/engine/render";
+import { drawCanvas2D, blitBuffer2D } from "@node-td/render-web";
 import { useOptionalFrameContext } from "./frame-provider";
 
 const registry = createDefaultRegistry();
