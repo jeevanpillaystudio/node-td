@@ -16,7 +16,7 @@ import { defaultRegistry } from "@node-td/operators";
 import { blitBuffer2D } from "@node-td/render-web";
 import { FrameHostContext } from "./frame-host";
 
-/** The seed every gallery artwork was tuned with. */
+/** The seed for a graph that names none: every gallery artwork was tuned with it. */
 const DEFAULT_SEED = 42;
 
 interface FrameProps {
@@ -27,7 +27,7 @@ interface FrameProps {
   style?: CSSProperties;
   /** Operators the graph's node types resolve against. Defaults to the built-in operators. */
   registry?: OperatorRegistry;
-  /** Seed for the random stream the graph's operators draw from. */
+  /** Seed for the random stream the graph's operators draw from. Defaults to the graph's seed, then 42. */
   seed?: number | string;
 }
 
@@ -37,8 +37,9 @@ export function Frame({
   className,
   style,
   registry = defaultRegistry(),
-  seed = DEFAULT_SEED,
+  seed: seedProp,
 }: FrameProps) {
+  const seed = seedProp ?? graph.seed ?? DEFAULT_SEED;
   const autoId = useId();
   const frameId = explicitId ?? `frame-${autoId}`;
 
@@ -179,6 +180,8 @@ function FrameView({ graph, frameId, registry, seed }: FrameViewProps) {
       // Without this, cached Float32Arrays from all panels persist
       // simultaneously (~100 MB per panel at 2× DPR), crashing the tab.
       // The next draw is a full re-cook, which is fine for static graphs.
+      // An incremental cook would give the same image; the cache goes
+      // only to bound memory, until outputs have a retention policy.
       engineRef.current?.engine.clearCache();
     }
     setError(message);
