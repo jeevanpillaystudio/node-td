@@ -2,7 +2,8 @@ import { defineOperator } from "@node-td/kernel";
 
 /**
  * Transform 2D — applies an affine transform (translate, rotate, scale)
- * to all vertex positions. Produces a new Geometry, no mutation.
+ * to all vertex positions in the x-y plane. Produces a new Geometry, no
+ * mutation; any coordinate past x and y is kept as it is.
  */
 export const transform2d = defineOperator({
   id: "transform-2d",
@@ -28,7 +29,8 @@ export const transform2d = defineOperator({
     const cos = Math.cos(rot);
     const sin = Math.sin(rot);
     const { positions, vertexCount, dim } = geometry;
-    const out = new Float32Array(positions.length);
+    // A 3D geometry keeps its z: the transform acts in the x-y plane
+    const out = new Float32Array(positions);
 
     for (let i = 0; i < vertexCount; i++) {
       const base = i * dim;
