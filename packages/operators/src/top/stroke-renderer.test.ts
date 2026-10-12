@@ -3,7 +3,8 @@ import { type Camera2D, type NodeEnv, pathsGeometry } from "@node-td/kernel";
 import { createRecordingCanvasFactory } from "@node-td/testing";
 import { strokeRenderer } from "./stroke-renderer";
 
-const params = Object.fromEntries(strokeRenderer.params.map((p) => [p.key, p.default]));
+type Params = Parameters<typeof strokeRenderer.evaluate>[1];
+const params = Object.fromEntries(strokeRenderer.params.map((p) => [p.key, p.default])) as Params;
 const line = pathsGeometry([[[10, 10], [90, 90]]]);
 
 function render(camera: Camera2D) {
@@ -16,7 +17,7 @@ function render(camera: Camera2D) {
     rng: { random: () => 0 },
     createCanvas: recorder.createCanvas,
   } satisfies NodeEnv;
-  const { buffer } = strokeRenderer.evaluate({ geometry: line, camera }, params, env);
+  const { buffer } = strokeRenderer.evaluate({ geometry: line, camera, palette: undefined }, params, env);
   return { buffer, log: recorder.log };
 }
 // The camera's transforms, after the dpr scale every render starts with

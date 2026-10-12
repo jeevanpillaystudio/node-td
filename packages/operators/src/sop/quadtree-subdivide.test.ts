@@ -5,7 +5,7 @@ import { quadtreeSubdivide } from "./quadtree-subdivide";
 const env = { width: 0, height: 0, dpr: 1, seed: 0, rng: { random: () => 0 } } satisfies NodeEnv;
 const run = (width: number, height: number, params: { maxDepth: number; minSize?: number }) =>
   quadtreeSubdivide.evaluate(
-    { width, height },
+    { field: undefined, width, height },
     { threshold: 0.5, minSize: 1, ...params },
     env,
   ).geometry;
