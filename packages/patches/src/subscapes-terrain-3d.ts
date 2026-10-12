@@ -21,7 +21,7 @@ import type { Graph } from "@node-td/kernel";
  *   ┌── FLOW BRANCH ────────────────────────────────────────┤
  *   │   flow-noise (independent simplex) → grid-sampler     │
  *   │       ↓                                                │
- *   │   poisson-disc → flow-tracer → continuous-stroke       │
+ *   │   poisson-disc → flow-tracer                           │
  *   │       ↓                                                │
  *   │   surface-lift → geometric-normal ──┐                  │
  *   │                                     │                  │
@@ -87,7 +87,6 @@ export const subscapesTerrain3dGraph: Graph = {
       type: "flow-tracer",
       params: { numSteps: 7, stepLength: 8, exitMargin: 10 },
     },
-    stroke: { type: "continuous-stroke" },
 
     // ── 3D projection + occlusion ──────────────────────────────
     // amplitude 120 ≈ 30% of scene extent (actual: height 0–0.5 in [-1,1])
@@ -233,11 +232,9 @@ export const subscapesTerrain3dGraph: Graph = {
     { from: "$env", output: "height", to: "trace", input: "width" },
     { from: "$env", output: "height", to: "trace", input: "height" },
 
-    { from: "trace", output: "geometry", to: "stroke", input: "geometry" },
-
     // ── Fan-out: power-field → surface-lift (for stroke height)
     { from: "shape", output: "field", to: "lift", input: "field" },
-    { from: "stroke", output: "geometry", to: "lift", input: "geometry" },
+    { from: "trace", output: "geometry", to: "lift", input: "geometry" },
 
     // ── Geometric normals from height field on lifted strokes ──
     { from: "lift", output: "geometry", to: "normals", input: "geometry" },
