@@ -560,10 +560,11 @@ exports[`subscapes-terrain-3d nodes 256x256 dpr1 1`] = `
   "proj": {
     "geometry": {
       "attributes": null,
+      "colors": "77101b76",
       "dim": 2,
       "indices": null,
       "kind": "geometry",
-      "normals": null,
+      "normals": "857696c5",
       "positions": {
         "hash": "25ff8604",
         "stats": [
@@ -710,10 +711,36 @@ exports[`subscapes-terrain-3d nodes 256x256 dpr1 1`] = `
     },
   },
   "shade": {
-    "palette": {
-      "colors": "0c15c666",
-      "count": 8472,
-      "kind": "palette",
+    "geometry": {
+      "attributes": null,
+      "colors": "77101b76",
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": "857696c5",
+      "positions": {
+        "hash": "3d12c6e4",
+        "stats": [
+          {
+            "max": 255.955,
+            "mean": 129.727,
+            "min": 0.008,
+          },
+          {
+            "max": 88.826,
+            "mean": 40.618,
+            "min": 8.443,
+          },
+          {
+            "max": 255.993,
+            "mean": 134.389,
+            "min": 0.29,
+          },
+        ],
+      },
+      "stripOffsets": "b6ca11de",
+      "topology": "line-strip",
+      "vertexCount": 8472,
     },
   },
   "shape": {
@@ -1097,10 +1124,11 @@ exports[`subscapes-terrain-3d nodes 400x400 dpr1 1`] = `
   "proj": {
     "geometry": {
       "attributes": null,
+      "colors": "3d1d5060",
       "dim": 2,
       "indices": null,
       "kind": "geometry",
-      "normals": null,
+      "normals": "db5e794d",
       "positions": {
         "hash": "d5c5fabe",
         "stats": [
@@ -1247,10 +1275,36 @@ exports[`subscapes-terrain-3d nodes 400x400 dpr1 1`] = `
     },
   },
   "shade": {
-    "palette": {
-      "colors": "9a3c77fd",
-      "count": 26203,
-      "kind": "palette",
+    "geometry": {
+      "attributes": null,
+      "colors": "3d1d5060",
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": "db5e794d",
+      "positions": {
+        "hash": "e87448a7",
+        "stats": [
+          {
+            "max": 399.989,
+            "mean": 200.179,
+            "min": 0.018,
+          },
+          {
+            "max": 95.218,
+            "mean": 40.438,
+            "min": 8.678,
+          },
+          {
+            "max": 399.998,
+            "mean": 208.478,
+            "min": 0.027,
+          },
+        ],
+      },
+      "stripOffsets": "5979d2db",
+      "topology": "line-strip",
+      "vertexCount": 26203,
     },
   },
   "shape": {
@@ -1634,10 +1688,11 @@ exports[`subscapes-terrain-3d nodes 800x800 dpr1 1`] = `
   "proj": {
     "geometry": {
       "attributes": null,
+      "colors": "4717d009",
       "dim": 2,
       "indices": null,
       "kind": "geometry",
-      "normals": null,
+      "normals": "e45d3b2f",
       "positions": {
         "hash": "e3525dad",
         "stats": [
@@ -1784,10 +1839,36 @@ exports[`subscapes-terrain-3d nodes 800x800 dpr1 1`] = `
     },
   },
   "shade": {
-    "palette": {
-      "colors": "5bbe15d5",
-      "count": 130750,
-      "kind": "palette",
+    "geometry": {
+      "attributes": null,
+      "colors": "4717d009",
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": "e45d3b2f",
+      "positions": {
+        "hash": "8d100781",
+        "stats": [
+          {
+            "max": 799.997,
+            "mean": 398.293,
+            "min": 0.006,
+          },
+          {
+            "max": 106.266,
+            "mean": 39.994,
+            "min": 7.387,
+          },
+          {
+            "max": 799.998,
+            "mean": 399.985,
+            "min": 0,
+          },
+        ],
+      },
+      "stripOffsets": "a3a1e54d",
+      "topology": "line-strip",
+      "vertexCount": 130750,
     },
   },
   "shape": {
@@ -2171,10 +2252,11 @@ exports[`subscapes-terrain-3d nodes 640x400 dpr1 1`] = `
   "proj": {
     "geometry": {
       "attributes": null,
+      "colors": "3d1d5060",
       "dim": 2,
       "indices": null,
       "kind": "geometry",
-      "normals": null,
+      "normals": "db5e794d",
       "positions": {
         "hash": "e8a51933",
         "stats": [
@@ -2321,10 +2403,36 @@ exports[`subscapes-terrain-3d nodes 640x400 dpr1 1`] = `
     },
   },
   "shade": {
-    "palette": {
-      "colors": "9a3c77fd",
-      "count": 26203,
-      "kind": "palette",
+    "geometry": {
+      "attributes": null,
+      "colors": "3d1d5060",
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": "db5e794d",
+      "positions": {
+        "hash": "e87448a7",
+        "stats": [
+          {
+            "max": 399.989,
+            "mean": 200.179,
+            "min": 0.018,
+          },
+          {
+            "max": 95.218,
+            "mean": 40.438,
+            "min": 8.678,
+          },
+          {
+            "max": 399.998,
+            "mean": 208.478,
+            "min": 0.027,
+          },
+        ],
+      },
+      "stripOffsets": "5979d2db",
+      "topology": "line-strip",
+      "vertexCount": 26203,
     },
   },
   "shape": {
@@ -2708,10 +2816,11 @@ exports[`subscapes-terrain-3d nodes 400x400 dpr2 1`] = `
   "proj": {
     "geometry": {
       "attributes": null,
+      "colors": "3d1d5060",
       "dim": 2,
       "indices": null,
       "kind": "geometry",
-      "normals": null,
+      "normals": "db5e794d",
       "positions": {
         "hash": "d5c5fabe",
         "stats": [
@@ -2858,10 +2967,36 @@ exports[`subscapes-terrain-3d nodes 400x400 dpr2 1`] = `
     },
   },
   "shade": {
-    "palette": {
-      "colors": "9a3c77fd",
-      "count": 26203,
-      "kind": "palette",
+    "geometry": {
+      "attributes": null,
+      "colors": "3d1d5060",
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": "db5e794d",
+      "positions": {
+        "hash": "e87448a7",
+        "stats": [
+          {
+            "max": 399.989,
+            "mean": 200.179,
+            "min": 0.018,
+          },
+          {
+            "max": 95.218,
+            "mean": 40.438,
+            "min": 8.678,
+          },
+          {
+            "max": 399.998,
+            "mean": 208.478,
+            "min": 0.027,
+          },
+        ],
+      },
+      "stripOffsets": "5979d2db",
+      "topology": "line-strip",
+      "vertexCount": 26203,
     },
   },
   "shape": {

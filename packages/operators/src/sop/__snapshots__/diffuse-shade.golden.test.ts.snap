@@ -104,10 +104,36 @@ exports[`diffuse-shade golden no palette 1`] = `
       },
     },
     "shade": {
-      "palette": {
-        "colors": "1b90d286",
-        "count": 81,
-        "kind": "palette",
+      "geometry": {
+        "attributes": null,
+        "colors": "98aa7c17",
+        "dim": 3,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": "f3ae4029",
+        "positions": {
+          "hash": "072c7da6",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 116.282,
+              "mean": 56.602,
+              "min": 3.908,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
       },
     },
   },
@@ -229,10 +255,36 @@ exports[`diffuse-shade golden one-colour palette (subscapes) 1`] = `
       },
     },
     "shade": {
-      "palette": {
-        "colors": "ec51878c",
-        "count": 81,
-        "kind": "palette",
+      "geometry": {
+        "attributes": null,
+        "colors": "9240eed5",
+        "dim": 3,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": "f3ae4029",
+        "positions": {
+          "hash": "072c7da6",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 116.282,
+              "mean": 56.602,
+              "min": 3.908,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
       },
     },
   },
@@ -354,10 +406,36 @@ exports[`diffuse-shade golden five-colour palette ramp 1`] = `
       },
     },
     "shade": {
-      "palette": {
-        "colors": "998087f6",
-        "count": 81,
-        "kind": "palette",
+      "geometry": {
+        "attributes": null,
+        "colors": "a9691e23",
+        "dim": 3,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": "f3ae4029",
+        "positions": {
+          "hash": "072c7da6",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 116.282,
+              "mean": 56.602,
+              "min": 3.908,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
       },
     },
   },
@@ -472,10 +550,36 @@ exports[`diffuse-shade golden steps 0 1`] = `
       },
     },
     "shade": {
-      "palette": {
-        "colors": "fd270a46",
-        "count": 81,
-        "kind": "palette",
+      "geometry": {
+        "attributes": null,
+        "colors": "fe48019b",
+        "dim": 3,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": "f3ae4029",
+        "positions": {
+          "hash": "072c7da6",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 116.282,
+              "mean": 56.602,
+              "min": 3.908,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
       },
     },
   },
@@ -590,10 +694,36 @@ exports[`diffuse-shade golden zero light vector 1`] = `
       },
     },
     "shade": {
-      "palette": {
-        "colors": "1b90d286",
-        "count": 81,
-        "kind": "palette",
+      "geometry": {
+        "attributes": null,
+        "colors": "98aa7c17",
+        "dim": 3,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": "f3ae4029",
+        "positions": {
+          "hash": "072c7da6",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 116.282,
+              "mean": 56.602,
+              "min": 3.908,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
       },
     },
   },
@@ -676,10 +806,36 @@ exports[`diffuse-shade golden geometry without normals 1`] = `
       },
     },
     "shade": {
-      "palette": {
-        "colors": "e7e96585",
-        "count": 81,
-        "kind": "palette",
+      "geometry": {
+        "attributes": null,
+        "colors": "7d48c3fc",
+        "dim": 3,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "072c7da6",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 116.282,
+              "mean": 56.602,
+              "min": 3.908,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
       },
     },
   },

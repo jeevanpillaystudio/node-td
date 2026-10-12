@@ -442,7 +442,7 @@ exports[`stroke-renderer golden Stroke, uniform palette colour 1`] = `
 }
 `;
 
-exports[`stroke-renderer golden Stroke, per-strip palette colours 1`] = `
+exports[`stroke-renderer golden Stroke, per-strip colours 1`] = `
 {
   "nodes": {
     "camera": {
@@ -458,6 +458,34 @@ exports[`stroke-renderer golden Stroke, per-strip palette colours 1`] = `
           128,
         ],
         "zoom": 1,
+      },
+    },
+    "flat": {
+      "geometry": {
+        "attributes": null,
+        "colors": "f5ab4988",
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": "5addc3f1",
+        "positions": {
+          "hash": "7e1a1526",
+          "stats": [
+            {
+              "max": 211.839,
+              "mean": 89.264,
+              "min": -86.143,
+            },
+            {
+              "max": 205.051,
+              "mean": 45.339,
+              "min": -78.217,
+            },
+          ],
+        },
+        "stripOffsets": "2f45b18d",
+        "topology": "line-strip",
+        "vertexCount": 3710,
       },
     },
     "grid": {
@@ -589,10 +617,36 @@ exports[`stroke-renderer golden Stroke, per-strip palette colours 1`] = `
       },
     },
     "shade": {
-      "palette": {
-        "colors": "6f9733cc",
-        "count": 3710,
-        "kind": "palette",
+      "geometry": {
+        "attributes": null,
+        "colors": "f5ab4988",
+        "dim": 3,
+        "indices": null,
+        "kind": "geometry",
+        "normals": "5addc3f1",
+        "positions": {
+          "hash": "7043afe6",
+          "stats": [
+            {
+              "max": 211.839,
+              "mean": 89.264,
+              "min": -86.143,
+            },
+            {
+              "max": 113.82,
+              "mean": 63.265,
+              "min": 5.792,
+            },
+            {
+              "max": 205.051,
+              "mean": 45.339,
+              "min": -78.217,
+            },
+          ],
+        },
+        "stripOffsets": "2f45b18d",
+        "topology": "line-strip",
+        "vertexCount": 3710,
       },
     },
     "trace": {
@@ -1048,11 +1102,7 @@ exports[`stroke-renderer golden Oriented Dash, depth-indexed palette 1`] = `
         "attributes": {
           "ao": "d456e04a",
           "depth": "ff11c6cd",
-          "normalX": "062376f1",
-          "normalY": "6d9eaf0f",
-          "normalZ": "c4630d2d",
           "worldX": "828c8ce1",
-          "worldY": "45670715",
           "worldZ": "9e4d9d6e",
         },
         "dim": 2,
@@ -1086,11 +1136,7 @@ exports[`stroke-renderer golden Oriented Dash, depth-indexed palette 1`] = `
           "ao": "d456e04a",
           "depth": "ff11c6cd",
           "length": "25814659",
-          "normalX": "062376f1",
-          "normalY": "6d9eaf0f",
-          "normalZ": "c4630d2d",
           "worldX": "828c8ce1",
-          "worldY": "45670715",
           "worldZ": "9e4d9d6e",
         },
         "dim": 2,
@@ -1182,7 +1228,7 @@ exports[`stroke-renderer golden Oriented Dash, depth-indexed palette 1`] = `
 }
 `;
 
-exports[`stroke-renderer golden Oriented Dash, per-vertex palette 1`] = `
+exports[`stroke-renderer golden Oriented Dash, per-vertex colours 1`] = `
 {
   "nodes": {
     "angle": {
@@ -1220,9 +1266,51 @@ exports[`stroke-renderer golden Oriented Dash, per-vertex palette 1`] = `
         "zoom": 1,
       },
     },
+    "flat": {
+      "geometry": {
+        "attributes": {
+          "angle": "d507cabe",
+          "ao": "d456e04a",
+          "depth": "ff11c6cd",
+          "length": "25814659",
+          "worldX": "828c8ce1",
+          "worldZ": "9e4d9d6e",
+        },
+        "colors": "1ba9a83c",
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "ee777772",
+          "stats": [
+            {
+              "max": 126.983,
+              "mean": 61.403,
+              "min": 0.268,
+            },
+            {
+              "max": 123.842,
+              "mean": 64.583,
+              "min": 1.428,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 29,
+      },
+    },
     "lift": {
       "geometry": {
-        "attributes": null,
+        "attributes": {
+          "angle": "d507cabe",
+          "ao": "d456e04a",
+          "depth": "ff11c6cd",
+          "length": "25814659",
+          "worldX": "828c8ce1",
+          "worldZ": "9e4d9d6e",
+        },
         "dim": 3,
         "indices": null,
         "kind": "geometry",
@@ -1257,11 +1345,7 @@ exports[`stroke-renderer golden Oriented Dash, per-vertex palette 1`] = `
         "attributes": {
           "ao": "d456e04a",
           "depth": "ff11c6cd",
-          "normalX": "062376f1",
-          "normalY": "6d9eaf0f",
-          "normalZ": "c4630d2d",
           "worldX": "828c8ce1",
-          "worldY": "45670715",
           "worldZ": "9e4d9d6e",
         },
         "dim": 2,
@@ -1295,11 +1379,7 @@ exports[`stroke-renderer golden Oriented Dash, per-vertex palette 1`] = `
           "ao": "d456e04a",
           "depth": "ff11c6cd",
           "length": "25814659",
-          "normalX": "062376f1",
-          "normalY": "6d9eaf0f",
-          "normalZ": "c4630d2d",
           "worldX": "828c8ce1",
-          "worldY": "45670715",
           "worldZ": "9e4d9d6e",
         },
         "dim": 2,
@@ -1368,10 +1448,43 @@ exports[`stroke-renderer golden Oriented Dash, per-vertex palette 1`] = `
       },
     },
     "shade": {
-      "palette": {
-        "colors": "550ee085",
-        "count": 29,
-        "kind": "palette",
+      "geometry": {
+        "attributes": {
+          "angle": "d507cabe",
+          "ao": "d456e04a",
+          "depth": "ff11c6cd",
+          "length": "25814659",
+          "worldX": "828c8ce1",
+          "worldZ": "9e4d9d6e",
+        },
+        "colors": "1ba9a83c",
+        "dim": 3,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "f85fae54",
+          "stats": [
+            {
+              "max": 126.983,
+              "mean": 61.403,
+              "min": 0.268,
+            },
+            {
+              "max": 94.069,
+              "mean": 60.354,
+              "min": 12.704,
+            },
+            {
+              "max": 123.842,
+              "mean": 64.583,
+              "min": 1.428,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 29,
       },
     },
     "terrain": {
@@ -1434,11 +1547,7 @@ exports[`stroke-renderer golden Oriented Dash, no palette 1`] = `
         "attributes": {
           "ao": "d456e04a",
           "depth": "ff11c6cd",
-          "normalX": "062376f1",
-          "normalY": "6d9eaf0f",
-          "normalZ": "c4630d2d",
           "worldX": "828c8ce1",
-          "worldY": "45670715",
           "worldZ": "9e4d9d6e",
         },
         "dim": 2,
@@ -1472,11 +1581,7 @@ exports[`stroke-renderer golden Oriented Dash, no palette 1`] = `
           "ao": "d456e04a",
           "depth": "ff11c6cd",
           "length": "25814659",
-          "normalX": "062376f1",
-          "normalY": "6d9eaf0f",
-          "normalZ": "c4630d2d",
           "worldX": "828c8ce1",
-          "worldY": "45670715",
           "worldZ": "9e4d9d6e",
         },
         "dim": 2,
