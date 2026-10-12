@@ -36,7 +36,16 @@ export const visibilityCull: Operator<Inputs, Outputs> = {
   ],
   outputs: [{ name: "geometry", type: "geo3" }],
   params: [
-    { key: "bypass", label: "Bypass", min: 0, max: 1, step: 1, default: 0 },
+    {
+      key: "bypass",
+      label: "Bypass",
+      kind: "enum",
+      options: [
+        { label: "Off", value: 0 },
+        { label: "On", value: 1 },
+      ],
+      default: 0,
+    },
   ],
   evaluate({ geometry: strokes, mesh, camera3d }, params) {
     // Debug bypass: when bypass=1, pass through all strokes without culling

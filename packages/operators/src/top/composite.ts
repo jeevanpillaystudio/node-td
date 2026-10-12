@@ -39,7 +39,18 @@ export const composite: Operator<Inputs, Outputs> = {
   inputs: [{ name: "layers", type: "image", variadic: true }],
   outputs: [{ name: "buffer", type: "image" }],
   params: [
-    { key: "mode", label: "Blend Mode", min: 0, max: 3, step: 1, default: 0 },
+    {
+      key: "mode",
+      label: "Blend Mode",
+      kind: "enum",
+      options: [
+        { label: "Over", value: 0 },
+        { label: "Add", value: 1 },
+        { label: "Multiply", value: 2 },
+        { label: "Screen", value: 3 },
+      ],
+      default: 0,
+    },
   ],
 
   evaluate({ layers }, params, env) {
