@@ -8,6 +8,15 @@ interface RegistryLike {
   resolve(id: string): Operator;
 }
 
+// ─── Host clock ──────────────────────────────────────────────────
+
+/**
+ * The monotonic clock every host runtime provides (browsers, bun, node).
+ * The kernel compiles with lib ES2022 and no DOM or node types, so it
+ * declares only the part of the global it reads.
+ */
+declare const performance: { now(): number };
+
 // ─── Cook Stats ──────────────────────────────────────────────────
 
 export interface CookStats {
