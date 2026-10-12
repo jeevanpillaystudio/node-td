@@ -121,15 +121,17 @@ export const subscapesTerrain3dGraph: Graph = {
     proj: { type: "project-3d" },
 
     // ── Shading ────────────────────────────────────────────────
-    // Style 0: high ambient with subtle diffuse variation.
-    // Light from upper-left (isometric-aligned), 4-step quantization
-    // creates the "limited pen widths" aesthetic.
+    // Style 0: high ambient with subtle diffuse variation, 4-step
+    // quantization for the "limited pen widths" aesthetic. The light is
+    // below the horizon, so only steep slopes facing it catch it: the look
+    // the patch was calibrated to, kept while lighting from above is an
+    // open question.
     shade: {
       type: "diffuse-shade",
       params: {
-        lightX: -0.5,
+        lightX: 0.5,
         lightY: -0.707,
-        lightZ: -0.5,
+        lightZ: 0.5,
         steps: 4,
         ambient: 0.7,
       },

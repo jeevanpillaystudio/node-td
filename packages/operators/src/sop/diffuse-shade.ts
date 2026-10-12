@@ -7,6 +7,9 @@ import { defineOperator, withPositions } from "@node-td/kernel";
  *
  * 1. For each vertex in the input geometry, compute Lambert diffuse:
  *      intensity = max(0, dot(normal, lightDir))
+ *    lightDir is (lightX, lightY, lightZ), normalised: the direction from
+ *    the surface toward the light, so a vertex is lit when its normal turns
+ *    toward it. A negative lightY puts the light below the horizon.
  * 2. Quantize the intensity to a discrete set of steps (e.g. [0, 0.3, 0.75, 1])
  *    to create the illustrative "limited pen widths" aesthetic.
  * 3. Use the quantized intensity to interpolate through the input palette,

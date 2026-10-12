@@ -115,82 +115,17 @@ exports[`dash-stroke golden strips 1`] = `
 }
 `;
 
-exports[`dash-stroke golden points 1`] = `
-{
-  "nodes": {
-    "dash": {
-      "geometry": {
-        "attributes": null,
-        "dim": 2,
-        "indices": null,
-        "kind": "geometry",
-        "normals": null,
-        "positions": {
-          "hash": "811c9dc5",
-          "stats": [
-            {
-              "max": null,
-              "mean": null,
-              "min": null,
-            },
-            {
-              "max": null,
-              "mean": null,
-              "min": null,
-            },
-          ],
-        },
-        "stripOffsets": "811c9dc5",
-        "topology": "line-strip",
-        "vertexCount": 0,
-      },
-    },
-    "seeds": {
-      "geometry": {
-        "attributes": null,
-        "dim": 2,
-        "indices": null,
-        "kind": "geometry",
-        "normals": null,
-        "positions": {
-          "hash": "84beaba5",
-          "stats": [
-            {
-              "max": 353.425,
-              "mean": 124.718,
-              "min": -98.556,
-            },
-            {
-              "max": 352.355,
-              "mean": 128.908,
-              "min": -99.971,
-            },
-          ],
-        },
-        "stripOffsets": null,
-        "topology": "points",
-        "vertexCount": 63,
-      },
-    },
-  },
-  "render": {
-    "hash": "811c9dc5",
-    "length": 0,
-  },
-}
-`;
-
 exports[`dash-stroke golden coloured strips 1`] = `
 {
   "nodes": {
     "dash": {
       "geometry": {
         "attributes": null,
-        "colors": "d40ed415",
+        "colors": "61141241",
         "dim": 2,
         "indices": null,
         "kind": "geometry",
-        "normals": "7cfca7a4",
+        "normals": "264c0fbc",
         "positions": {
           "hash": "b89bc9bf",
           "stats": [
@@ -214,11 +149,11 @@ exports[`dash-stroke golden coloured strips 1`] = `
     "flat": {
       "geometry": {
         "attributes": null,
-        "colors": "c64a64df",
+        "colors": "2283fe17",
         "dim": 2,
         "indices": null,
         "kind": "geometry",
-        "normals": "ee9bc048",
+        "normals": "3574ab8d",
         "positions": {
           "hash": "46749c58",
           "stats": [
@@ -300,7 +235,7 @@ exports[`dash-stroke golden coloured strips 1`] = `
         "dim": 3,
         "indices": null,
         "kind": "geometry",
-        "normals": "ee9bc048",
+        "normals": "3574ab8d",
         "positions": {
           "hash": "048689f3",
           "stats": [
@@ -356,11 +291,11 @@ exports[`dash-stroke golden coloured strips 1`] = `
     "shade": {
       "geometry": {
         "attributes": null,
-        "colors": "c64a64df",
+        "colors": "2283fe17",
         "dim": 3,
         "indices": null,
         "kind": "geometry",
-        "normals": "ee9bc048",
+        "normals": "3574ab8d",
         "positions": {
           "hash": "048689f3",
           "stats": [
@@ -411,6 +346,71 @@ exports[`dash-stroke golden coloured strips 1`] = `
         "stripOffsets": "1b1866c7",
         "topology": "line-strip",
         "vertexCount": 11473,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`dash-stroke golden points 1`] = `
+{
+  "nodes": {
+    "dash": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "811c9dc5",
+          "stats": [
+            {
+              "max": null,
+              "mean": null,
+              "min": null,
+            },
+            {
+              "max": null,
+              "mean": null,
+              "min": null,
+            },
+          ],
+        },
+        "stripOffsets": "811c9dc5",
+        "topology": "line-strip",
+        "vertexCount": 0,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "84beaba5",
+          "stats": [
+            {
+              "max": 353.425,
+              "mean": 124.718,
+              "min": -98.556,
+            },
+            {
+              "max": 352.355,
+              "mean": 128.908,
+              "min": -99.971,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 63,
       },
     },
   },

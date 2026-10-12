@@ -189,9 +189,9 @@ exports[`subscapes-terrain-3d nodes resolved params 1`] = `
   "shade": {
     "params": {
       "ambient": 0.7,
-      "lightX": -0.5,
+      "lightX": 0.5,
       "lightY": -0.707,
-      "lightZ": -0.5,
+      "lightZ": 0.5,
       "steps": 4,
     },
     "type": "diffuse-shade",
@@ -366,7 +366,7 @@ exports[`subscapes-terrain-3d nodes 256x256 dpr1 1`] = `
       "dim": 3,
       "indices": null,
       "kind": "geometry",
-      "normals": "857696c5",
+      "normals": "e7608586",
       "positions": {
         "hash": "3d12c6e4",
         "stats": [
@@ -494,7 +494,7 @@ exports[`subscapes-terrain-3d nodes 256x256 dpr1 1`] = `
       "dim": 3,
       "indices": null,
       "kind": "geometry",
-      "normals": "9d74ce24",
+      "normals": "08fb42ba",
       "positions": {
         "hash": "620256a9",
         "stats": [
@@ -560,11 +560,11 @@ exports[`subscapes-terrain-3d nodes 256x256 dpr1 1`] = `
   "proj": {
     "geometry": {
       "attributes": null,
-      "colors": "77101b76",
+      "colors": "d3286c3a",
       "dim": 2,
       "indices": null,
       "kind": "geometry",
-      "normals": "857696c5",
+      "normals": "e7608586",
       "positions": {
         "hash": "25ff8604",
         "stats": [
@@ -713,11 +713,11 @@ exports[`subscapes-terrain-3d nodes 256x256 dpr1 1`] = `
   "shade": {
     "geometry": {
       "attributes": null,
-      "colors": "77101b76",
+      "colors": "d3286c3a",
       "dim": 3,
       "indices": null,
       "kind": "geometry",
-      "normals": "857696c5",
+      "normals": "e7608586",
       "positions": {
         "hash": "3d12c6e4",
         "stats": [
@@ -930,7 +930,7 @@ exports[`subscapes-terrain-3d nodes 400x400 dpr1 1`] = `
       "dim": 3,
       "indices": null,
       "kind": "geometry",
-      "normals": "db5e794d",
+      "normals": "0f59f0cb",
       "positions": {
         "hash": "e87448a7",
         "stats": [
@@ -1058,7 +1058,7 @@ exports[`subscapes-terrain-3d nodes 400x400 dpr1 1`] = `
       "dim": 3,
       "indices": null,
       "kind": "geometry",
-      "normals": "d816f0f4",
+      "normals": "0d4b36b5",
       "positions": {
         "hash": "93f0e224",
         "stats": [
@@ -1124,11 +1124,11 @@ exports[`subscapes-terrain-3d nodes 400x400 dpr1 1`] = `
   "proj": {
     "geometry": {
       "attributes": null,
-      "colors": "3d1d5060",
+      "colors": "ed46b066",
       "dim": 2,
       "indices": null,
       "kind": "geometry",
-      "normals": "db5e794d",
+      "normals": "0f59f0cb",
       "positions": {
         "hash": "d5c5fabe",
         "stats": [
@@ -1277,11 +1277,11 @@ exports[`subscapes-terrain-3d nodes 400x400 dpr1 1`] = `
   "shade": {
     "geometry": {
       "attributes": null,
-      "colors": "3d1d5060",
+      "colors": "ed46b066",
       "dim": 3,
       "indices": null,
       "kind": "geometry",
-      "normals": "db5e794d",
+      "normals": "0f59f0cb",
       "positions": {
         "hash": "e87448a7",
         "stats": [
@@ -1494,7 +1494,7 @@ exports[`subscapes-terrain-3d nodes 800x800 dpr1 1`] = `
       "dim": 3,
       "indices": null,
       "kind": "geometry",
-      "normals": "e45d3b2f",
+      "normals": "5f4328a5",
       "positions": {
         "hash": "8d100781",
         "stats": [
@@ -1622,7 +1622,7 @@ exports[`subscapes-terrain-3d nodes 800x800 dpr1 1`] = `
       "dim": 3,
       "indices": null,
       "kind": "geometry",
-      "normals": "7ea3b7ac",
+      "normals": "7b4cb232",
       "positions": {
         "hash": "ec158a33",
         "stats": [
@@ -1688,11 +1688,11 @@ exports[`subscapes-terrain-3d nodes 800x800 dpr1 1`] = `
   "proj": {
     "geometry": {
       "attributes": null,
-      "colors": "4717d009",
+      "colors": "605dc55a",
       "dim": 2,
       "indices": null,
       "kind": "geometry",
-      "normals": "e45d3b2f",
+      "normals": "5f4328a5",
       "positions": {
         "hash": "e3525dad",
         "stats": [
@@ -1841,11 +1841,11 @@ exports[`subscapes-terrain-3d nodes 800x800 dpr1 1`] = `
   "shade": {
     "geometry": {
       "attributes": null,
-      "colors": "4717d009",
+      "colors": "605dc55a",
       "dim": 3,
       "indices": null,
       "kind": "geometry",
-      "normals": "e45d3b2f",
+      "normals": "5f4328a5",
       "positions": {
         "hash": "8d100781",
         "stats": [
@@ -2058,7 +2058,7 @@ exports[`subscapes-terrain-3d nodes 640x400 dpr1 1`] = `
       "dim": 3,
       "indices": null,
       "kind": "geometry",
-      "normals": "db5e794d",
+      "normals": "0f59f0cb",
       "positions": {
         "hash": "e87448a7",
         "stats": [
@@ -2186,7 +2186,7 @@ exports[`subscapes-terrain-3d nodes 640x400 dpr1 1`] = `
       "dim": 3,
       "indices": null,
       "kind": "geometry",
-      "normals": "d816f0f4",
+      "normals": "0d4b36b5",
       "positions": {
         "hash": "93f0e224",
         "stats": [
@@ -2252,11 +2252,11 @@ exports[`subscapes-terrain-3d nodes 640x400 dpr1 1`] = `
   "proj": {
     "geometry": {
       "attributes": null,
-      "colors": "3d1d5060",
+      "colors": "ed46b066",
       "dim": 2,
       "indices": null,
       "kind": "geometry",
-      "normals": "db5e794d",
+      "normals": "0f59f0cb",
       "positions": {
         "hash": "e8a51933",
         "stats": [
@@ -2405,11 +2405,11 @@ exports[`subscapes-terrain-3d nodes 640x400 dpr1 1`] = `
   "shade": {
     "geometry": {
       "attributes": null,
-      "colors": "3d1d5060",
+      "colors": "ed46b066",
       "dim": 3,
       "indices": null,
       "kind": "geometry",
-      "normals": "db5e794d",
+      "normals": "0f59f0cb",
       "positions": {
         "hash": "e87448a7",
         "stats": [
@@ -2622,7 +2622,7 @@ exports[`subscapes-terrain-3d nodes 400x400 dpr2 1`] = `
       "dim": 3,
       "indices": null,
       "kind": "geometry",
-      "normals": "db5e794d",
+      "normals": "0f59f0cb",
       "positions": {
         "hash": "e87448a7",
         "stats": [
@@ -2750,7 +2750,7 @@ exports[`subscapes-terrain-3d nodes 400x400 dpr2 1`] = `
       "dim": 3,
       "indices": null,
       "kind": "geometry",
-      "normals": "d816f0f4",
+      "normals": "0d4b36b5",
       "positions": {
         "hash": "93f0e224",
         "stats": [
@@ -2816,11 +2816,11 @@ exports[`subscapes-terrain-3d nodes 400x400 dpr2 1`] = `
   "proj": {
     "geometry": {
       "attributes": null,
-      "colors": "3d1d5060",
+      "colors": "ed46b066",
       "dim": 2,
       "indices": null,
       "kind": "geometry",
-      "normals": "db5e794d",
+      "normals": "0f59f0cb",
       "positions": {
         "hash": "d5c5fabe",
         "stats": [
@@ -2969,11 +2969,11 @@ exports[`subscapes-terrain-3d nodes 400x400 dpr2 1`] = `
   "shade": {
     "geometry": {
       "attributes": null,
-      "colors": "3d1d5060",
+      "colors": "ed46b066",
       "dim": 3,
       "indices": null,
       "kind": "geometry",
-      "normals": "db5e794d",
+      "normals": "0f59f0cb",
       "positions": {
         "hash": "e87448a7",
         "stats": [

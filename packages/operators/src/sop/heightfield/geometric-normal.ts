@@ -3,19 +3,21 @@ import { defineOperator, withPositions } from "@node-td/kernel";
 /**
  * Geometric Normal — computes per-vertex surface normals from a heightfield.
  *
- * For each 3D vertex at (x, y, z), samples the height field at nearby
- * offsets to estimate the surface tangent vectors via finite differences,
- * then takes the cross product to get the surface normal.
+ * For each 3D vertex at (x, y, z), samples the height field one epsilon
+ * step along x and along z, and returns the normal of the surface
+ * y = amplitude * field(x, z):
  *
- * This matches the Subscapes algorithm's normal computation (lines 305-324):
- * sample the parametric function at (u +/- eps) and (v +/- eps), subtract
- * to get tangent vectors along each axis, then cross product for the normal.
+ *   n ∝ (-∂h/∂x, 1, -∂h/∂z)
+ *
+ * which points up, and away from the slope, at every vertex, the grid's
+ * x = 0 and z = 0 edges included. The derivatives are one-sided: backward,
+ * or forward at an edge, as the Subscapes algorithm samples them.
  *
  * The output geometry keeps its positions, strips, colours and attributes,
  * with `normals` populated — a Float32Array of 3 floats per vertex
  * (nx, ny, nz).
  *
- * Needed by: visibility-cull (back-face test), diffuse-shade (N dot L).
+ * Read by diffuse-shade (N dot L).
  */
 export const geometricNormal = defineOperator({
   id: "geometric-normal",
@@ -41,50 +43,24 @@ export const geometricNormal = defineOperator({
       // y is the height axis (not used for sampling — derived from field)
       const pz = src[i * 3 + 2] as number;
 
-      // Sample the parametric terrain function at the vertex's XZ position
-      // and at finite-difference offsets to get tangent vectors.
-      //
-      // The actual Subscapes code computes:
-      //   tangentU = parametricTerrain(u - eps, v) - parametricTerrain(u, v)
-      //   tangentV = parametricTerrain(u, v - eps) - parametricTerrain(u, v)
-      //   normal = cross(tangentV, tangentU), then normalize
-      //
-      // In our coordinate space: X = px, Z = pz, Y = field(px, pz) * amp
-
       const hCenter = field(px, pz) * amp;
 
-      // Tangent along X axis (du)
-      let tx: number, ty: number, tz: number;
-      if (px >= eps) {
-        const hBack = field(px - eps, pz) * amp;
-        tx = -eps;
-        ty = hCenter - hBack;
-        tz = 0;
-      } else {
-        const hFwd = field(px + eps, pz) * amp;
-        tx = eps;
-        ty = hFwd - hCenter;
-        tz = 0;
-      }
+      // The rise over one eps step along +x and along +z: a backward
+      // difference, or a forward one where the step back would leave the
+      // grid at x or z = 0
+      const dx = px >= eps
+        ? hCenter - field(px - eps, pz) * amp
+        : field(px + eps, pz) * amp - hCenter;
+      const dz = pz >= eps
+        ? hCenter - field(px, pz - eps) * amp
+        : field(px, pz + eps) * amp - hCenter;
 
-      // Tangent along Z axis (dv)
-      let ux: number, uy: number, uz: number;
-      if (pz >= eps) {
-        const hBack = field(px, pz - eps) * amp;
-        ux = 0;
-        uy = hCenter - hBack;
-        uz = -eps;
-      } else {
-        const hFwd = field(px, pz + eps) * amp;
-        ux = 0;
-        uy = hFwd - hCenter;
-        uz = eps;
-      }
-
-      // Cross product: normal = tangentV x tangentU
-      let nx = uy * tz - uz * ty;
-      let ny = uz * tx - ux * tz;
-      let nz = ux * ty - uy * tx;
+      // The surface y = h(x, z) has normal (-∂h/∂x, 1, -∂h/∂z): up, and
+      // tilted away from the slope. Here scaled by eps², as the cross
+      // product (0, dz, eps) × (eps, dx, 0) of the two eps-step tangents.
+      let nx = -(eps * dx);
+      let ny = eps * eps;
+      let nz = -(eps * dz);
 
       // Normalize
       const len = Math.sqrt(nx * nx + ny * ny + nz * nz);

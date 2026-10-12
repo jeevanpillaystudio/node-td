@@ -463,11 +463,11 @@ exports[`stroke-renderer golden Stroke, per-strip colours 1`] = `
     "flat": {
       "geometry": {
         "attributes": null,
-        "colors": "f5ab4988",
+        "colors": "eac1407f",
         "dim": 2,
         "indices": null,
         "kind": "geometry",
-        "normals": "5addc3f1",
+        "normals": "d10e8a8e",
         "positions": {
           "hash": "7e1a1526",
           "stats": [
@@ -549,7 +549,7 @@ exports[`stroke-renderer golden Stroke, per-strip colours 1`] = `
         "dim": 3,
         "indices": null,
         "kind": "geometry",
-        "normals": "5addc3f1",
+        "normals": "d10e8a8e",
         "positions": {
           "hash": "7043afe6",
           "stats": [
@@ -619,11 +619,11 @@ exports[`stroke-renderer golden Stroke, per-strip colours 1`] = `
     "shade": {
       "geometry": {
         "attributes": null,
-        "colors": "f5ab4988",
+        "colors": "eac1407f",
         "dim": 3,
         "indices": null,
         "kind": "geometry",
-        "normals": "5addc3f1",
+        "normals": "d10e8a8e",
         "positions": {
           "hash": "7043afe6",
           "stats": [
@@ -678,8 +678,8 @@ exports[`stroke-renderer golden Stroke, per-strip colours 1`] = `
     },
   },
   "render": {
-    "hash": "66a6a55e",
-    "length": 3730,
+    "hash": "9c3f15cb",
+    "length": 3727,
   },
 }
 `;

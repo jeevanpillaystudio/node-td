@@ -77,7 +77,7 @@ exports[`geometric-normal golden grid mesh, epsilon 1, amplitude 120 1`] = `
         "dim": 3,
         "indices": "7cb8bb68",
         "kind": "geometry",
-        "normals": "f3ae4029",
+        "normals": "277edcdb",
         "positions": {
           "hash": "52dad0a6",
           "stats": [
@@ -188,7 +188,7 @@ exports[`geometric-normal golden grid mesh, default epsilon 1`] = `
         "dim": 3,
         "indices": "7cb8bb68",
         "kind": "geometry",
-        "normals": "53308452",
+        "normals": "18e59f02",
         "positions": {
           "hash": "52dad0a6",
           "stats": [
@@ -299,7 +299,7 @@ exports[`geometric-normal golden grid mesh, epsilon 4, amplitude 60 1`] = `
         "dim": 3,
         "indices": "7cb8bb68",
         "kind": "geometry",
-        "normals": "60213a37",
+        "normals": "bb89c6d5",
         "positions": {
           "hash": "52dad0a6",
           "stats": [

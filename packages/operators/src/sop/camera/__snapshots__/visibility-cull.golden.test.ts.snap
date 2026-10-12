@@ -20,7 +20,7 @@ exports[`visibility-cull golden isometric camera 1`] = `
         "dim": 3,
         "indices": null,
         "kind": "geometry",
-        "normals": "3cfd306e",
+        "normals": "7d537b70",
         "positions": {
           "hash": "1138933c",
           "stats": [
@@ -166,7 +166,7 @@ exports[`visibility-cull golden isometric camera 1`] = `
         "dim": 3,
         "indices": null,
         "kind": "geometry",
-        "normals": "ee9bc048",
+        "normals": "3574ab8d",
         "positions": {
           "hash": "845c1ef8",
           "stats": [
@@ -274,7 +274,7 @@ exports[`visibility-cull golden bypass 1`] = `
         "dim": 3,
         "indices": null,
         "kind": "geometry",
-        "normals": "ee9bc048",
+        "normals": "3574ab8d",
         "positions": {
           "hash": "845c1ef8",
           "stats": [
@@ -420,7 +420,7 @@ exports[`visibility-cull golden bypass 1`] = `
         "dim": 3,
         "indices": null,
         "kind": "geometry",
-        "normals": "ee9bc048",
+        "normals": "3574ab8d",
         "positions": {
           "hash": "845c1ef8",
           "stats": [
@@ -674,7 +674,7 @@ exports[`visibility-cull golden strokes without normals 1`] = `
         "dim": 3,
         "indices": null,
         "kind": "geometry",
-        "normals": "ee9bc048",
+        "normals": "3574ab8d",
         "positions": {
           "hash": "845c1ef8",
           "stats": [
@@ -782,7 +782,7 @@ exports[`visibility-cull golden default camera 1`] = `
         "dim": 3,
         "indices": null,
         "kind": "geometry",
-        "normals": "d050f2e6",
+        "normals": "b1ac7e34",
         "positions": {
           "hash": "e834e6fd",
           "stats": [
@@ -928,7 +928,7 @@ exports[`visibility-cull golden default camera 1`] = `
         "dim": 3,
         "indices": null,
         "kind": "geometry",
-        "normals": "ee9bc048",
+        "normals": "3574ab8d",
         "positions": {
           "hash": "845c1ef8",
           "stats": [

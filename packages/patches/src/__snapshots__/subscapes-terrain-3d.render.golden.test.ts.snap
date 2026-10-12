@@ -7,8 +7,8 @@ exports[`subscapes-terrain-3d render 256x256 dpr1 1`] = `
     "length": 2,
   },
   "cook": {
-    "hash": "9028dada",
-    "length": 10319,
+    "hash": "79acf5ca",
+    "length": 10313,
   },
   "terminal": {
     "channels": 4,
@@ -32,8 +32,8 @@ exports[`subscapes-terrain-3d render 400x400 dpr1 1`] = `
     "length": 2,
   },
   "cook": {
-    "hash": "cb6eeb9e",
-    "length": 28050,
+    "hash": "4c2f4da6",
+    "length": 28044,
   },
   "terminal": {
     "channels": 4,
@@ -57,8 +57,8 @@ exports[`subscapes-terrain-3d render 800x800 dpr1 1`] = `
     "length": 2,
   },
   "cook": {
-    "hash": "f543eebe",
-    "length": 132597,
+    "hash": "e969e0cf",
+    "length": 132594,
   },
   "terminal": {
     "channels": 4,
@@ -82,8 +82,8 @@ exports[`subscapes-terrain-3d render 640x400 dpr1 1`] = `
     "length": 2,
   },
   "cook": {
-    "hash": "37afbe4e",
-    "length": 28050,
+    "hash": "ec0f9f48",
+    "length": 28044,
   },
   "terminal": {
     "channels": 4,
@@ -107,8 +107,8 @@ exports[`subscapes-terrain-3d render 400x400 dpr2 1`] = `
     "length": 2,
   },
   "cook": {
-    "hash": "0ec5ff1e",
-    "length": 28050,
+    "hash": "08188d86",
+    "length": 28044,
   },
   "terminal": {
     "channels": 4,
