@@ -10,7 +10,9 @@ import type {
   Wire,
 } from "@node-td/kernel";
 import { isEnumParam, validateGraph } from "@node-td/kernel";
-import { cookGraph } from "./cook";
+import type { FieldExpr } from "@node-td/kernel/field";
+import { type CookResult, cookGraph } from "./cook";
+import { cookedFields, fieldGlslIssues } from "./field-glsl";
 
 /**
  * Operator goldens — one colocated <op>.golden.test.ts per registered
@@ -20,6 +22,9 @@ import { cookGraph } from "./cook";
  *
  * Fixtures must stay valid graphs with declared, in-range params, so
  * they keep cooking when the engine starts validating on construction.
+ *
+ * An operator with a field output also gets a test that every FieldExpr
+ * its fixtures cook compiles to GLSL (see field-glsl.ts).
  */
 
 export interface OpFixture {
@@ -172,6 +177,22 @@ function paramIssues(graph: Graph, registry: OperatorRegistry): string[] {
   return issues;
 }
 
+// ─── Fixture cooks ───────────────────────────────────────────────
+
+function fixtureGraph(op: Operator, name: string, fixture: OpFixture): Graph {
+  return { id: `${op.id} ${name}`, name, nodes: fixture.nodes, wires: fixture.wires };
+}
+
+function cookFixture(graph: Graph, fixture: OpFixture, registry: OperatorRegistry): CookResult {
+  return cookGraph(graph, {
+    width: fixture.width ?? 256,
+    height: fixture.height ?? 256,
+    dpr: fixture.dpr ?? 1,
+    seed: OP_GOLDEN_SEED,
+    registry,
+  });
+}
+
 // ─── Golden registration ─────────────────────────────────────────
 
 export interface OpGoldens {
@@ -206,24 +227,28 @@ function opGolden(
     for (const [name, fixture] of Object.entries(fixtures)) {
       test(name, () => {
         const registry = fixtureRegistry(createRegistry);
-        const graph: Graph = {
-          id: `${op.id} ${name}`,
-          name,
-          nodes: fixture.nodes,
-          wires: fixture.wires,
-        };
+        const graph = fixtureGraph(op, name, fixture);
         expect(Object.values(graph.nodes).some((n) => n.type === op.id)).toBe(true);
         validateGraph(graph, registry);
         expect(paramIssues(graph, registry)).toEqual([]);
 
-        const { nodes, render } = cookGraph(graph, {
-          width: fixture.width ?? 256,
-          height: fixture.height ?? 256,
-          dpr: fixture.dpr ?? 1,
-          seed: OP_GOLDEN_SEED,
-          registry,
-        });
+        const { nodes, render } = cookFixture(graph, fixture, registry);
         expect({ nodes, render }).toMatchSnapshot();
+      });
+    }
+
+    if (op.outputs.some((port) => port.type === "field")) {
+      test("every field its fixtures cook compiles to GLSL", () => {
+        const registry = fixtureRegistry(createRegistry);
+        const fields: [string, FieldExpr][] = [];
+        for (const [name, fixture] of Object.entries(fixtures)) {
+          const { cooked } = cookFixture(fixtureGraph(op, name, fixture), fixture, registry);
+          for (const [label, expr] of cookedFields(cooked)) {
+            fields.push([`${name}: ${label}`, expr]);
+          }
+        }
+        expect(fields.length).toBeGreaterThan(0);
+        expect(fieldGlslIssues(fields)).toEqual([]);
       });
     }
   });
