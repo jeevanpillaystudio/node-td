@@ -6,7 +6,10 @@ import {
   useNodesState,
   useEdgesState,
   BackgroundVariant,
+  type NodeChange,
   type NodeTypes,
+  type OnEdgesChange,
+  type OnNodesChange,
   type OnSelectionChangeFunc,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
@@ -18,6 +21,18 @@ const nodeTypes: NodeTypes = {
   gen: GenNode,
   env: EnvNode,
 };
+
+type FlowNode = ReturnType<typeof toReactFlowElements>["nodes"][number];
+type FlowEdge = ReturnType<typeof toReactFlowElements>["edges"][number];
+
+/**
+ * The canvas is a read-only view of the Graph until graph editing exists.
+ * It applies selection and moves, and the "dimensions" changes through
+ * which React Flow keeps each node's measured size on the nodes it is
+ * given, but never an add, remove or replace, which would leave the view
+ * showing something other than the Graph that cooks.
+ */
+const VIEW_NODE_CHANGES = new Set<NodeChange["type"]>(["select", "position", "dimensions"]);
 
 interface EditorCanvasProps {
   graph: Graph;
@@ -33,6 +48,15 @@ export function EditorCanvas({ graph, registry, onNodeSelect }: EditorCanvasProp
 
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, , onEdgesChange] = useEdgesState(initialEdges);
+
+  const onViewNodesChange: OnNodesChange<FlowNode> = useCallback(
+    (changes) => onNodesChange(changes.filter((c) => VIEW_NODE_CHANGES.has(c.type))),
+    [onNodesChange],
+  );
+  const onViewEdgesChange: OnEdgesChange<FlowEdge> = useCallback(
+    (changes) => onEdgesChange(changes.filter((c) => c.type === "select")),
+    [onEdgesChange],
+  );
 
   const onSelectionChange: OnSelectionChangeFunc = useCallback(
     ({ nodes: selectedNodes }) => {
@@ -50,9 +74,12 @@ export function EditorCanvas({ graph, registry, onNodeSelect }: EditorCanvasProp
       <ReactFlow
         nodes={nodes}
         edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
+        onNodesChange={onViewNodesChange}
+        onEdgesChange={onViewEdgesChange}
         onSelectionChange={onSelectionChange}
+        deleteKeyCode={null}
+        nodesConnectable={false}
+        edgesReconnectable={false}
         nodeTypes={nodeTypes}
         fitView
         fitViewOptions={{ padding: 0.3 }}
