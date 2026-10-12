@@ -31,8 +31,8 @@ replaces it and deletes this folder.
 | K6a defineOperator for field, top, chop, mat, comp; restated defaults gone | done, reviewed by Sol |
 | K6b defineOperator for every SOP; restated defaults gone | done, reviewed by Sol |
 | G1 colours and attributes on the geometry, kernel geometry helpers, MAT retired | done, reviewed by Sol |
-| B1 Meridian raymarch reaches the terrain at every size (labelled output change) | done, in review |
-| B2 geometric-normal sign, Subscapes light mirrored (labelled output change) | done, in review |
+| B1 Meridian raymarch reaches the terrain at every size (labelled output change) | done, reviewed by Sol; one scope finding answered in the brief |
+| B2 geometric-normal sign, Subscapes light mirrored (labelled output change) | done, reviewed by Sol; boundary-only check not read by Sol |
 | B3, E2, E1, E3 | not started |
 
 At this point `turbo run typecheck test` (12 tasks), `bun test` (517 pass),
@@ -63,7 +63,19 @@ no-amend rule. Work done by hand follows the same shared rules as the
 workflow's implementers, including no amend. While Sol checks an item the
 worktree stays as it is, with no edit or commit until all three verdicts
 are in: a G1 conformance check failed on 12 Oct 2026 because B2 was being
-edited under it.
+edited under it. Sol reads only inside the worktree, so a check script
+written for it goes in `.sol/` (listed in the repository's info/exclude, never
+committed) and is run as `bun test ./.sol/<file>`.
+
+After one repair round each, two findings stay open by the rule of one round:
+- B1: Sol's checks claim held that the surface-raymarch op-golden re-pins were
+  not authorised by the brief; they follow from the change, and the brief now
+  says so (behaviour and conformance passed).
+- B2: Sol could not read the boundary-only check, which was then outside the
+  worktree. It is now `.sol/B2-boundary.test.ts`: before and after draw the
+  same polylines at all five golden sizes, and the 9, 23, 121, 23 and 23
+  recoloured strokes all start on the grid's edge; with the light left
+  unmirrored the same check fails at every size (behaviour passed).
 
 ## Next
 
