@@ -1,8 +1,5 @@
-import type { Operator, Geometry } from "@node-td/kernel";
+import { defineOperator } from "@node-td/kernel";
 import { pointsGeometry } from "@node-td/kernel";
-
-type Inputs = { width: number; height: number; partitions?: Geometry<2> };
-type Outputs = { geometry: Geometry<2> };
 
 /** Random source — draws from env.rng, the graph's seeded stream */
 type RandFn = () => number;
@@ -93,7 +90,7 @@ function poissonDiscSample(
  * `densityScale`. This creates the spatially-varying stroke density
  * seen in Subscapes' patchwork quilt patterns.
  */
-export const poissonDisc: Operator<Inputs, Outputs> = {
+export const poissonDisc = defineOperator({
   id: "poisson-disc",
   category: "sop",
   label: "Poisson Disc Seeds",
@@ -109,8 +106,8 @@ export const poissonDisc: Operator<Inputs, Outputs> = {
     { key: "densityScale", label: "Partition Density Scale", min: 0.1, max: 3, step: 0.1, default: 1.5 },
   ],
   evaluate({ width, height, partitions }, params, env) {
-    const minRadius = params.minRadius ?? 40;
-    const margin = params.margin ?? 100;
+    const minRadius = params.minRadius;
+    const margin = params.margin;
     const rand: RandFn = () => env.rng.random();
 
     // Sample in an extended area so seeds reach all canvas edges
@@ -127,7 +124,7 @@ export const poissonDisc: Operator<Inputs, Outputs> = {
     const cellIdAttr = partitions.attributes.cellId;
     const pPos = partitions.positions;
     const pIdx = partitions.indices;
-    const densityScale = params.densityScale ?? 1.5;
+    const densityScale = params.densityScale;
 
     // For each seed, find which partition triangle it falls in
     // and apply depth-based density scaling
@@ -161,7 +158,7 @@ export const poissonDisc: Operator<Inputs, Outputs> = {
     geo.attributes = { cellId: new Float32Array(cellIds) };
     return { geometry: geo };
   },
-};
+});
 
 /** Find which triangle in the partition mesh contains point (px, py) */
 function findContainingTriangle(

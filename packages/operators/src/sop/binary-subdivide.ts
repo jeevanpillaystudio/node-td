@@ -1,7 +1,4 @@
-import type { Operator, Geometry } from "@node-td/kernel";
-
-type Inputs = { width: number; height: number };
-type Outputs = { geometry: Geometry<2> };
+import { defineOperator } from "@node-td/kernel";
 
 interface Cell {
   x: number;
@@ -33,7 +30,7 @@ interface Cell {
  * General-purpose: works for any spatial partitioning use case —
  * density control, color zoning, LOD, tile-based rendering.
  */
-export const binarySubdivide: Operator<Inputs, Outputs> = {
+export const binarySubdivide = defineOperator({
   id: "binary-subdivide",
   category: "sop",
   label: "Binary Subdivide",
@@ -48,9 +45,9 @@ export const binarySubdivide: Operator<Inputs, Outputs> = {
     { key: "splitJitter", label: "Split Jitter", min: 0, max: 0.4, step: 0.01, default: 0.15 },
   ],
   evaluate({ width, height }, params, env) {
-    const maxDepth = Math.round(params.maxDepth ?? 5);
-    const minSize = params.minSize ?? 10;
-    const splitJitter = params.splitJitter ?? 0.15;
+    const maxDepth = Math.round(params.maxDepth);
+    const minSize = params.minSize;
+    const splitJitter = params.splitJitter;
     const rand = () => env.rng.random();
 
     const leaves: Cell[] = [];
@@ -133,8 +130,8 @@ export const binarySubdivide: Operator<Inputs, Outputs> = {
       geometry: {
         positions,
         vertexCount,
-        dim: 2 as const,
-        topology: "triangles" as const,
+        dim: 2,
+        topology: "triangles",
         indices,
         attributes: {
           cellId: cellIdAttr,
@@ -143,4 +140,4 @@ export const binarySubdivide: Operator<Inputs, Outputs> = {
       },
     };
   },
-};
+});

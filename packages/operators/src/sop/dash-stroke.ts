@@ -1,11 +1,8 @@
-import type { Operator, Geometry } from "@node-td/kernel";
+import { defineOperator } from "@node-td/kernel";
 import { geometryToPaths, pathsGeometry } from "@node-td/kernel";
 
-type Inputs = { geometry: Geometry<2> };
-type Outputs = { geometry: Geometry<2> };
-
 /** Splits line-strip geometry into randomized dash segments. */
-export const dashStroke: Operator<Inputs, Outputs> = {
+export const dashStroke = defineOperator({
   id: "dash-stroke",
   category: "sop",
   label: "Dash Stroke",
@@ -32,4 +29,4 @@ export const dashStroke: Operator<Inputs, Outputs> = {
 
     return { geometry: pathsGeometry(segments) };
   },
-};
+});

@@ -1,13 +1,10 @@
-import type { Operator, Geometry } from "@node-td/kernel";
-
-type Inputs = { geometry: Geometry<2> };
-type Outputs = { geometry: Geometry<2> };
+import { defineOperator } from "@node-td/kernel";
 
 /**
  * Transform 2D — applies an affine transform (translate, rotate, scale)
  * to all vertex positions. Produces a new Geometry, no mutation.
  */
-export const transform2d: Operator<Inputs, Outputs> = {
+export const transform2d = defineOperator({
   id: "transform-2d",
   category: "sop",
   label: "Transform 2D",
@@ -22,11 +19,11 @@ export const transform2d: Operator<Inputs, Outputs> = {
   ],
 
   evaluate({ geometry }, params) {
-    const tx = params.translateX ?? 0;
-    const ty = params.translateY ?? 0;
-    const rot = params.rotation ?? 0;
-    const sx = params.scaleX ?? 1;
-    const sy = params.scaleY ?? 1;
+    const tx = params.translateX;
+    const ty = params.translateY;
+    const rot = params.rotation;
+    const sx = params.scaleX;
+    const sy = params.scaleY;
 
     const cos = Math.cos(rot);
     const sin = Math.sin(rot);
@@ -52,4 +49,4 @@ export const transform2d: Operator<Inputs, Outputs> = {
       },
     };
   },
-};
+});

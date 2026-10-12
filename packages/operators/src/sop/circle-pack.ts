@@ -1,8 +1,6 @@
-import type { Operator, Geometry } from "@node-td/kernel";
+import { defineOperator } from "@node-td/kernel";
 import { pointsGeometry } from "@node-td/kernel";
 
-type Inputs = { width: number; height: number };
-type Outputs = { geometry: Geometry<2> };
 type RandFn = () => number;
 
 function packSeeds(
@@ -31,7 +29,7 @@ function packSeeds(
   return seeds;
 }
 
-export const circlePack: Operator<Inputs, Outputs> = {
+export const circlePack = defineOperator({
   id: "circle-pack",
   category: "sop",
   label: "Circle Pack Seeds",
@@ -45,11 +43,11 @@ export const circlePack: Operator<Inputs, Outputs> = {
     { key: "margin", label: "Edge Margin", min: 0, max: 300, step: 10, default: 100 },
   ],
   evaluate({ width, height }, params, env) {
-    const minRadius = params.minRadius ?? 50;
-    const margin = params.margin ?? 100;
+    const minRadius = params.minRadius;
+    const margin = params.margin;
     const rand: RandFn = () => env.rng.random();
     const raw = packSeeds(width + 2 * margin, height + 2 * margin, minRadius, 3000, rand);
     const shifted = raw.map(([x, y]): [number, number] => [x - margin, y - margin]);
     return { geometry: pointsGeometry(shifted) };
   },
-};
+});

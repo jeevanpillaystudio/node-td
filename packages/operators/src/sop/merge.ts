@@ -1,17 +1,13 @@
-import type { Operator, Geometry } from "@node-td/kernel";
-
-type Inputs = { geometry: Geometry<2 | 3>[] };
-type Outputs = { geometry: Geometry<2 | 3> };
+import { defineOperator } from "@node-td/kernel";
 
 /**
  * Merge — concatenates multiple Geometry inputs into a single Geometry.
  *
  * Accepts a variadic `geometry` input. All geometries must share the same
  * dimension and topology (uses the first input's values). Positions are
- * concatenated, stripOffsets/indices are rebased, normals are concatenated
- * when present on any input (zero-filled for inputs without normals).
+ * concatenated and stripOffsets/indices are rebased.
  */
-export const merge: Operator<Inputs, Outputs> = {
+export const merge = defineOperator({
   id: "merge",
   category: "sop",
   label: "Merge",
@@ -20,13 +16,13 @@ export const merge: Operator<Inputs, Outputs> = {
   params: [],
 
   evaluate({ geometry: geos }) {
-    if (!geos || geos.length === 0) {
+    if (geos.length === 0) {
       return {
         geometry: {
           positions: new Float32Array(0),
           vertexCount: 0,
-          dim: 2 as const,
-          topology: "points" as const,
+          dim: 2,
+          topology: "points",
         },
       };
     }
@@ -42,20 +38,16 @@ export const merge: Operator<Inputs, Outputs> = {
     let totalVerts = 0;
     let totalIndices = 0;
     let totalStrips = 0;
-    let hasNormals = false;
 
     for (const g of geos) {
       totalVerts += g.vertexCount;
       if (g.indices) totalIndices += g.indices.length;
       if (g.stripOffsets) totalStrips += g.stripOffsets.length;
-      if ((g as Geometry<3>).normals) hasNormals = true;
     }
 
     const positions = new Float32Array(totalVerts * dim);
     const indices = totalIndices > 0 ? new Uint32Array(totalIndices) : undefined;
     const stripOffsets = totalStrips > 0 ? new Uint32Array(totalStrips) : undefined;
-    // Normals only apply to 3D geometry; zero-fill for inputs without normals
-    const normals = hasNormals && dim === 3 ? new Float32Array(totalVerts * 3) : undefined;
 
     let vertOffset = 0;
     let idxOffset = 0;
@@ -66,17 +58,6 @@ export const merge: Operator<Inputs, Outputs> = {
       const srcLen = g.vertexCount * dim;
       for (let i = 0; i < srcLen; i++) {
         positions[vertOffset * dim + i] = g.positions[i] as number;
-      }
-
-      // Copy normals (zero-filled if this input has none)
-      if (normals) {
-        const srcNormals = (g as Geometry<3>).normals;
-        if (srcNormals) {
-          for (let i = 0; i < g.vertexCount * 3; i++) {
-            normals[vertOffset * 3 + i] = srcNormals[i] as number;
-          }
-        }
-        // else: normals remain zero-filled for this chunk
       }
 
       // Rebase indices
@@ -106,8 +87,7 @@ export const merge: Operator<Inputs, Outputs> = {
         topology,
         ...(indices && { indices }),
         ...(stripOffsets && { stripOffsets }),
-        ...(normals && { normals }),
       },
     };
   },
-};
+});

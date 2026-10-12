@@ -1,8 +1,5 @@
-import type { Operator, Buffer2D, Geometry } from "@node-td/kernel";
+import { defineOperator, type Buffer2D } from "@node-td/kernel";
 import { pathsGeometry } from "@node-td/kernel";
-
-type Inputs = { buffer: Buffer2D; geometry: Geometry<2>; width: number; height: number };
-type Outputs = { geometry: Geometry<2> };
 
 function bufferAngle(x: number, y: number, buf: Buffer2D, resX: number, resY: number): number {
   const col = Math.max(0, Math.min(buf.width - 1, Math.floor(x / resX)));
@@ -11,7 +8,7 @@ function bufferAngle(x: number, y: number, buf: Buffer2D, resX: number, resY: nu
 }
 
 /** Traces flow lines from seed points through an angle buffer. */
-export const flowTracer: Operator<Inputs, Outputs> = {
+export const flowTracer = defineOperator({
   id: "flow-tracer",
   category: "sop",
   label: "Flow Tracer",
@@ -28,9 +25,9 @@ export const flowTracer: Operator<Inputs, Outputs> = {
     { key: "exitMargin", label: "Exit Margin (px)", min: 10, max: 200, step: 5, default: 80 },
   ],
   evaluate({ buffer, geometry, width, height }, params) {
-    const numSteps = params.numSteps ?? 250;
-    const stepLength = params.stepLength ?? 15;
-    const exitMargin = params.exitMargin ?? 80;
+    const numSteps = params.numSteps;
+    const stepLength = params.stepLength;
+    const exitMargin = params.exitMargin;
     // Derive resolution from canvas dimensions and buffer grid size
     const resX = width / buffer.width;
     const resY = height / buffer.height;
@@ -84,4 +81,4 @@ export const flowTracer: Operator<Inputs, Outputs> = {
 
     return { geometry: pathsGeometry(paths) };
   },
-};
+});

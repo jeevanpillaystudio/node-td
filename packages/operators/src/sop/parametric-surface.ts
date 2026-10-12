@@ -1,7 +1,4 @@
-import type { Operator, Field2D, Geometry } from "@node-td/kernel";
-
-type Inputs = { field?: Field2D; width: number; height: number };
-type Outputs = { geometry: Geometry<2> };
+import { defineOperator } from "@node-td/kernel";
 
 /**
  * Generates a triangulated grid mesh, optionally displaced by a Field2D.
@@ -10,7 +7,7 @@ type Outputs = { geometry: Geometry<2> };
  * With a field: vertex Y positions are offset by field(x, y) * amplitude,
  * creating terrain-like surfaces.
  */
-export const parametricSurface: Operator<Inputs, Outputs> = {
+export const parametricSurface = defineOperator({
   id: "parametric-surface",
   category: "sop",
   label: "Parametric Surface",
@@ -26,9 +23,9 @@ export const parametricSurface: Operator<Inputs, Outputs> = {
     { key: "amplitude", label: "Displacement", min: 0, max: 200, step: 1, default: 0 },
   ],
   evaluate({ field, width, height }, params) {
-    const uSeg = params.uSegments ?? 60;
-    const vSeg = params.vSegments ?? 60;
-    const amp = params.amplitude ?? 0;
+    const uSeg = params.uSegments;
+    const vSeg = params.vSegments;
+    const amp = params.amplitude;
 
     const vertexCount = (uSeg + 1) * (vSeg + 1);
     const positions = new Float32Array(vertexCount * 2);
@@ -66,10 +63,10 @@ export const parametricSurface: Operator<Inputs, Outputs> = {
       geometry: {
         positions,
         vertexCount,
-        dim: 2 as const,
-        topology: "triangles" as const,
+        dim: 2,
+        topology: "triangles",
         indices,
       },
     };
   },
-};
+});

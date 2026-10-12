@@ -1,7 +1,4 @@
-import type { Operator, Field2D, Geometry } from "@node-td/kernel";
-
-type Inputs = { field?: Field2D; width: number; height: number };
-type Outputs = { geometry: Geometry<2> };
+import { defineOperator } from "@node-td/kernel";
 
 interface Quad {
   x: number;
@@ -17,7 +14,7 @@ interface Quad {
  * to subdivide further — values above `threshold` trigger subdivision.
  * Produces quilt-like patterns with varying density.
  */
-export const quadtreeSubdivide: Operator<Inputs, Outputs> = {
+export const quadtreeSubdivide = defineOperator({
   id: "quadtree-subdivide",
   category: "sop",
   label: "Quadtree Subdivide",
@@ -33,9 +30,9 @@ export const quadtreeSubdivide: Operator<Inputs, Outputs> = {
     { key: "minSize", label: "Min Cell Size", min: 4, max: 100, step: 1, default: 8 },
   ],
   evaluate({ field, width, height }, params) {
-    const maxDepth = params.maxDepth ?? 5;
-    const threshold = params.threshold ?? 0.5;
-    const minSize = params.minSize ?? 8;
+    const maxDepth = params.maxDepth;
+    const threshold = params.threshold;
+    const minSize = params.minSize;
 
     const leaves: Quad[] = [];
 
@@ -106,10 +103,10 @@ export const quadtreeSubdivide: Operator<Inputs, Outputs> = {
       geometry: {
         positions,
         vertexCount,
-        dim: 2 as const,
-        topology: "triangles" as const,
+        dim: 2,
+        topology: "triangles",
         indices,
       },
     };
   },
-};
+});
