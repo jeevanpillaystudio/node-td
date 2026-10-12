@@ -24,5 +24,41 @@
     "clean": {
       "cache": false
     }
+  },
+  "boundaries": {
+    "tags": {
+      "layer-tooling": {
+        "dependencies": { "allow": [] }
+      },
+      "layer-kernel": {
+        "dependencies": { "allow": ["layer-tooling"] }
+      },
+      "layer-ops": {
+        "dependencies": { "allow": ["layer-kernel", "layer-test", "layer-tooling"] }
+      },
+      "layer-render": {
+        "dependencies": { "allow": ["layer-kernel", "layer-tooling"] }
+      },
+      "layer-content": {
+        "dependencies": {
+          "allow": ["layer-kernel", "layer-ops", "layer-render", "layer-test", "layer-tooling"]
+        }
+      },
+      "layer-ui": {
+        "dependencies": {
+          "allow": [
+            "layer-kernel",
+            "layer-ops",
+            "layer-render",
+            "layer-ui",
+            "layer-test",
+            "layer-tooling"
+          ]
+        }
+      },
+      "layer-test": {
+        "dependencies": { "allow": ["layer-kernel", "layer-ops", "layer-tooling"] }
+      }
+    }
   }
 }
