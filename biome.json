@@ -6,7 +6,7 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**", "!**/routeTree.gen.ts", "!**/__snapshots__", "!docs/refactor-plan"]
+    "includes": ["**", "!**/routeTree.gen.ts", "!**/__snapshots__"]
   },
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "linter": {
