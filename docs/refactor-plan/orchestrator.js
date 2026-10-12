@@ -163,7 +163,7 @@ async function solCheck(claim, schema, label, phaseName, extraAllow) {
 
 function claimText(id, impl, c) {
   const start = impl.fix ? impl.fix.startSha : impl.startSha
-  return `You are verifying work item ${id} of a refactor of this repository (branch claude/touchdesigner-monorepo-refactor-6d0a2d, a git worktree at ${ROOT}). You did not write it. Be skeptical: report only problems you verified in the files or by running a command, and default to pass=false when the evidence does not show the claim holds. Permission rules match the start of a command: run one command per Bash call, with no `&&`, `;` or pipe, and use the Grep tool where a shell glob or brace list is needed.
+  return `You are verifying work item ${id} of a refactor of this repository (branch claude/touchdesigner-monorepo-refactor-6d0a2d, a git worktree at ${ROOT}). You did not write it. Be skeptical: report only problems you verified in the files or by running a command, and default to pass=false when the evidence does not show the claim holds. Permission rules match the start of a command: run one command per Bash call, with no \`&&\`, \`;\` or pipe, and use the Grep tool where a shell glob or brace list is needed.
 
 ${c.text.split('<startSha>').join(start)}
 
