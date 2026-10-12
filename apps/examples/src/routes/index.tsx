@@ -9,7 +9,7 @@ export const Route = createFileRoute("/")({
 
 function HomePage() {
   return (
-    <FrameShell>
+    <FrameShell enabled={import.meta.env.DEV}>
       <div className="mx-auto max-w-7xl px-6 py-12">
         <header className="mb-12">
           <h1 className="font-mono text-2xl font-medium text-foreground">
