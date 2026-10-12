@@ -1,4 +1,4 @@
-import { defineOperator } from "@node-td/kernel";
+import { defineOperator, withPositions } from "@node-td/kernel";
 
 /**
  * Geometric Normal — computes per-vertex surface normals from a heightfield.
@@ -11,8 +11,9 @@ import { defineOperator } from "@node-td/kernel";
  * sample the parametric function at (u +/- eps) and (v +/- eps), subtract
  * to get tangent vectors along each axis, then cross product for the normal.
  *
- * The output geometry has the same positions/topology but with `normals`
- * populated — a Float32Array of 3 floats per vertex (nx, ny, nz).
+ * The output geometry keeps its positions, strips, colours and attributes,
+ * with `normals` populated — a Float32Array of 3 floats per vertex
+ * (nx, ny, nz).
  *
  * Needed by: visibility-cull (back-face test), diffuse-shade (N dot L).
  */
@@ -104,16 +105,6 @@ export const geometricNormal = defineOperator({
       normals[i * 3 + 2] = nz;
     }
 
-    return {
-      geometry: {
-        positions: geo.positions,
-        vertexCount: geo.vertexCount,
-        dim: 3,
-        topology: geo.topology,
-        stripOffsets: geo.stripOffsets,
-        indices: geo.indices,
-        normals,
-      },
-    };
+    return { geometry: { ...withPositions(geo, geo.positions, 3), normals } };
   },
 });

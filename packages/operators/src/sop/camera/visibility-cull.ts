@@ -1,4 +1,4 @@
-import { defineOperator } from "@node-td/kernel";
+import { defineOperator, filterVertices } from "@node-td/kernel";
 
 /**
  * Visibility Cull — removes occluded stroke vertices using raycasting.
@@ -317,86 +317,14 @@ export const visibilityCull = defineOperator({
     }
 
     // ── Cull stroke vertices ─────────────────────────────────────
+    // A culled vertex splits its strip: occluded runs become gaps. The
+    // visible vertices keep their normals, colours and attributes.
     const srcPos = strokes.positions;
-    const srcNormals = strokes.normals;
-    const srcOffsets = strokes.stripOffsets!;
-    const outPaths: number[][] = [];
-    const outNormals: number[][] | null = srcNormals ? [] : null;
+    const geometry = filterVertices(strokes, (i) => {
+      const triIdx = findTriangle(srcPos[i * 3]!, srcPos[i * 3 + 2]!);
+      return triIdx >= 0 && isTriangleVisible(triIdx);
+    });
 
-    for (let s = 0; s < srcOffsets.length; s++) {
-      const start = srcOffsets[s]!;
-      const end = s < srcOffsets.length - 1 ? srcOffsets[s + 1]! : strokes.vertexCount;
-
-      let currentStrip: number[] = [];
-      let currentNormals: number[] = [];
-
-      for (let i = start; i < end; i++) {
-        const px = srcPos[i * 3]! as number;
-        const py = srcPos[i * 3 + 1]! as number;
-        const pz = srcPos[i * 3 + 2]! as number;
-
-        const triIdx = findTriangle(px, pz);
-        const visible = triIdx >= 0 && isTriangleVisible(triIdx);
-
-        if (visible) {
-          currentStrip.push(px, py, pz);
-          if (srcNormals) {
-            currentNormals.push(
-              srcNormals[i * 3]! as number,
-              srcNormals[i * 3 + 1]! as number,
-              srcNormals[i * 3 + 2]! as number,
-            );
-          }
-        } else {
-          // Break the strip at this vertex
-          if (currentStrip.length >= 6) { // at least 2 vertices (2 * 3 floats)
-            outPaths.push(currentStrip);
-            if (outNormals) outNormals.push(currentNormals);
-          }
-          currentStrip = [];
-          currentNormals = [];
-        }
-      }
-      if (currentStrip.length >= 6) {
-        outPaths.push(currentStrip);
-        if (outNormals) outNormals.push(currentNormals);
-      }
-    }
-
-    // ── Pack into Geometry<3> ────────────────────────────────────
-    let totalVerts = 0;
-    for (const p of outPaths) totalVerts += p.length / 3;
-
-    const positions = new Float32Array(totalVerts * 3);
-    const normals = srcNormals ? new Float32Array(totalVerts * 3) : undefined;
-    const stripOffsets = new Uint32Array(outPaths.length);
-    let offset = 0;
-
-    for (let i = 0; i < outPaths.length; i++) {
-      stripOffsets[i] = offset;
-      const strip = outPaths[i]!;
-      const vertCount = strip.length / 3;
-      for (let j = 0; j < strip.length; j++) {
-        positions[offset * 3 + j] = strip[j]!;
-      }
-      if (normals && outNormals) {
-        const ns = outNormals[i]!;
-        for (let j = 0; j < ns.length; j++) {
-          normals[offset * 3 + j] = ns[j]!;
-        }
-      }
-      offset += vertCount;
-    }
-
-    return {
-      geometry: {
-        positions,
-        vertexCount: totalVerts,
-        dim: 3,
-        topology: "line-strip",
-        stripOffsets,
-        normals,
-      },
-    };
+    return { geometry };
   },
 });

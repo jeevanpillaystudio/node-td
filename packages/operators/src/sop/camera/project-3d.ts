@@ -1,4 +1,4 @@
-import { defineOperator } from "@node-td/kernel";
+import { defineOperator, withPositions } from "@node-td/kernel";
 
 /**
  * Project 3D — the 3D-to-2D bridge operator.
@@ -11,7 +11,8 @@ import { defineOperator } from "@node-td/kernel";
  * etc.) — the entire existing 2D pipeline works unchanged as the
  * terminal stage after projection.
  *
- * Topology, stripOffsets, and indices pass through unchanged.
+ * Topology, strips, indices, normals, colours and attributes pass
+ * through unchanged.
  */
 export const project3d = defineOperator({
   id: "project-3d",
@@ -40,15 +41,6 @@ export const project3d = defineOperator({
       positions[i * 2 + 1] = sy;
     }
 
-    return {
-      geometry: {
-        positions,
-        vertexCount: geo.vertexCount,
-        dim: 2,
-        topology: geo.topology,
-        stripOffsets: geo.stripOffsets,
-        indices: geo.indices,
-      },
-    };
+    return { geometry: withPositions(geo, positions, 2) };
   },
 });

@@ -1,11 +1,13 @@
-import { defineOperator } from "@node-td/kernel";
+import { defineOperator, type Geometry } from "@node-td/kernel";
 
 /**
  * Merge — concatenates multiple Geometry inputs into a single Geometry.
  *
  * Accepts a variadic `geometry` input. All geometries must share the same
  * dimension and topology (uses the first input's values). Positions are
- * concatenated and stripOffsets/indices are rebased.
+ * concatenated and stripOffsets/indices are rebased. Normals, colours and
+ * each attribute are carried when any input has them, zero-filled for the
+ * inputs that do not.
  */
 export const merge = defineOperator({
   id: "merge",
@@ -79,6 +81,15 @@ export const merge = defineOperator({
       vertOffset += g.vertexCount;
     }
 
+    const normals = concatChannel(geos, (g) => g.normals, 3, totalVerts);
+    const colors = concatChannel(geos, (g) => g.colors, 3, totalVerts);
+    let attributes: Record<string, Float32Array> | undefined;
+    const names = new Set(geos.flatMap((g) => Object.keys(g.attributes ?? {})));
+    for (const name of [...names].sort()) {
+      attributes ??= {};
+      attributes[name] = concatChannel(geos, (g) => g.attributes?.[name], 1, totalVerts)!;
+    }
+
     return {
       geometry: {
         positions,
@@ -87,7 +98,32 @@ export const merge = defineOperator({
         topology,
         ...(indices && { indices }),
         ...(stripOffsets && { stripOffsets }),
+        ...(normals && { normals }),
+        ...(colors && { colors }),
+        ...(attributes && { attributes }),
       },
     };
   },
 });
+
+/**
+ * One per-vertex channel of `width` floats, laid end to end across the
+ * inputs, or undefined when no input has it. An input without it is
+ * zero-filled.
+ */
+function concatChannel(
+  geos: Geometry<2>[],
+  channel: (g: Geometry<2>) => Float32Array | undefined,
+  width: number,
+  totalVerts: number,
+): Float32Array | undefined {
+  if (!geos.some((g) => channel(g))) return undefined;
+  const out = new Float32Array(totalVerts * width);
+  let vertOffset = 0;
+  for (const g of geos) {
+    const src = channel(g);
+    if (src) out.set(src.subarray(0, g.vertexCount * width), vertOffset * width);
+    vertOffset += g.vertexCount;
+  }
+  return out;
+}

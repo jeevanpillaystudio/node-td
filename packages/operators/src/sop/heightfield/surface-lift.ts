@@ -1,4 +1,4 @@
-import { defineOperator } from "@node-td/kernel";
+import { defineOperator, withPositions } from "@node-td/kernel";
 
 /**
  * Surface Lift — maps 2D geometry onto a 3D terrain surface.
@@ -11,7 +11,8 @@ import { defineOperator } from "@node-td/kernel";
  *   z3d = py
  *
  * X and Z form the ground plane, Y is the height axis.
- * Topology, stripOffsets, and indices pass through unchanged.
+ * Topology, strips, indices, normals, colours and attributes pass
+ * through unchanged.
  *
  * This is the bridge between 2D flow-tracing and 3D projection —
  * strokes traced in screen-space are lifted onto the terrain
@@ -52,15 +53,6 @@ export const surfaceLift = defineOperator({
       positions[i * 3 + 2] = py;
     }
 
-    return {
-      geometry: {
-        positions,
-        vertexCount: geo.vertexCount,
-        dim: 3,
-        topology: geo.topology,
-        stripOffsets: geo.stripOffsets,
-        indices: geo.indices,
-      },
-    };
+    return { geometry: withPositions(geo, positions, 3) };
   },
 });
