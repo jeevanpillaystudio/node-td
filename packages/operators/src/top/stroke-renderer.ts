@@ -1,5 +1,5 @@
 import { asOffscreen } from "../canvas-handle";
-import { defineOperator, type Buffer2D } from "@node-td/kernel";
+import { defineOperator, forEachStrip, type Buffer2D } from "@node-td/kernel";
 
 type Outputs = { buffer: Buffer2D };
 
@@ -12,10 +12,10 @@ type Outputs = { buffer: Buffer2D };
  *
  * Phase 3 additions:
  *
- * 1. **Per-strip coloring** — When `palette.count === geometry.vertexCount`,
- *    each strip is colored by its first vertex's palette entry. Colors are
- *    batched (quantized shading produces few unique colors) so the number
- *    of draw calls equals the number of distinct colors, not strips.
+ * 1. **Per-strip coloring** — When the geometry has `colors`, each strip
+ *    is colored by its first vertex's colour. Colors are batched (quantized
+ *    shading produces few unique colors) so the number of draw calls
+ *    equals the number of distinct colors, not strips.
  *
  * 2. **Fill mode** — `renderMode=1` fills closed polygons instead of
  *    stroking them. Used for the terrain base outline fill that occludes
@@ -162,9 +162,9 @@ export const strokeRenderer = defineOperator({
 
     // ── Oriented Dash mode ─────────────────────────────────────────
     // Renders each point as a centered line segment with per-vertex
-    // angle and length from geometry.attributes. Color is indexed from
-    // the palette by normalized depth (attributes.depth), or per-vertex
-    // if palette.count === vertexCount.
+    // angle and length from geometry.attributes. Color is the geometry's
+    // own per-vertex colour when it has one, else indexed from the palette
+    // by normalized depth (attributes.depth).
     if (renderMode === 2 && topology === "points") {
       const angAttr  = geometry.attributes?.angle;
       const lenAttr  = geometry.attributes?.length;
@@ -173,9 +173,9 @@ export const strokeRenderer = defineOperator({
       ctx.lineCap = "round";
       ctx.lineWidth = lineWidth;
 
-      // Build per-vertex (r,g,b) from palette + depth, or uniform
-      const perVertex = palette && palette.count === vertexCount;
-      const depthIdx  = palette && depAttr && !perVertex;
+      // Per-vertex (r,g,b) from the geometry, else from palette + depth, else uniform
+      const colors    = geometry.colors;
+      const depthIdx  = palette && depAttr && !colors;
 
       // Batch strokes by color key to minimize state changes
       const batches = new Map<string, [number, number, number, number][]>();
@@ -188,11 +188,11 @@ export const strokeRenderer = defineOperator({
         const hl    = len / 2;
 
         let cr = sr, cg = sg, cb = sb;
-        if (perVertex && palette) {
-          const off = i * 4;
-          cr = Math.round((palette.colors[off]!   ?? 0.85) * 255);
-          cg = Math.round((palette.colors[off + 1]! ?? 0.85) * 255);
-          cb = Math.round((palette.colors[off + 2]! ?? 0.85) * 255);
+        if (colors) {
+          const off = i * 3;
+          cr = Math.round(colors[off]! * 255);
+          cg = Math.round(colors[off + 1]! * 255);
+          cb = Math.round(colors[off + 2]! * 255);
         } else if (depthIdx && palette && depAttr) {
           const t   = depAttr[i]!;
           const idx = Math.min(Math.floor(t * palette.count), palette.count - 1);
@@ -239,28 +239,24 @@ export const strokeRenderer = defineOperator({
         ctx.fill();
       }
     } else if (topology === "line-strip") {
-      // Per-strip coloring: when palette has one color per vertex,
+      // Per-strip coloring: when the geometry has a colour per vertex,
       // batch strips by color for efficient rendering.
       // This matches Subscapes where each stroke gets a single color
       // determined by the diffuse shading at its starting vertex.
-      const perVertex = palette && palette.count === vertexCount && stripOffsets;
+      const colors = geometry.colors;
 
-      if (perVertex) {
+      if (colors) {
         // Group strips by their first-vertex color (quantized shading
         // produces few unique colors, so this batches efficiently)
         const batches = new Map<string, [number, number][]>();
 
-        for (let s = 0; s < stripOffsets.length; s++) {
-          const start = stripOffsets[s] as number;
-          const end = s < stripOffsets.length - 1
-            ? (stripOffsets[s + 1] as number)
-            : vertexCount;
-          if (end - start < 2) continue;
+        forEachStrip(geometry, (start, end) => {
+          if (end - start < 2) return;
 
-          const off = start * 4;
-          const cr = Math.round((palette.colors[off]! ?? 0.85) * 255);
-          const cg = Math.round((palette.colors[off + 1]! ?? 0.85) * 255);
-          const cb = Math.round((palette.colors[off + 2]! ?? 0.85) * 255);
+          const off = start * 3;
+          const cr = Math.round(colors[off]! * 255);
+          const cg = Math.round(colors[off + 1]! * 255);
+          const cb = Math.round(colors[off + 2]! * 255);
           const key = `${cr},${cg},${cb}`;
 
           let batch = batches.get(key);
@@ -269,7 +265,7 @@ export const strokeRenderer = defineOperator({
             batches.set(key, batch);
           }
           batch.push([start, end]);
-        }
+        });
 
         // Render each color batch in a single stroke() call
         for (const [key, strips] of batches) {

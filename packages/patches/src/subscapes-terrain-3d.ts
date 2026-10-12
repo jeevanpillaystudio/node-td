@@ -30,8 +30,8 @@ import type { Graph } from "@node-td/kernel";
  *   │                                     │   ↑              │
  *   │                               camera-3d ─┘             │
  *   │                                     │                  │
- *   │   visibility-cull → project-3d → stroke-renderer       │
- *   │                  → diffuse-shade → ↑ (per-strip color) │
+ *   │   visibility-cull → diffuse-shade → project-3d         │
+ *   │       → stroke-renderer (per-strip colour)             │
  *   │                                                        │
  *   ├── BASE OUTLINE ───────────────────────────────────────┤
  *   │   base-outline → project-3d → stroke-renderer (fill)   │
@@ -256,22 +256,23 @@ export const subscapesTerrain3dGraph: Graph = {
     { from: "$env", output: "height", to: "cam3d", input: "height" },
     { from: "$env", output: "height", to: "cam3d", input: "sceneSize" },
 
-    // ── Project 3D → 2D screen-space (main strokes) ──────────
-    { from: "cull", output: "geometry", to: "proj", input: "geometry" },
-    { from: "cam3d", output: "camera3d", to: "proj", input: "camera3d" },
-
-    // ── Diffuse shading: normals → per-vertex palette ─────────
+    // ── Diffuse shading: normals → a colour on each vertex ────
     { from: "cull", output: "geometry", to: "shade", input: "geometry" },
     { from: "palette", output: "palette", to: "shade", input: "palette" },
+
+    // ── Project 3D → 2D screen-space (main strokes keep their colours)
+    { from: "shade", output: "geometry", to: "proj", input: "geometry" },
+    { from: "cam3d", output: "camera3d", to: "proj", input: "camera3d" },
 
     // ── 2D camera (shared by all renderers) ───────────────────
     { from: "$env", output: "width", to: "camera", input: "width" },
     { from: "$env", output: "height", to: "camera", input: "height" },
 
-    // ── Main stroke render (per-strip coloring from shade) ────
+    // ── Main stroke render (per-strip colours from the geometry;
+    // the palette's one colour is the fallback for uncoloured strokes)
     { from: "proj", output: "geometry", to: "render", input: "geometry" },
     { from: "camera", output: "camera", to: "render", input: "camera" },
-    { from: "shade", output: "palette", to: "render", input: "palette" },
+    { from: "palette", output: "palette", to: "render", input: "palette" },
 
     // ── Base outline: project + fill render ───────────────────
     { from: "shape", output: "field", to: "base", input: "field" },

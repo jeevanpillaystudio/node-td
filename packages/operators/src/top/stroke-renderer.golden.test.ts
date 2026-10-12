@@ -82,13 +82,16 @@ const grey = {
   params: { count: 1, lightness: 0.2, chroma: 0, hueSpread: 0 },
 };
 
-// One shade per strip vertex: the per-strip colour path
+// A colour on every strip vertex: the per-strip colour path. diffuse-shade
+// colours 3D geometry, so the strips are lifted, shaded and laid back flat
+// at their traced positions.
 const shadedStrips = {
   nodes: {
     ...traceNodes,
     lift: { type: "surface-lift" },
     normals: { type: "geometric-normal", params: { epsilon: 1 } },
     shade: { type: "diffuse-shade" },
+    flat: { type: "fixture-ground-plane" },
   },
   wires: [
     ...traceWires,
@@ -97,8 +100,8 @@ const shadedStrips = {
     w("lift.geometry", "normals.geometry"),
     w("noise.field", "normals.field"),
     w("normals.geometry", "shade.geometry"),
-    w("trace.geometry", "render.geometry"),
-    w("shade.palette", "render.palette"),
+    w("shade.geometry", "flat.geometry"),
+    w("flat.geometry", "render.geometry"),
   ],
 };
 
@@ -145,7 +148,7 @@ opGolden(strokeRenderer, {
   "Stroke, triangles": fixture(stroke, triangles),
   "Stroke, implicit strip": fixture(stroke, implicitStrip),
   "Stroke, uniform palette colour": fixture(stroke, withPalette(strips, { type: "oklab-palette" })),
-  "Stroke, per-strip palette colours": fixture(stroke, shadedStrips),
+  "Stroke, per-strip colours": fixture(stroke, shadedStrips),
   "Fill, line strips": fixture(fill, strips),
   "Fill, triangles": fixture(fill, triangles),
   "Fill, implicit strip": fixture(fill, implicitStrip),
@@ -154,15 +157,22 @@ opGolden(strokeRenderer, {
     dash,
     withPalette(oriented, { type: "oklab-palette" }),
   ),
-  // diffuse-shade takes 3D geometry: lift the points, keeping one shade per vertex
-  "Oriented Dash, per-vertex palette": fixture(dash, {
-    nodes: { ...orientedNodes, lift: { type: "surface-lift" }, shade: { type: "diffuse-shade" } },
+  // diffuse-shade colours 3D geometry: lift the points, shade them and lay
+  // them back flat, keeping their orientation attributes
+  "Oriented Dash, per-vertex colours": fixture(dash, {
+    nodes: {
+      ...orientedNodes,
+      lift: { type: "surface-lift" },
+      shade: { type: "diffuse-shade" },
+      flat: { type: "fixture-ground-plane" },
+    },
     wires: [
-      ...orientedWires,
+      ...orientedWires.filter((wire) => wire.to !== "render"),
       w("orient.geometry", "lift.geometry"),
       w("terrain.field", "lift.field"),
       w("lift.geometry", "shade.geometry"),
-      w("shade.palette", "render.palette"),
+      w("shade.geometry", "flat.geometry"),
+      w("flat.geometry", "render.geometry"),
     ],
   }),
   "Oriented Dash, no palette": fixture(dash, oriented),

@@ -9,7 +9,7 @@ import type {
   OperatorRegistry,
   Wire,
 } from "@node-td/kernel";
-import { validateGraph } from "@node-td/kernel";
+import { validateGraph, withPositions } from "@node-td/kernel";
 import type { FieldExpr } from "@node-td/kernel/field";
 import { type CookResult, cookGraph } from "./cook";
 import { cookedFields, fieldGlslIssues } from "./field-glsl";
@@ -146,7 +146,34 @@ const fixturePolyline: Operator<{ width: number; height: number }, { geometry: G
   },
 };
 
-export const fixtureOperators: readonly Operator[] = [opaqueField, fixtureImage, fixturePolyline];
+/**
+ * Reads each vertex's ground-plane position (x, z) as a 2D point, keeping
+ * its colours and attributes. It undoes surface-lift, which maps (x, y) to
+ * (x, height, y), so a renderer can draw 2D geometry that a 3D SOP coloured.
+ */
+const fixtureGroundPlane: Operator<{ geometry: Geometry<3> }, { geometry: Geometry<2> }> = {
+  id: "fixture-ground-plane",
+  category: "sop",
+  label: "Ground Plane (fixture)",
+  inputs: [{ name: "geometry", type: "geo3" }],
+  outputs: [{ name: "geometry", type: "geo2" }],
+  params: [],
+  evaluate({ geometry }) {
+    const positions = new Float32Array(geometry.vertexCount * 2);
+    for (let i = 0; i < geometry.vertexCount; i++) {
+      positions[i * 2] = geometry.positions[i * 3] as number;
+      positions[i * 2 + 1] = geometry.positions[i * 3 + 2] as number;
+    }
+    return { geometry: withPositions(geometry, positions, 2) };
+  },
+};
+
+export const fixtureOperators: readonly Operator[] = [
+  opaqueField,
+  fixtureImage,
+  fixturePolyline,
+  fixtureGroundPlane,
+];
 
 /** A registry from the package under test plus the fixture-only operators. */
 export function fixtureRegistry(createRegistry: () => OperatorRegistry): OperatorRegistry {

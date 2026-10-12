@@ -1,4 +1,4 @@
-import { defineOperator } from "@node-td/kernel";
+import { defineOperator, withPositions } from "@node-td/kernel";
 
 /**
  * Diffuse Shade — Lambert N dot L shading with quantized intensity steps.
@@ -10,13 +10,12 @@ import { defineOperator } from "@node-td/kernel";
  * 2. Quantize the intensity to a discrete set of steps (e.g. [0, 0.3, 0.75, 1])
  *    to create the illustrative "limited pen widths" aesthetic.
  * 3. Use the quantized intensity to interpolate through the input palette,
- *    producing a per-vertex color output.
+ *    producing a colour per vertex.
  *
- * The output is a Palette with `vertexCount` colors — one per vertex.
- * This "expanded palette" can be consumed by a stroke-renderer to
- * color each vertex differently based on lighting.
+ * The output is the input geometry with `colors` set, one rgb colour per
+ * vertex; a stroke-renderer downstream colours each strip by them.
  *
- * If no palette is wired, outputs a grayscale ramp from the shading values.
+ * If no palette is wired, the colours are greys from the shading values.
  *
  * The quantization step count is what gives Subscapes its signature
  * "pen and ink" look — in real life, you only have a few pen widths
@@ -24,13 +23,13 @@ import { defineOperator } from "@node-td/kernel";
  */
 export const diffuseShade = defineOperator({
   id: "diffuse-shade",
-  category: "mat",
+  category: "sop",
   label: "Diffuse Shade",
   inputs: [
     { name: "geometry", type: "geo3" },
     { name: "palette", type: "palette", optional: true },
   ],
-  outputs: [{ name: "palette", type: "palette" }],
+  outputs: [{ name: "geometry", type: "geo3" }],
   params: [
     { key: "lightX", label: "Light X", min: -1, max: 1, step: 0.01, default: 0 },
     { key: "lightY", label: "Light Y", min: -1, max: 1, step: 0.01, default: -0.707 },
@@ -53,7 +52,7 @@ export const diffuseShade = defineOperator({
 
     const normals = geo.normals;
     const count = geo.vertexCount;
-    const colors = new Float32Array(count * 4);
+    const colors = new Float32Array(count * 3);
 
     // Compute per-vertex shading intensity
     const intensities = new Float32Array(count);
@@ -91,13 +90,12 @@ export const diffuseShade = defineOperator({
         const idx1 = idx0 + 1;
         const frac = scaledT - idx0;
 
-        const base = i * 4;
+        const base = i * 3;
         const b0 = idx0 * 4;
         const b1 = idx1 * 4;
         colors[base] = pc[b0]! * (1 - frac) + pc[b1]! * frac;
         colors[base + 1] = pc[b0 + 1]! * (1 - frac) + pc[b1 + 1]! * frac;
         colors[base + 2] = pc[b0 + 2]! * (1 - frac) + pc[b1 + 2]! * frac;
-        colors[base + 3] = 1;
       }
     } else if (inputPalette && inputPalette.count === 1) {
       // Single-color palette: modulate brightness by shading intensity.
@@ -107,24 +105,22 @@ export const diffuseShade = defineOperator({
       const pb = inputPalette.colors[2]!;
       for (let i = 0; i < count; i++) {
         const t = intensities[i]!;
-        const base = i * 4;
+        const base = i * 3;
         colors[base] = pr * t;
         colors[base + 1] = pg * t;
         colors[base + 2] = pb * t;
-        colors[base + 3] = 1;
       }
     } else {
       // Grayscale fallback
       for (let i = 0; i < count; i++) {
         const v = intensities[i]!;
-        const base = i * 4;
+        const base = i * 3;
         colors[base] = v;
         colors[base + 1] = v;
         colors[base + 2] = v;
-        colors[base + 3] = 1;
       }
     }
 
-    return { palette: { colors, count } };
+    return { geometry: { ...withPositions(geo, geo.positions, 3), colors } };
   },
 });
