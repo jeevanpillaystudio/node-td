@@ -541,13 +541,13 @@ describe("input gathering", () => {
     ]);
     const engine = new CookEngine(g, makeRegistry());
     engine.cook(ENV);
-    const first = engine.getOutput("col")!;
+    const first = engine.getOutput("col");
     engine.setParams({ "s.k": 2 });
     engine.cook(ENV);
-    const second = engine.getOutput("col")!;
-    expect(second.items).toEqual([2]);
-    expect(second.extras).not.toBe(first.extras);
-    expect(first.items).toEqual([1]);
+    const second = engine.getOutput("col");
+    expect(second?.items).toEqual([2]);
+    expect(second?.extras).not.toBe(first?.extras);
+    expect(first?.items).toEqual([1]);
   });
 });
 
