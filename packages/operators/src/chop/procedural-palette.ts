@@ -17,7 +17,7 @@ export const proceduralPalette: Operator<Inputs, Outputs> = {
   inputs: [],
   outputs: [{ name: "palette", type: "palette" }],
   params: [
-    { key: "count", label: "Color Count", min: 2, max: 16, step: 1, default: 5 },
+    { key: "count", label: "Color Count", min: 1, max: 16, step: 1, default: 5 },
     { key: "saturation", label: "Saturation", min: 0, max: 1, step: 0.01, default: 0.65 },
     { key: "lightness", label: "Lightness", min: 0, max: 1, step: 0.01, default: 0.55 },
     { key: "hueOffset", label: "Hue Offset", min: 0, max: 360, step: 1, default: 0 },

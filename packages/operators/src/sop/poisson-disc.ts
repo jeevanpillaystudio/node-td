@@ -104,7 +104,7 @@ export const poissonDisc: Operator<Inputs, Outputs> = {
   ],
   outputs: [{ name: "geometry", type: "geo2" }],
   params: [
-    { key: "minRadius", label: "Min Seed Radius", min: 10, max: 150, step: 5, default: 40 },
+    { key: "minRadius", label: "Min Seed Radius", min: 1, max: 150, step: 1, default: 40 },
     { key: "margin", label: "Edge Margin", min: 0, max: 300, step: 10, default: 100 },
     { key: "densityScale", label: "Partition Density Scale", min: 0.1, max: 3, step: 0.1, default: 1.5 },
   ],

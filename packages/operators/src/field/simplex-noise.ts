@@ -11,7 +11,7 @@ export const simplexNoise: Operator<Inputs, Outputs> = {
   inputs: [],
   outputs: [{ name: "field", type: "field" }],
   params: [
-    { key: "noiseScale", label: "Noise Scale", min: 0.005, max: 0.1, step: 0.001, default: 0.03 },
+    { key: "noiseScale", label: "Noise Scale", min: 0.0001, max: 0.1, step: 0.00005, default: 0.03 },
   ],
   evaluate(_inputs, params) {
     const scale = params.noiseScale ?? 0.03;

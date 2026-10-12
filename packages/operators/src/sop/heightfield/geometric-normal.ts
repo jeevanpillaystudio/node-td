@@ -29,7 +29,7 @@ export const geometricNormal: Operator<Inputs, Outputs> = {
   ],
   outputs: [{ name: "geometry", type: "geo3" }],
   params: [
-    { key: "epsilon", label: "Epsilon", min: 0.0001, max: 10, step: 0.0001, default: 0.00001 },
+    { key: "epsilon", label: "Epsilon", min: 0.000001, max: 10, step: 0.000001, default: 0.00001 },
     { key: "amplitude", label: "Height Scale", min: 0, max: 500, step: 1, default: 120 },
   ],
   evaluate({ geometry: geo, field }, params) {

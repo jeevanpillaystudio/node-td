@@ -23,7 +23,7 @@ export const flowTracer: Operator<Inputs, Outputs> = {
   ],
   outputs: [{ name: "geometry", type: "geo2" }],
   params: [
-    { key: "numSteps", label: "Trace Steps", min: 50, max: 500, step: 10, default: 250 },
+    { key: "numSteps", label: "Trace Steps", min: 1, max: 500, step: 1, default: 250 },
     { key: "stepLength", label: "Step Length (px)", min: 2, max: 40, step: 1, default: 15 },
     { key: "exitMargin", label: "Exit Margin (px)", min: 10, max: 200, step: 5, default: 80 },
   ],
