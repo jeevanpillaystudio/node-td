@@ -1,7 +1,7 @@
 import type { Graph } from "@node-td/kernel";
 
 /**
- * Meridian patch — inspired by Matt Desl's "Meridian" (fxhash).
+ * Meridian patch — inspired by Matt DesLauriers' "Meridian" (fxhash provenance unverified).
  *
  * Data flow:
  *
