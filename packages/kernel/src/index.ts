@@ -24,7 +24,11 @@ export { pointsGeometry, pathsGeometry, geometryToPaths, vertexAt } from "./type
 
 // ─── Graph ───────────────────────────────────────────────────────
 export type { Wire, Graph } from "./graph";
-export { validateGraph, collectParams, topoSort } from "./graph";
+export { validateGraph, GraphValidationError, collectParams, topoSort } from "./graph";
+
+// ─── Environment source ($env) ───────────────────────────────────
+export type { EnvOutput } from "./env";
+export { ENV_SOURCE, ENV_OUTPUTS, isEnvSource, envOutputType } from "./env";
 
 // ─── Cook engine ─────────────────────────────────────────────────
 export type { CookStats } from "./cook";

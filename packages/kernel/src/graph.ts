@@ -1,10 +1,11 @@
-import type { Operator, NodeInstance, ParamDef } from "./types";
+import { ENV_SOURCE, envOutputType, isEnvSource } from "./env";
+import type { Operator, NodeInstance, ParamDef, PortType } from "./types";
 
 // ─── Graph Types ─────────────────────────────────────────────────
 
 /** A directed edge connecting an output port to an input port */
 export interface Wire {
-  /** Source node key, or "$env" for environment inputs */
+  /** Source node key, or ENV_SOURCE ("$env") for an environment output */
   from: string;
   /** Source port name */
   output: string;
@@ -31,68 +32,113 @@ interface RegistryLike {
 
 // ─── Validation ──────────────────────────────────────────────────
 
+/** A graph that failed validateGraph. `issues` lists every problem found. */
+export class GraphValidationError extends Error {
+  readonly issues: readonly string[];
+
+  constructor(issues: readonly string[]) {
+    super(issues.join("\n"));
+    this.name = "GraphValidationError";
+    this.issues = issues;
+  }
+}
+
+/**
+ * Check a graph against the operators it names, and throw a
+ * GraphValidationError listing every issue, one per line. A graph that
+ * passes has only well-formed node keys and known operator types, wires
+ * only between existing ports (or from a declared $env output) of the same
+ * type, every required input wired, and no cycle, so topoSort and a cook
+ * can rely on it.
+ */
 export function validateGraph(graph: Graph, registry: RegistryLike): void {
   const errors: string[] = [];
+  const hasNode = (key: string) => Object.hasOwn(graph.nodes, key);
+  /** A node's operator, or undefined when its type is unknown (reported in pass 1). */
+  const opOf = (key: string): Operator | undefined => {
+    const type = graph.nodes[key]!.type;
+    return registry.has(type) ? registry.resolve(type) : undefined;
+  };
 
-  // Pass 1 — node type existence
+  // Pass 1 — node keys and type existence
   for (const [key, instance] of Object.entries(graph.nodes)) {
+    if (key.includes(".")) {
+      errors.push(`Node "${key}": a node key cannot contain "."`);
+    }
+    if (key.startsWith("$")) {
+      errors.push(`Node "${key}": a node key cannot start with "$"`);
+    }
     if (!registry.has(instance.type)) {
       errors.push(`Node "${key}" references unknown type "${instance.type}"`);
     }
   }
-  if (errors.length) throw new Error(errors.join("\n"));
 
   // Pass 2 — wire validity
   const wired = new Set<string>();
 
   for (const w of graph.wires) {
     // Target must exist
-    const targetInstance = graph.nodes[w.to];
-    if (!targetInstance) {
+    if (isEnvSource(w.to)) {
+      errors.push(`Wire: "${ENV_SOURCE}" is a source and cannot be a wire target`);
+      continue;
+    }
+    if (!hasNode(w.to)) {
       errors.push(`Wire: target node "${w.to}" not found`);
       continue;
     }
 
-    // Target input port must exist
-    const targetOp = registry.resolve(targetInstance.type);
-    const targetPort = targetOp.inputs.find((p) => p.name === w.input);
-    if (!targetPort) {
+    // Target input port must exist (unless the target's type is unknown)
+    const targetOp = opOf(w.to);
+    const targetPort = targetOp?.inputs.find((p) => p.name === w.input);
+    if (targetOp && !targetPort) {
       errors.push(`Wire: "${w.to}" has no input "${w.input}"`);
       continue;
     }
 
     // No duplicate wiring to the same slot (unless variadic)
-    const slot = `${w.to}.${w.input}`;
-    if (wired.has(slot) && !targetPort.variadic) {
-      errors.push(`Wire: duplicate wire to ${slot}`);
-      continue;
+    if (targetPort) {
+      const slot = `${w.to}.${w.input}`;
+      if (wired.has(slot) && !targetPort.variadic) {
+        errors.push(`Wire: duplicate wire to ${slot}`);
+        continue;
+      }
+      wired.add(slot);
     }
-    wired.add(slot);
 
-    // Source validation (skip $env)
-    if (w.from !== "$env") {
-      const sourceInstance = graph.nodes[w.from];
-      if (!sourceInstance) {
+    // Source must be a declared $env output, or an output of an existing node
+    let sourceType: PortType | undefined;
+    if (isEnvSource(w.from)) {
+      sourceType = envOutputType(w.output);
+      if (!sourceType) {
+        errors.push(`Wire: "${ENV_SOURCE}" has no output "${w.output}"`);
+        continue;
+      }
+    } else {
+      if (!hasNode(w.from)) {
         errors.push(`Wire: source node "${w.from}" not found`);
         continue;
       }
-      const sourceOp = registry.resolve(sourceInstance.type);
+      const sourceOp = opOf(w.from);
+      if (!sourceOp) continue;
       const sourcePort = sourceOp.outputs.find((p) => p.name === w.output);
       if (!sourcePort) {
         errors.push(`Wire: "${w.from}" has no output "${w.output}"`);
         continue;
       }
-      if (sourcePort.type !== targetPort.type) {
-        errors.push(
-          `Wire: type mismatch — "${w.from}.${w.output}" (${sourcePort.type}) → "${w.to}.${w.input}" (${targetPort.type})`,
-        );
-      }
+      sourceType = sourcePort.type;
+    }
+
+    if (targetPort && sourceType !== targetPort.type) {
+      errors.push(
+        `Wire: type mismatch — "${w.from}.${w.output}" (${sourceType}) → "${w.to}.${w.input}" (${targetPort.type})`,
+      );
     }
   }
 
   // Pass 3 — required inputs must be wired
-  for (const [key, instance] of Object.entries(graph.nodes)) {
-    const op = registry.resolve(instance.type);
+  for (const key of Object.keys(graph.nodes)) {
+    const op = opOf(key);
+    if (!op) continue;
     for (const port of op.inputs) {
       if (port.optional) continue;
       if (!wired.has(`${key}.${port.name}`)) {
@@ -103,12 +149,40 @@ export function validateGraph(graph: Graph, registry: RegistryLike): void {
     }
   }
 
-  if (errors.length) throw new Error(errors.join("\n"));
+  // Pass 4 — no cycles among the wires between existing nodes
+  const nodeKeys = Object.keys(graph.nodes);
+  const nodeWires = graph.wires.filter((w) => hasNode(w.from) && hasNode(w.to));
+  const cycle = cycleNodes(nodeKeys, nodeWires);
+  if (cycle.length) errors.push(cycleMessage(cycle));
+
+  if (errors.length) throw new GraphValidationError(errors);
 }
 
 // ─── Topological Sort ────────────────────────────────────────────
 
+/**
+ * Order node keys so every node comes after its sources (Kahn's
+ * algorithm; ties keep key order, then wire order). Every wire must run
+ * between keys in `nodeKeys` or come from $env: validateGraph checks that.
+ */
 export function topoSort(nodeKeys: string[], wires: Wire[]): string[] {
+  const { sorted, downstream } = kahn(nodeKeys, wires);
+  if (sorted.length !== nodeKeys.length) {
+    throw new Error(cycleMessage(onCycles(nodeKeys, sorted, downstream)));
+  }
+  return sorted;
+}
+
+/** The keys that lie on a cycle (or between two cycles), in `nodeKeys` order. */
+function cycleNodes(nodeKeys: string[], wires: Wire[]): string[] {
+  const { sorted, downstream } = kahn(nodeKeys, wires);
+  return onCycles(nodeKeys, sorted, downstream);
+}
+
+function kahn(
+  nodeKeys: string[],
+  wires: Wire[],
+): { sorted: string[]; downstream: Map<string, string[]> } {
   const inDegree = new Map<string, number>();
   const downstream = new Map<string, string[]>();
 
@@ -119,7 +193,7 @@ export function topoSort(nodeKeys: string[], wires: Wire[]): string[] {
 
   const seen = new Set<string>();
   for (const w of wires) {
-    if (w.from === "$env") continue;
+    if (isEnvSource(w.from)) continue;
     const edge = `${w.from}\0${w.to}`;
     if (seen.has(edge)) continue;
     seen.add(edge);
@@ -143,11 +217,36 @@ export function topoSort(nodeKeys: string[], wires: Wire[]): string[] {
     }
   }
 
-  if (sorted.length !== nodeKeys.length) {
-    throw new Error("Graph contains a cycle");
-  }
+  return { sorted, downstream };
+}
 
-  return sorted;
+/**
+ * Of the nodes Kahn's algorithm could not order, keep those on a cycle:
+ * drop, until none is left, each node with no successor among them (the
+ * nodes merely downstream of a cycle).
+ */
+function onCycles(
+  nodeKeys: string[],
+  sorted: string[],
+  downstream: Map<string, string[]>,
+): string[] {
+  const done = new Set(sorted);
+  const left = new Set(nodeKeys.filter((key) => !done.has(key)));
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (const key of left) {
+      if (!downstream.get(key)!.some((next) => left.has(next))) {
+        left.delete(key);
+        changed = true;
+      }
+    }
+  }
+  return nodeKeys.filter((key) => left.has(key));
+}
+
+function cycleMessage(cycle: string[]): string {
+  return `Graph contains a cycle through ${cycle.map((key) => `"${key}"`).join(", ")}`;
 }
 
 // ─── Convenience ─────────────────────────────────────────────────

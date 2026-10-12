@@ -1,6 +1,13 @@
 import { describe, expect, test } from "bun:test";
 import { CookEngine } from "./cook";
-import { collectParams, type Graph, topoSort, validateGraph, type Wire } from "./graph";
+import {
+  collectParams,
+  type Graph,
+  GraphValidationError,
+  topoSort,
+  validateGraph,
+  type Wire,
+} from "./graph";
 import { OperatorRegistry } from "./registry";
 import type { Operator } from "./types";
 
@@ -120,10 +127,12 @@ describe("topoSort", () => {
     expect(topoSort(["b", "a"], wires)).toEqual(["a", "b"]);
   });
 
-  test("throws on a cycle", () => {
-    const loop = [wire("a", "n", "b", "n"), wire("b", "n", "a", "n")];
-    expect(() => topoSort(["a", "b"], loop)).toThrow("Graph contains a cycle");
-    expect(() => topoSort(["a"], [wire("a", "n", "a", "n")])).toThrow("Graph contains a cycle");
+  test("throws on a cycle, naming the nodes on it", () => {
+    const loop = [wire("a", "n", "b", "n"), wire("b", "n", "a", "n"), wire("b", "n", "c", "n")];
+    expect(() => topoSort(["a", "b", "c"], loop)).toThrow('Graph contains a cycle through "a", "b"');
+    expect(() => topoSort(["a"], [wire("a", "n", "a", "n")])).toThrow(
+      'Graph contains a cycle through "a"',
+    );
   });
 });
 
@@ -170,11 +179,30 @@ describe("validateGraph", () => {
     expect(validationError(g)).toBeUndefined();
   });
 
-  test("rejects an unknown operator type, before checking any wire", () => {
+  test("rejects an unknown operator type, and still checks the wires", () => {
     const g = graph({ x: { type: "nope" }, y: { type: "num-sink" } }, [
       wire("ghost", "n", "y", "n"),
+      wire("x", "n", "y", "extra"),
     ]);
-    expect(validationError(g)).toBe('Node "x" references unknown type "nope"');
+    expect(validationError(g)).toBe(
+      ['Node "x" references unknown type "nope"', 'Wire: source node "ghost" not found'].join(
+        "\n",
+      ),
+    );
+  });
+
+  test("rejects a node key that contains '.' or starts with '$'", () => {
+    const g = graph({ "a.b": { type: "num-source" }, $env: { type: "num-source" } }, []);
+    expect(validationError(g)).toBe(
+      ['Node "a.b": a node key cannot contain "."', 'Node "$env": a node key cannot start with "$"'].join(
+        "\n",
+      ),
+    );
+  });
+
+  test("finds only the graph's own nodes, not Object.prototype's", () => {
+    const g = graph({ a: { type: "num-source" } }, [wire("a", "n", "constructor", "n")]);
+    expect(validationError(g)).toBe('Wire: target node "constructor" not found');
   });
 
   test("rejects a wire to an unknown target node", () => {
@@ -219,6 +247,16 @@ describe("validateGraph", () => {
     );
   });
 
+  test("reports a cycle by the names of the nodes on it", () => {
+    // c is downstream of the a ⇄ b cycle but not on it
+    const g = graph({ a: { type: "num-sink" }, b: { type: "num-sink" }, c: { type: "num-sink" } }, [
+      wire("a", "n", "b", "n"),
+      wire("b", "n", "a", "n"),
+      wire("b", "n", "c", "n"),
+    ]);
+    expect(validationError(g)).toBe('Graph contains a cycle through "a", "b"');
+  });
+
   test("rejects a required input left unwired, but not an optional one", () => {
     const g = graph({ b: { type: "num-sink" } }, []);
     expect(validationError(g)).toBe('Node "b": required input "n" is not wired');
@@ -238,9 +276,48 @@ describe("validateGraph", () => {
     );
   });
 
-  test.failing("$env wires are type-checked", () => {
+  test("throws a GraphValidationError that lists every issue", () => {
+    const g = graph({ b: { type: "num-sink" } }, [wire("a", "n", "b", "extra")]);
+    let error: unknown;
+    try {
+      validateGraph(g, makeRegistry());
+    } catch (err) {
+      error = err;
+    }
+    expect(error).toBeInstanceOf(GraphValidationError);
+    expect((error as GraphValidationError).issues).toEqual([
+      'Wire: source node "a" not found',
+      'Node "b": required input "n" is not wired',
+    ]);
+  });
+});
+
+// ─── The $env source ─────────────────────────────────────────────
+
+describe("validateGraph on $env wires", () => {
+  test("accepts its declared outputs, width and height, into number inputs", () => {
+    const g = graph({ b: { type: "num-sink" } }, [
+      wire("$env", "width", "b", "n"),
+      wire("$env", "height", "b", "extra"),
+    ]);
+    expect(validationError(g)).toBeUndefined();
+  });
+
+  test("type-checks them against the declared outputs", () => {
     const g = graph({ merge: { type: "geo-merge" } }, [wire("$env", "width", "merge", "geometry")]);
-    expect(validationError(g)).toBeDefined();
+    expect(validationError(g)).toBe(
+      'Wire: type mismatch — "$env.width" (number) → "merge.geometry" (geometry)',
+    );
+  });
+
+  test("rejects an output it does not declare", () => {
+    const g = graph({ b: { type: "num-sink" } }, [wire("$env", "dpr", "b", "n")]);
+    expect(validationError(g)).toBe('Wire: "$env" has no output "dpr"');
+  });
+
+  test("rejects a wire into it", () => {
+    const g = graph({ a: { type: "num-source" } }, [wire("a", "n", "$env", "width")]);
+    expect(validationError(g)).toBe('Wire: "$env" is a source and cannot be a wire target');
   });
 });
 
