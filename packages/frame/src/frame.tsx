@@ -10,8 +10,8 @@ import {
   useRef,
   useState,
 } from "react";
-import type { Graph, Buffer2D, OperatorRegistry, ParamDef } from "@node-td/kernel";
-import { collectParams, CookEngine, SeededRNG } from "@node-td/kernel";
+import type { Graph, Buffer2D, NodeError, OperatorRegistry, ParamDef } from "@node-td/kernel";
+import { collectParams, CookEngine, GraphValidationError, SeededRNG } from "@node-td/kernel";
 import { defaultRegistry } from "@node-td/operators";
 import { blitBuffer2D } from "@node-td/render-web";
 import { FrameHostContext } from "./frame-host";
@@ -158,15 +158,22 @@ function FrameView({ graph, frameId, registry, seed }: FrameViewProps) {
         createCanvas: (cw: number, ch: number) => new OffscreenCanvas(cw, ch),
       });
 
+      // A node that threw leaves the artwork incomplete: show the error
+      // instead, even if another branch still produced an image.
+      const failure = reportNodeErrors(graph.name, engine.stats.errors);
       // The buffer is already at full pixel resolution (DPR-aware)
       const buf = engine.findTerminalOutput<Buffer2D>("buffer");
       const ctx = canvas.getContext("2d");
-      if (!buf) message = "Nothing to draw: the graph has no image output.";
+      if (failure) message = failure;
+      else if (!buf) message = "Nothing to draw: the graph has no image output.";
       else if (!ctx) message = "This browser gave the canvas no 2D context.";
       else blitBuffer2D(ctx, buf);
     } catch (err) {
       console.error(err);
-      message = `Cook failed: ${errorMessage(err)}`;
+      message =
+        err instanceof GraphValidationError
+          ? `Invalid graph: ${err.issues.join("; ")}`
+          : `Cook failed: ${errorMessage(err)}`;
     } finally {
       // Free intermediate buffers — critical for multi-panel pages.
       // Without this, cached Float32Arrays from all panels persist
@@ -319,4 +326,23 @@ function defaultValues(params: ParamDef[]): Record<string, number> {
 
 function errorMessage(err: unknown): string {
   return err instanceof Error ? err.message : String(err);
+}
+
+/**
+ * Log each node that threw in the last cook, and describe the first for
+ * the error state. Null when no node threw.
+ */
+function reportNodeErrors(
+  graphName: string,
+  errors: ReadonlyMap<string, NodeError>,
+): string | null {
+  const thrown: string[] = [];
+  for (const [key, failure] of errors) {
+    if (failure.kind !== "error") continue;
+    console.error(`${graphName}: node "${key}" failed`, failure.error);
+    thrown.push(`Cook failed in node "${key}": ${errorMessage(failure.error)}`);
+  }
+  const [first] = thrown;
+  if (first === undefined) return null;
+  return thrown.length > 1 ? `${first} (and ${thrown.length - 1} more)` : first;
 }

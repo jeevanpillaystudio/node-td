@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { Graph, Buffer2D, OperatorRegistry } from "@node-td/kernel";
-import { CookEngine, SeededRNG } from "@node-td/kernel";
+import type { Graph, Buffer2D, NodeError, OperatorRegistry } from "@node-td/kernel";
+import { CookEngine, GraphValidationError, SeededRNG } from "@node-td/kernel";
 import { blitBuffer2D } from "@node-td/render-web";
 
 interface EditorPreviewProps {
@@ -73,8 +73,12 @@ export function EditorPreview({ graph, registry, seed, values }: EditorPreviewPr
         createCanvas: (cw: number, ch: number) => new OffscreenCanvas(cw, ch),
       });
 
+      // As in Frame: a node that threw shows as an error, not a partial image
+      const failure = reportNodeErrors(graph.name, engine.stats.errors);
       const buf = engine.findTerminalOutput<Buffer2D>("buffer");
-      if (!buf) {
+      if (failure) {
+        message = failure;
+      } else if (!buf) {
         message = "No image output";
       } else {
         // putImageData ignores canvas transforms, so we blit to a temp canvas
@@ -90,7 +94,10 @@ export function EditorPreview({ graph, registry, seed, values }: EditorPreviewPr
       }
     } catch (err) {
       console.error(err);
-      message = `Cook failed: ${err instanceof Error ? err.message : String(err)}`;
+      message =
+        err instanceof GraphValidationError
+          ? `Invalid graph: ${err.issues.join("; ")}`
+          : `Cook failed: ${errorMessage(err)}`;
     } finally {
       // As in Frame: every draw is a full cook, since a partial re-cook
       // replays the shared random stream differently.
@@ -158,4 +165,27 @@ function measure(el: HTMLElement): Size {
 
 function sameSize(a: Size | null, b: Size): boolean {
   return a !== null && a.width === b.width && a.height === b.height && a.dpr === b.dpr;
+}
+
+function errorMessage(err: unknown): string {
+  return err instanceof Error ? err.message : String(err);
+}
+
+/**
+ * Log each node that threw in the last cook, and describe the first for
+ * the error state. Null when no node threw.
+ */
+function reportNodeErrors(
+  graphName: string,
+  errors: ReadonlyMap<string, NodeError>,
+): string | null {
+  const thrown: string[] = [];
+  for (const [key, failure] of errors) {
+    if (failure.kind !== "error") continue;
+    console.error(`${graphName}: node "${key}" failed`, failure.error);
+    thrown.push(`Cook failed in node "${key}": ${errorMessage(failure.error)}`);
+  }
+  const [first] = thrown;
+  if (first === undefined) return null;
+  return thrown.length > 1 ? `${first} (and ${thrown.length - 1} more)` : first;
 }
