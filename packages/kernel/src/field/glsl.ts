@@ -386,11 +386,9 @@ export function compileField(expr: FieldExpr): CompiledField {
   parts.push(`out vec4 fragColor;`);
   parts.push(``);
 
-  // Library functions
-  if (ctx.needsPerlin || ctx.needsSimplex) {
-    parts.push(GLSL_HASH);
-  }
+  // Library functions — hashGrad is Perlin's gradient table
   if (ctx.needsPerlin) {
+    parts.push(GLSL_HASH);
     parts.push(GLSL_PERLIN);
   }
   if (ctx.needsSimplex) {
