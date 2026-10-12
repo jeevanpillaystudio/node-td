@@ -354,3 +354,126 @@ exports[`surface-raymarch golden maxDist 50, no hits 1`] = `
   },
 }
 `;
+
+exports[`surface-raymarch golden seeds with attributes 1`] = `
+{
+  "nodes": {
+    "cam": {
+      "camera3d": {
+        "kind": "camera3d",
+        "project": "b7bd729c",
+        "unproject": "ea711e8c",
+        "viewport": [
+          256,
+          256,
+        ],
+      },
+    },
+    "cells": {
+      "geometry": {
+        "attributes": {
+          "cellId": "463ce525",
+          "depth": "6af365c5",
+        },
+        "dim": 2,
+        "indices": "feabe268",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "7249953d",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 125.755,
+              "min": 0,
+            },
+            {
+              "max": 256,
+              "mean": 127.668,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 128,
+      },
+    },
+    "march": {
+      "geometry": {
+        "attributes": {
+          "ao": "dc8ef20f",
+          "cellId": "1f34089f",
+          "depth": "a513d269",
+          "worldX": "eb53fbe0",
+          "worldZ": "764925b8",
+        },
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "61867bcb",
+          "stats": [
+            {
+              "max": 254.007,
+              "mean": 129.378,
+              "min": 1.416,
+            },
+            {
+              "max": 255.661,
+              "mean": 132.802,
+              "min": 4.399,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 107,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "f0653aa7",
+        "kind": "field",
+        "max": 0.952,
+        "mean": 0.506,
+        "min": 0.047,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": {
+          "cellId": "1f34089f",
+        },
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "61867bcb",
+          "stats": [
+            {
+              "max": 254.007,
+              "mean": 129.378,
+              "min": 1.416,
+            },
+            {
+              "max": 255.661,
+              "mean": 132.802,
+              "min": 4.399,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 107,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

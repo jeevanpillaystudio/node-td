@@ -1,4 +1,4 @@
-import { defineOperator } from "@node-td/kernel";
+import { defineOperator, filterVertices } from "@node-td/kernel";
 
 /**
  * Surface Raymarch — implicit terrain intersection for each screen-space seed.
@@ -9,7 +9,8 @@ import { defineOperator } from "@node-td/kernel";
  *   f(x, y, z) = y − amplitude * field(x, z)
  *
  * Outputs the subset of seeds that successfully hit the terrain surface,
- * carrying per-vertex attributes for downstream shading and mark-making:
+ * with the seeds' own colours and attributes, plus these per-vertex
+ * attributes for downstream shading and mark-making:
  *
  *   depth   — normalized ray distance 0..1 (near = bright)
  *   ao      — simple ambient occlusion estimate
@@ -66,7 +67,7 @@ export const surfaceRaymarch = defineOperator({
 
     const { positions: seedPos, vertexCount: seedCount } = seeds;
 
-    const outPos: number[]   = [];
+    const hitSeed = new Uint8Array(seedCount);
     const outDepth: number[] = [];
     const outAO: number[]    = [];
     const outWX: number[]    = [];
@@ -108,7 +109,7 @@ export const surfaceRaymarch = defineOperator({
 
       const aoVal = ao(wx, wy, wz);
 
-      outPos.push(sx, sy);
+      hitSeed[i] = 1;
       outDepth.push(t / maxDist);
       outAO.push(aoVal);
       outWX.push(wx);
@@ -127,13 +128,15 @@ export const surfaceRaymarch = defineOperator({
       };
     }
 
+    // The seeds that hit, as points, keeping their colours and attributes
+    const { stripOffsets: _strips, indices: _indices, ...points } = seeds;
+    const hits = filterVertices({ ...points, topology: "points" }, (i) => hitSeed[i] === 1);
+
     return {
       geometry: {
-        positions: new Float32Array(outPos),
-        vertexCount: n,
-        dim: 2,
-        topology: "points",
+        ...hits,
         attributes: {
+          ...hits.attributes,
           depth:   new Float32Array(outDepth),
           ao:      new Float32Array(outAO),
           worldX:  new Float32Array(outWX),

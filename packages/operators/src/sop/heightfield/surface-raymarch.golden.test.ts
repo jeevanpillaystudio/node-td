@@ -40,6 +40,20 @@ opGolden(surfaceRaymarch, {
     width: 400,
     height: 400,
   },
+  // Seeds tagged with their partition's cellId: the hits keep it
+  "seeds with attributes": {
+    nodes: {
+      ...upstream,
+      cells: { type: "binary-subdivide" },
+      march: { type: "surface-raymarch", params: meridian },
+    },
+    wires: [
+      ...wires,
+      w("$env.width", "cells.width"),
+      w("$env.height", "cells.height"),
+      w("cells.geometry", "seeds.partitions"),
+    ],
+  },
   // Rays stop short of the terrain: the no-hit branch
   "maxDist 50, no hits": {
     nodes: {
