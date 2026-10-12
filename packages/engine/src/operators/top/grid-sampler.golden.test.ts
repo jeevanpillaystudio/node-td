@@ -5,12 +5,12 @@ const noise = { type: "simplex-noise" };
 const extent = [w("$env.width", "grid.width"), w("$env.height", "grid.height")];
 
 opGolden(gridSampler, {
-  // 13 × 13 cells: below the 500-cell threshold, so no GPU probe
+  // 13 × 13 cells
   "resolution 20": {
     nodes: { noise, grid: { type: "grid-sampler" } },
     wires: [w("noise.field", "grid.field"), ...extent],
   },
-  // 52 × 52 cells: probes for WebGL, finds none, samples on the CPU
+  // 52 × 52 cells, which once took a GPU branch
   "resolution 5": {
     nodes: { noise, grid: { type: "grid-sampler", params: { resolution: 5 } } },
     wires: [w("noise.field", "grid.field"), ...extent],
