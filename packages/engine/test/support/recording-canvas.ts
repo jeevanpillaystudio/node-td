@@ -4,9 +4,9 @@ import { hashValues, round3 } from "./digest";
  * RecordingCanvas — a deterministic, headless stand-in for OffscreenCanvas.
  *
  * Its 2D context draws nothing. It appends every call and property set
- * that the renderers make (stroke-renderer, point-renderer, composite,
- * blitBuffer2D) to a shared log, so "renders the same" can be checked
- * headless by comparing logs.
+ * that the renderers make (stroke-renderer, composite, blitBuffer2D) to
+ * a shared log, so "renders the same" can be checked headless by
+ * comparing logs.
  *
  * Log entries are `[canvasId, name, ...args]`:
  * - numbers are rounded to 1e-3 (non-finite numbers become strings);

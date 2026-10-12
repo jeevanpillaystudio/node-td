@@ -11,8 +11,8 @@ type Outputs = { geometry: Geometry<2> };
  * screen-space coordinates.
  *
  * The output feeds directly into any 2D renderer (stroke-renderer,
- * point-renderer, etc.) — the entire existing 2D pipeline works
- * unchanged as the terminal stage after projection.
+ * etc.) — the entire existing 2D pipeline works unchanged as the
+ * terminal stage after projection.
  *
  * Topology, stripOffsets, and indices pass through unchanged.
  */

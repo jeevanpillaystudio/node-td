@@ -101,7 +101,6 @@ import { diffuseShade } from "./operators/mat/diffuse-shade";
 import { camera2d } from "./operators/rop/camera-2d";
 import { camera3d } from "./operators/rop/camera-3d";
 import { strokeRenderer } from "./operators/rop/stroke-renderer";
-import { pointRenderer } from "./operators/rop/point-renderer";
 import { composite } from "./operators/rop/composite";
 import { fieldRender } from "./operators/top/field-render";
 import { OperatorRegistry } from "./kernel/registry";
@@ -150,7 +149,6 @@ export const allOperators: Operator[] = [
   camera2d,
   camera3d,
   strokeRenderer,
-  pointRenderer,
   composite,
 ];
 
