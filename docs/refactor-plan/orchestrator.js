@@ -109,7 +109,11 @@ const REVIEW_SCHEMA = {
 const SOL_CHECK = '/Users/jeevanpillay/Code/@lightfastai/query-v2/.claude/worktrees/gpt-sol-workflow-integration-4d8903/.agents/connectors/sol_check.py'
 const SOL_ALLOW = ['Bash(bun test:*)', 'Bash(bun run --cwd apps/examples build:*)', 'Bash(./node_modules/.bin/tsc:*)',
   'Bash(./node_modules/.bin/turbo:*)', 'Bash(./node_modules/.bin/biome lint:*)', 'Bash(./node_modules/.bin/biome check:*)',
+  'Bash(TURBO_TELEMETRY_DISABLED=1 ./node_modules/.bin/turbo:*)', 'Bash(git reflog:*)',
   'Bash(grep:*)', 'Bash(rg:*)', 'Bash(ls:*)', 'Bash(wc:*)']
+// sol_check.py allows the git commands that only read, except reflog, and
+// matches each rule against the start of a command. Seen on 12 October 2026:
+// Sol's chained commands and a grep over a {a,b} brace list were refused.
 
 const CLAIMS = [
   {
@@ -159,7 +163,7 @@ async function solCheck(claim, schema, label, phaseName, extraAllow) {
 
 function claimText(id, impl, c) {
   const start = impl.fix ? impl.fix.startSha : impl.startSha
-  return `You are verifying work item ${id} of a refactor of this repository (branch claude/touchdesigner-monorepo-refactor-6d0a2d, a git worktree at ${ROOT}). You did not write it. Be skeptical: report only problems you verified in the files or by running a command, and default to pass=false when the evidence does not show the claim holds.
+  return `You are verifying work item ${id} of a refactor of this repository (branch claude/touchdesigner-monorepo-refactor-6d0a2d, a git worktree at ${ROOT}). You did not write it. Be skeptical: report only problems you verified in the files or by running a command, and default to pass=false when the evidence does not show the claim holds. Permission rules match the start of a command: run one command per Bash call, with no `&&`, `;` or pipe, and use the Grep tool where a shell glob or brace list is needed.
 
 ${c.text.split('<startSha>').join(start)}
 
