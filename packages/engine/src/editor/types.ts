@@ -1,4 +1,4 @@
-import type { Graph, Wire } from "../kernel/graph";
+import type { Graph } from "../kernel/graph";
 import type { Operator, PortDef } from "../kernel/types";
 import type { OperatorRegistry } from "../kernel/registry";
 import { topoSort } from "../kernel/graph";
@@ -7,15 +7,6 @@ import { topoSort } from "../kernel/graph";
 export interface NodeLayout {
   x: number;
   y: number;
-}
-
-/**
- * A Graph combined with visual layout data for the editor.
- * Keeps the runtime Graph type lean — positions are editor-only concerns.
- */
-export interface EditorGraph {
-  graph: Graph;
-  layout: Record<string, NodeLayout>;
 }
 
 /** Data attached to a React Flow node representing an Operator instance. */
@@ -49,17 +40,10 @@ export function inferEnvPorts(graph: Graph): PortDef[] {
     if (w.from !== "$env") continue;
     if (seen.has(w.output)) continue;
     seen.add(w.output);
-    ports.push({ name: w.output, type: inferEnvPortType(w) });
+    ports.push({ name: w.output, type: "number" });
   }
 
   return ports;
-}
-
-/** Best-effort type inference for env ports by looking at what they connect to. */
-function inferEnvPortType(envWire: Wire): PortDef["type"] {
-  if (envWire.output === "width" || envWire.output === "height")
-    return "number";
-  return "number";
 }
 
 /**
@@ -195,7 +179,7 @@ export function toReactFlowElements(
       data: {
         sourcePort: w.output,
         targetPort: w.input,
-        portType: w.from === "$env" ? inferEnvPortType(w) : "",
+        portType: w.from === "$env" ? "number" : "",
       },
     });
   }
