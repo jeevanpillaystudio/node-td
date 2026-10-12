@@ -4,6 +4,8 @@ import {
   collectParams,
   type Graph,
   GraphValidationError,
+  lintParamDefs,
+  lintParams,
   topoSort,
   validateGraph,
   type Wire,
@@ -319,6 +321,121 @@ describe("validateGraph on $env wires", () => {
   test("rejects a wire into it", () => {
     const g = graph({ a: { type: "num-source" } }, [wire("a", "n", "$env", "width")]);
     expect(validationError(g)).toBe('Wire: "$env" is a source and cannot be a wire target');
+  });
+});
+
+// ─── Params ──────────────────────────────────────────────────────
+
+/** Declares defaults that are not legal for their own params. */
+const badDefaults: Operator = {
+  id: "bad-defaults",
+  category: "top",
+  label: "Bad Defaults",
+  inputs: [],
+  outputs: [{ name: "n", type: "number" }],
+  params: [
+    { key: "low", label: "Low", min: 0.0001, max: 10, step: 0.0001, default: 0.00001 },
+    { key: "fine", label: "Fine", min: 0, max: 1, step: 0.1, default: 0.5 },
+    {
+      key: "pick",
+      label: "Pick",
+      kind: "enum",
+      options: [
+        { label: "A", value: 0 },
+        { label: "B", value: 1 },
+      ],
+      default: 2,
+    },
+  ],
+  evaluate: () => ({ n: 0 }),
+};
+
+describe("validateGraph on params", () => {
+  test("accepts declared params within range, ends included, and enum options", () => {
+    const g = graph(
+      {
+        lo: { type: "num-source", params: { k: 0 } },
+        hi: { type: "num-source", params: { k: 10 } },
+        s: { type: "geo-source", params: { count: 50, mode: 1 } },
+      },
+      [],
+    );
+    expect(validationError(g)).toBeUndefined();
+  });
+
+  test("rejects a param the operator does not declare", () => {
+    const g = graph({ a: { type: "num-source", params: { kk: 1 } } }, []);
+    expect(validationError(g)).toBe('Node "a": "num-source" has no param "kk"');
+  });
+
+  test("rejects a number outside its param's [min, max]", () => {
+    const g = graph(
+      {
+        lo: { type: "num-source", params: { k: -1 } },
+        hi: { type: "num-source", params: { k: 10.5 } },
+      },
+      [],
+    );
+    expect(validationError(g)).toBe(
+      [
+        'Node "lo": param "k" is -1, outside [0, 10]',
+        'Node "hi": param "k" is 10.5, outside [0, 10]',
+      ].join("\n"),
+    );
+  });
+
+  test("rejects an enum value that is not one of its options", () => {
+    const g = graph({ s: { type: "geo-source", params: { mode: 2 } } }, []);
+    expect(validationError(g)).toBe('Node "s": param "mode" is 2, not one of its options (0, 1)');
+  });
+
+  test("rejects a value that is not a number, NaN included", () => {
+    const g = graph(
+      {
+        a: { type: "num-source", params: { k: "3" as unknown as number } },
+        b: { type: "num-source", params: { k: Number.NaN } },
+      },
+      [],
+    );
+    expect(validationError(g)).toBe(
+      [
+        'Node "a": param "k" is "3", not a number',
+        'Node "b": param "k" is NaN, outside [0, 10]',
+      ].join("\n"),
+    );
+  });
+
+  test("reports an operator's illegal defaults once, however many nodes use it", () => {
+    const registry = makeRegistry().register(badDefaults);
+    const g = graph({ a: { type: "bad-defaults" }, b: { type: "bad-defaults" } }, []);
+    const expected = [
+      'Operator "bad-defaults": the default of param "low" is 0.00001, outside [0.0001, 10]',
+      'Operator "bad-defaults": the default of param "pick" is 2, not one of its options (0, 1)',
+    ];
+    expect(lintParamDefs(badDefaults)).toEqual(expected);
+    expect(lintParams(g, registry)).toEqual(expected);
+    expect(() => validateGraph(g, registry)).toThrow(expected.join("\n"));
+  });
+
+  test("skips nodes of an unknown type, which pass 1 reports", () => {
+    const g = graph({ x: { type: "nope", params: { k: 99 } } }, []);
+    expect(lintParams(g, makeRegistry())).toEqual([]);
+    expect(validationError(g)).toBe('Node "x" references unknown type "nope"');
+  });
+
+  test("lists param issues after the wire and input issues", () => {
+    const g = graph({ a: { type: "num-source", params: { k: 11 } }, b: { type: "num-sink" } }, []);
+    expect(validationError(g)).toBe(
+      [
+        'Node "b": required input "n" is not wired',
+        'Node "a": param "k" is 11, outside [0, 10]',
+      ].join("\n"),
+    );
+  });
+
+  test("makes the CookEngine constructor throw", () => {
+    const g = graph({ a: { type: "num-source", params: { k: 11 } } }, []);
+    expect(() => new CookEngine(g, makeRegistry())).toThrow(GraphValidationError);
   });
 });
 

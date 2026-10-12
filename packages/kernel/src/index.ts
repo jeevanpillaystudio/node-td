@@ -40,7 +40,14 @@ export { pointsGeometry, pathsGeometry, geometryToPaths, vertexAt } from "./type
 
 // ─── Graph ───────────────────────────────────────────────────────
 export type { Wire, Graph } from "./graph";
-export { validateGraph, GraphValidationError, collectParams, topoSort } from "./graph";
+export {
+  validateGraph,
+  GraphValidationError,
+  lintParams,
+  lintParamDefs,
+  collectParams,
+  topoSort,
+} from "./graph";
 
 // ─── Environment source ($env) ───────────────────────────────────
 export type { EnvOutput } from "./env";

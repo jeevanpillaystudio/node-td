@@ -1,5 +1,11 @@
 import { ENV_SOURCE, envOutputType, isEnvSource } from "./env";
-import type { Operator, NodeInstance, ParamDef, PortType } from "./types";
+import {
+  isEnumParam,
+  type NodeInstance,
+  type Operator,
+  type ParamDef,
+  type PortType,
+} from "./types";
 
 // ─── Graph Types ─────────────────────────────────────────────────
 
@@ -53,8 +59,8 @@ export class GraphValidationError extends Error {
  * GraphValidationError listing every issue, one per line. A graph that
  * passes has only well-formed node keys and known operator types, wires
  * only between existing ports (or from a declared $env output) of the same
- * type, every required input wired, and no cycle, so topoSort and a cook
- * can rely on it.
+ * type, every required input wired, no cycle, and only declared, legal
+ * params (lintParams), so topoSort and a cook can rely on it.
  */
 export function validateGraph(graph: Graph, registry: RegistryLike): void {
   const errors: string[] = [];
@@ -160,7 +166,66 @@ export function validateGraph(graph: Graph, registry: RegistryLike): void {
   const cycle = cycleNodes(nodeKeys, nodeWires);
   if (cycle.length) errors.push(cycleMessage(cycle));
 
+  // Pass 5 — params
+  errors.push(...lintParams(graph, registry));
+
   if (errors.length) throw new GraphValidationError(errors);
+}
+
+// ─── Param lint ──────────────────────────────────────────────────
+
+/**
+ * The issues with a graph's params, one per line: a node param its
+ * operator does not declare, a number outside its param's [min, max], an
+ * enum value that is not one of its options, and, once per operator, a
+ * declared default that is not legal for its own param (lintParamDefs).
+ * Nodes of an unknown type are skipped; validateGraph reports them.
+ */
+export function lintParams(graph: Graph, registry: RegistryLike): string[] {
+  const issues: string[] = [];
+  const linted = new Set<string>();
+  for (const [key, instance] of Object.entries(graph.nodes)) {
+    if (!registry.has(instance.type)) continue;
+    const op = registry.resolve(instance.type);
+    if (!linted.has(op.id)) {
+      linted.add(op.id);
+      issues.push(...lintParamDefs(op));
+    }
+    for (const [paramKey, value] of Object.entries(instance.params ?? {})) {
+      const def = op.params.find((p) => p.key === paramKey);
+      if (!def) {
+        issues.push(`Node "${key}": "${op.id}" has no param "${paramKey}"`);
+        continue;
+      }
+      const problem = illegalValue(def, value);
+      if (problem) issues.push(`Node "${key}": param "${paramKey}" ${problem}`);
+    }
+  }
+  return issues;
+}
+
+/**
+ * The issues with an operator's own param declarations: a default outside
+ * its [min, max], or an enum default that is not one of its options.
+ */
+export function lintParamDefs(op: Operator): string[] {
+  const issues: string[] = [];
+  for (const def of op.params) {
+    const problem = illegalValue(def, def.default);
+    if (problem) issues.push(`Operator "${op.id}": the default of param "${def.key}" ${problem}`);
+  }
+  return issues;
+}
+
+/** Why `value` is not a legal value of the param, or undefined when it is. */
+function illegalValue(def: ParamDef, value: unknown): string | undefined {
+  if (typeof value !== "number") return `is ${JSON.stringify(value)}, not a number`;
+  if (isEnumParam(def)) {
+    if (def.options.some((o) => o.value === value)) return undefined;
+    return `is ${value}, not one of its options (${def.options.map((o) => o.value).join(", ")})`;
+  }
+  if (value >= def.min && value <= def.max) return undefined;
+  return `is ${value}, outside [${def.min}, ${def.max}]`;
 }
 
 // ─── Topological Sort ────────────────────────────────────────────
