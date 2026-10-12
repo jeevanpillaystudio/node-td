@@ -25,7 +25,12 @@ export const merge = defineOperator({
 
   evaluate({ geometry: geos }) {
     if (geos.length === 1) {
-      return { geometry: geos[0]! };
+      const g = geos[0]!;
+      // A lone implicit strip is made explicit, as merged strips are
+      if (g.topology === "line-strip" && !g.stripOffsets && g.vertexCount > 0) {
+        return { geometry: { ...g, stripOffsets: Uint32Array.of(0) } };
+      }
+      return { geometry: g };
     }
 
     const parts = geos.filter((g) => g.vertexCount > 0);

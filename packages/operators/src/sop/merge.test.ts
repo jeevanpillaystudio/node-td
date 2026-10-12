@@ -18,6 +18,12 @@ describe("merge", () => {
     expect([...run(polyline(5, 6), explicit).stripOffsets!]).toEqual([0, 2, 4]);
   });
 
+  it("makes a lone implicit strip explicit", () => {
+    const merged = run(polyline(0, 1, 2));
+    expect(merged.vertexCount).toBe(3);
+    expect([...merged.stripOffsets!]).toEqual([0]);
+  });
+
   it("gives two implicit strips two strips", () => {
     const merged = run(polyline(0, 1, 2), polyline(3, 4));
     expect(merged.topology).toBe("line-strip");
