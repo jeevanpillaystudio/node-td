@@ -1,10 +1,18 @@
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
-import { cn } from "./ui/utils";
+import {
+  type CSSProperties,
+  useCallback,
+  useContext,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import type { Graph, Geometry, Buffer2D, OperatorRegistry } from "@node-td/kernel";
 import { collectParams, CookEngine, SeededRNG } from "@node-td/kernel";
 import { defaultRegistry } from "@node-td/operators";
 import { drawCanvas2D, blitBuffer2D } from "@node-td/render-web";
-import { useOptionalFrameContext } from "./frame-provider";
+import { FrameHostContext } from "./frame-host";
 
 /** The seed every gallery artwork was tuned with. */
 const DEFAULT_SEED = 42;
@@ -19,6 +27,8 @@ interface FrameProps {
   graph: Graph;
   id?: string;
   className?: string;
+  /** Inline styles for the outer element, which is `position: relative` unless this says otherwise. */
+  style?: CSSProperties;
   /** Operators the graph's node types resolve against. Defaults to the built-in operators. */
   registry?: OperatorRegistry;
   /** Seed for the random stream the graph's operators draw from. */
@@ -29,18 +39,13 @@ export function Frame({
   graph,
   id: explicitId,
   className,
+  style,
   registry = defaultRegistry(),
   seed = DEFAULT_SEED,
 }: FrameProps) {
   const autoId = useId();
   const frameId = explicitId ?? `frame-${autoId}`;
-  const ctx = useOptionalFrameContext();
-
-  const ctxRegister = ctx?.register;
-  const ctxUnregister = ctx?.unregister;
-  const ctxSetActive = ctx?.setActive;
-  const ctxSetEditing = ctx?.setEditing;
-  const isActive = ctx?.activeId === frameId;
+  const host = useContext(FrameHostContext);
 
   const params = useMemo(() => collectParams(graph, registry), [graph, registry]);
   const [values, setValues] = useState<Record<string, number>>(() =>
@@ -52,26 +57,15 @@ export function Frame({
     [],
   );
 
-  const setRef = useRef(set);
-  setRef.current = set;
-
-  // Register with inspector context when available (dev only)
+  // Register with the host (the dev editor) when one is mounted
   useEffect(() => {
-    if (!ctxRegister) return;
-    ctxRegister({
-      id: frameId,
-      name: graph.name,
-      graph,
-      params,
-      values,
-      set: (k: string, v: number) => setRef.current(k, v),
-    });
-  }, [ctxRegister, frameId, graph, graph.name, params, values]);
+    host?.register({ id: frameId, name: graph.name, graph, registry, seed, params, values, set });
+  }, [host, frameId, graph, registry, seed, params, values, set]);
 
   useEffect(() => {
-    if (!ctxUnregister) return;
-    return () => ctxUnregister(frameId);
-  }, [ctxUnregister, frameId]);
+    if (!host) return;
+    return () => host.unregister(frameId);
+  }, [host, frameId]);
 
   // ── Visibility gating via IntersectionObserver ───────────────
   // Off-screen frames don't cook at all. When the frame scrolls into
@@ -192,53 +186,20 @@ export function Frame({
     };
   }, [values, graph, registry, seed, isVisible]);
 
-  const canvasEl = (
-    <div
-      ref={wrapperRef}
-      style={{ position: "absolute", inset: 0, overflow: "clip", pointerEvents: "none" }}
-    >
-      <canvas ref={canvasRef} style={{ display: "block", width: "100%", height: "100%" }} />
-      <div
-        aria-hidden="true"
-        ref={overlayRef}
-        style={{ position: "absolute", inset: 0, background: "#1a1a1a", pointerEvents: "none", zIndex: 3 }}
-      />
-    </div>
-  );
-
-  if (!ctx) {
-    return <div className={className}>{canvasEl}</div>;
-  }
-
   return (
-    // biome-ignore lint/a11y/useSemanticElements: it contains the Edit Graph <button>, and a <button> cannot nest another
-    <div
-      role="button"
-      tabIndex={0}
-      onClick={() => ctxSetActive?.(frameId)}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") ctxSetActive?.(frameId);
-      }}
-      className={cn(
-        "relative cursor-pointer outline-2 outline-dashed outline-transparent transition-[outline-color]",
-        isActive ? "outline-ring" : "hover:outline-ring/50",
-        className,
-      )}
-    >
-      {canvasEl}
-      {/* Edit button — visible when frame is active */}
-      {isActive && (
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            ctxSetEditing?.(frameId);
-          }}
-          className="absolute top-2 right-2 z-10 rounded-md border border-border/50 bg-card/80 px-2.5 py-1 font-mono text-xs text-muted-foreground backdrop-blur-md transition-colors hover:text-foreground"
-        >
-          Edit Graph
-        </button>
-      )}
+    <div className={className} style={{ position: "relative", ...style }}>
+      <div
+        ref={wrapperRef}
+        style={{ position: "absolute", inset: 0, overflow: "clip", pointerEvents: "none" }}
+      >
+        <canvas ref={canvasRef} style={{ display: "block", width: "100%", height: "100%" }} />
+        <div
+          aria-hidden="true"
+          ref={overlayRef}
+          style={{ position: "absolute", inset: 0, background: "#1a1a1a", pointerEvents: "none", zIndex: 3 }}
+        />
+      </div>
+      {host?.renderOverlay?.(frameId)}
     </div>
   );
 }

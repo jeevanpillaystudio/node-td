@@ -23,9 +23,10 @@ function HomePage() {
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {patches.map((patch) => (
             <div key={patch.id} className="space-y-2">
-              <div className="relative aspect-square overflow-hidden rounded-md border border-border/50">
-                <Frame graph={patch.graph} className="absolute inset-0" />
-              </div>
+              <Frame
+                graph={patch.graph}
+                className="aspect-square overflow-hidden rounded-md border border-border/50"
+              />
               <span className="block font-mono text-xs text-muted-foreground">
                 {patch.name}
               </span>

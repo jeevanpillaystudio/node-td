@@ -1,4 +1,5 @@
-import { useFrameContext, type FrameEntry } from "../frame-provider";
+import type { FrameEntry } from "../frame-host";
+import { useFrameContext } from "../frame-provider";
 
 interface EditorSidebarProps {
   editingId: string;

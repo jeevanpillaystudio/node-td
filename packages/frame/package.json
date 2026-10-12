@@ -6,8 +6,8 @@
   "sideEffects": false,
   "exports": {
     ".": {
-      "types": "./src/frame.tsx",
-      "default": "./src/frame.tsx"
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
     },
     "./provider": {
       "types": "./src/frame-provider.tsx",
