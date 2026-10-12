@@ -55,7 +55,8 @@ export const composite: Operator<Inputs, Outputs> = {
 
     // ── Canvas-native fast path ───────────────────────────────
     // All layers have _canvas → composite via drawImage (GPU-accelerated)
-    // After drawing, release input canvases to free GPU memory promptly.
+    // Inputs are cached outputs: they are read, never modified. Their
+    // canvases are released when the host clears the cook cache.
     const createCanvas = (env as GraphEnv | undefined)?.createCanvas;
     if (createCanvas && layers.every(l => l._canvas)) {
       const canvas = createCanvas(width, height);
@@ -63,19 +64,16 @@ export const composite: Operator<Inputs, Outputs> = {
 
       // Bottom layer: direct copy
       ctx.drawImage(layers[0]!._canvas!, 0, 0);
-      layers[0]!._canvas = undefined; // Release GPU memory
 
       // Remaining layers: blend with globalCompositeOperation
       const op = BLEND_OPS[mode] ?? "source-over";
       for (let i = 1; i < layers.length; i++) {
         ctx.globalCompositeOperation = op;
         ctx.drawImage(layers[i]!._canvas!, 0, 0);
-        layers[i]!._canvas = undefined; // Release GPU memory
       }
 
       // Return with _canvas for fast blitBuffer2D path.
-      // This is the ONLY canvas that survives — one per panel, not five.
-      // Lazy data getter is safe here: only 1 composite canvas per panel.
+      // Lazy data getter: pixels are read back only if a consumer needs them.
       let _data: Float32Array | null = null;
       return {
         buffer: {
