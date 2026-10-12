@@ -1,10 +1,10 @@
 import { useEffect, useRef } from "react";
 import type { Graph, Geometry, Buffer2D } from "@node-td/kernel";
 import { CookEngine, SeededRNG } from "@node-td/kernel";
-import { createDefaultRegistry } from "@node-td/operators";
+import { defaultRegistry } from "@node-td/operators";
 import { drawCanvas2D, blitBuffer2D } from "@node-td/render-web";
 
-const registry = createDefaultRegistry();
+const registry = defaultRegistry();
 
 interface EditorPreviewProps {
   graph: Graph;

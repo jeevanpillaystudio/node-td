@@ -88,3 +88,15 @@ export function createDefaultRegistry(): OperatorRegistry {
   for (const op of allOperators) registry.register(op);
   return registry;
 }
+
+let shared: OperatorRegistry | undefined;
+
+/**
+ * The one shared registry of all built-in operators, made on first use.
+ * Hosts read from it; code that registers operators of its own takes a
+ * fresh createDefaultRegistry() instead, so the shared one never changes.
+ */
+export function defaultRegistry(): OperatorRegistry {
+  shared ??= createDefaultRegistry();
+  return shared;
+}

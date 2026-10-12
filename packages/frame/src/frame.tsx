@@ -2,11 +2,11 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react"
 import { cn } from "./ui/utils";
 import type { Graph, Geometry, Buffer2D } from "@node-td/kernel";
 import { collectParams, CookEngine, SeededRNG } from "@node-td/kernel";
-import { createDefaultRegistry } from "@node-td/operators";
+import { defaultRegistry } from "@node-td/operators";
 import { drawCanvas2D, blitBuffer2D } from "@node-td/render-web";
 import { useOptionalFrameContext } from "./frame-provider";
 
-const registry = createDefaultRegistry();
+const registry = defaultRegistry();
 
 // ── Staggered cook scheduler ──────────────────────────────────
 // When many Frames mount simultaneously (e.g., debug page with 10
