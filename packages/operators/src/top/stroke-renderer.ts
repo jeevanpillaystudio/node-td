@@ -1,5 +1,5 @@
 import { asOffscreen } from "../canvas-handle";
-import { defineOperator, type Geometry, type Camera2D, type Palette, type Buffer2D } from "@node-td/kernel";
+import { defineOperator, type Buffer2D } from "@node-td/kernel";
 
 type Outputs = { buffer: Buffer2D };
 

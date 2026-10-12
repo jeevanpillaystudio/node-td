@@ -1,4 +1,4 @@
-import { defineOperator, type Camera3D } from "@node-td/kernel";
+import { defineOperator } from "@node-td/kernel";
 
 // ─── Vector math (inline, zero dependencies) ────────────────────
 

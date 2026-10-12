@@ -1,5 +1,5 @@
 import { asOffscreen } from "../canvas-handle";
-import { defineOperator, type Buffer2D } from "@node-td/kernel";
+import { defineOperator } from "@node-td/kernel";
 
 /**
  * Blend mode → Canvas2D globalCompositeOperation mapping.

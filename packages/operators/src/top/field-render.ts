@@ -1,4 +1,4 @@
-import { defineOperator, type Field2D, type Buffer2D } from "@node-td/kernel";
+import { defineOperator } from "@node-td/kernel";
 
 /**
  * Field Render — rasterizes a Field2D into a Buffer2D.

@@ -1,4 +1,4 @@
-import { defineOperator, type Geometry, type Palette } from "@node-td/kernel";
+import { defineOperator } from "@node-td/kernel";
 
 /**
  * Diffuse Shade — Lambert N dot L shading with quantized intensity steps.
