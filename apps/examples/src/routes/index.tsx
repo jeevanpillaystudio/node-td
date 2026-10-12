@@ -1,21 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Frame } from "@node-td/frame";
 import { FrameShell } from "@node-td/frame/shell";
-import {
-  meridianGraph,
-  terrainHeightmapGraph,
-  subscapesTerrain3dGraph,
-  simplexFieldGraph,
-  flowFieldGraph,
-} from "@node-td/patches";
-
-const patches = [
-  { name: "Subscapes Terrain 3D", graph: subscapesTerrain3dGraph },
-  { name: "Terrain Heightmap", graph: terrainHeightmapGraph },
-  { name: "Meridian", graph: meridianGraph },
-  { name: "Simplex Field", graph: simplexFieldGraph },
-  { name: "Flow Field", graph: flowFieldGraph },
-];
+import { patches } from "@node-td/patches";
 
 export const Route = createFileRoute("/")({
   component: HomePage,
@@ -36,7 +22,7 @@ function HomePage() {
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {patches.map((patch) => (
-            <div key={patch.name} className="space-y-2">
+            <div key={patch.id} className="space-y-2">
               <div className="relative aspect-square overflow-hidden rounded-md border border-border/50">
                 <Frame graph={patch.graph} className="absolute inset-0" />
               </div>
