@@ -100,9 +100,9 @@ export const poissonDisc: Operator<Inputs, Outputs> = {
   inputs: [
     { name: "width", type: "number" },
     { name: "height", type: "number" },
-    { name: "partitions", type: "geometry", optional: true },
+    { name: "partitions", type: "geo2", optional: true },
   ],
-  outputs: [{ name: "geometry", type: "geometry" }],
+  outputs: [{ name: "geometry", type: "geo2" }],
   params: [
     { key: "minRadius", label: "Min Seed Radius", min: 10, max: 150, step: 5, default: 40 },
     { key: "margin", label: "Edge Margin", min: 0, max: 300, step: 10, default: 100 },

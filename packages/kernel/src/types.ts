@@ -20,21 +20,26 @@ export type OperatorCategory = "field" | "top" | "sop" | "chop" | "mat" | "comp"
 // ─── Port Types ──────────────────────────────────────────────────
 
 /**
- * Port data type identifiers for wire compatibility.
+ * What flows on a wire. A wire is legal only between ports of the same
+ * type, so each type names one kind of value and one use of it.
  *
- * TOP outputs:  field, buffer
- * SOP outputs:  geometry
- * MAT outputs:  palette
- * ROP inputs:   camera (+ geometry, palette, buffer)
+ * FIELD outputs: field
+ * TOP outputs:   image, grid
+ * SOP outputs:   geo2, geo3
+ * CHOP outputs:  palette (and MAT, for now)
+ * COMP outputs:  camera2d, camera3d
+ * $env outputs:  number
  */
 export type PortType =
   | "field" //    Field2D — continuous scalar function
-  | "buffer" //   Buffer2D — discretized 2D data (angles, heights, colors, rendered frames)
-  | "geometry" // Geometry — vertices + topology
-  | "palette" //  Palette — color set
-  | "camera" //   Camera2D — viewport + transform
+  | "image" //    Buffer2D — an image for display, RGBA or mono (renderers, composite)
+  | "grid" //     Buffer2D — a data grid of angles in radians (grid-sampler → flow-tracer)
+  | "geo2" //     Geometry<2> — 2D vertices + topology
+  | "geo3" //     Geometry<3> — 3D vertices + topology
+  | "palette" //  Palette — color table
+  | "camera2d" // Camera2D — viewport + transform
   | "camera3d" // Camera3D — 3D projection (lookAt + ortho/perspective)
-  | "number"; //  scalar value (width, height, etc.)
+  | "number"; //  scalar value: width and height, from the $env source
 
 /** Port definition — describes an input or output slot */
 export interface PortDef {
@@ -78,7 +83,7 @@ export function isEnumParam(p: ParamDef): p is EnumParamDef {
 
 // ─── Data Currencies ─────────────────────────────────────────────
 
-/** Continuous 2D → scalar function — TOP output for procedural fields */
+/** Continuous 2D → scalar function — the FIELD output, on "field" ports */
 export type Field2D = (x: number, y: number) => number;
 
 /**
@@ -92,8 +97,8 @@ export interface CanvasHandle {
 }
 
 /**
- * Discretized 2D buffer — the universal TOP data currency.
- * Basis for textures, heightmaps, angle fields, density maps.
+ * Discretized 2D buffer — the TOP data currency. It travels on "image"
+ * ports as a picture for display and on "grid" ports as a data grid.
  *
  * On CPU: `data` is a Float32Array.
  * Canvas-native path: `_canvas` carries the source canvas,
@@ -111,9 +116,10 @@ export interface Buffer2D {
 }
 
 /**
- * Geometry — the universal SOP data currency.
+ * Geometry — the SOP data currency.
  * Parameterized by dimension so 2D paths and 3D meshes
- * share the same protocol.
+ * share the same protocol; the port type says which:
+ * "geo2" carries Geometry<2> and "geo3" Geometry<3>.
  */
 export interface Geometry<D extends 2 | 3 = 2> {
   /** Flat vertex positions — D floats per vertex */
@@ -144,7 +150,7 @@ export interface Geometry<D extends 2 | 3 = 2> {
 }
 
 /**
- * Color palette — the universal MAT data currency.
+ * Color palette — the CHOP data currency, on "palette" ports.
  * Carries a set of colors for procedural selection.
  */
 export interface Palette {
@@ -155,7 +161,7 @@ export interface Palette {
 }
 
 /**
- * Camera2D — the ROP input currency for 2D viewport transforms.
+ * Camera2D — the COMP currency for 2D viewport transforms, on "camera2d" ports.
  *
  * `center` is the world-space point at screen center.
  * `zoom`   scales the scene (>1 zooms in).
@@ -170,7 +176,7 @@ export interface Camera2D {
 }
 
 /**
- * Camera3D — the ROP input currency for 3D → 2D projection.
+ * Camera3D — the COMP currency for 3D → 2D projection, on "camera3d" ports.
  *
  * `project` takes a 3D world-space point and returns
  * [screenX, screenY, depth]. depth is in normalized device

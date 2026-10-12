@@ -5,7 +5,7 @@ type Inputs = { geometry: Geometry<2>; camera: Camera2D; palette?: Palette };
 type Outputs = { buffer: Buffer2D };
 
 /**
- * Stroke Renderer — the primary 2D ROP.
+ * Stroke Renderer — the primary 2D render TOP, after TD's Render TOP.
  *
  * Renders geometry (line-strip, points, or triangles) through a Camera2D
  * into a Buffer2D. Uses an OffscreenCanvas via env.createCanvas for
@@ -27,11 +27,11 @@ export const strokeRenderer: Operator<Inputs, Outputs> = {
   category: "top",
   label: "Stroke Renderer",
   inputs: [
-    { name: "geometry", type: "geometry" },
-    { name: "camera", type: "camera" },
+    { name: "geometry", type: "geo2" },
+    { name: "camera", type: "camera2d" },
     { name: "palette", type: "palette", optional: true },
   ],
-  outputs: [{ name: "buffer", type: "buffer" }],
+  outputs: [{ name: "buffer", type: "image" }],
   params: [
     { key: "lineWidth", label: "Line Width", min: 0.5, max: 10, step: 0.1, default: 1.8 },
     { key: "strokeAlpha", label: "Stroke Alpha", min: 0, max: 1, step: 0.01, default: 0.65 },

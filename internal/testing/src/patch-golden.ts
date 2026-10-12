@@ -60,7 +60,7 @@ function sizeLabel({ width, height, dpr }: GoldenSize): string {
 export interface RenderDigest {
   /** The canvas command stream the cook recorded */
   cook: { hash: string; length: number };
-  /** The terminal image: CookEngine.findTerminalOutput("buffer"), as Frame reads it */
+  /** The terminal image: CookEngine.findTerminalOutput("image"), as Frame reads it */
   terminal: Digest;
   /** The command stream of blitBuffer2D drawing the terminal onto a w·dpr × h·dpr canvas */
   blit: { hash: string; length: number };
@@ -73,7 +73,7 @@ export interface RenderDigest {
  */
 export function renderDigest(graph: Graph, size: GoldenSize, deps: PatchGoldenDeps): RenderDigest {
   const result = cookGraph(graph, { ...size, seed: GOLDEN_SEED, registry: deps.createRegistry() });
-  const terminal = result.engine.findTerminalOutput<Buffer2D>("buffer");
+  const terminal = result.engine.findTerminalOutput<Buffer2D>("image");
   if (!terminal) throw new Error(`${graph.id}: no terminal buffer at ${sizeLabel(size)}`);
   return {
     cook: result.render,

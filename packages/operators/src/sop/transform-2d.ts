@@ -11,8 +11,8 @@ export const transform2d: Operator<Inputs, Outputs> = {
   id: "transform-2d",
   category: "sop",
   label: "Transform 2D",
-  inputs: [{ name: "geometry", type: "geometry" }],
-  outputs: [{ name: "geometry", type: "geometry" }],
+  inputs: [{ name: "geometry", type: "geo2" }],
+  outputs: [{ name: "geometry", type: "geo2" }],
   params: [
     { key: "translateX", label: "Translate X", min: -2000, max: 2000, step: 1, default: 0 },
     { key: "translateY", label: "Translate Y", min: -2000, max: 2000, step: 1, default: 0 },

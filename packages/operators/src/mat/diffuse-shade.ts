@@ -30,7 +30,7 @@ export const diffuseShade: Operator<Inputs, Outputs> = {
   category: "mat",
   label: "Diffuse Shade",
   inputs: [
-    { name: "geometry", type: "geometry" },
+    { name: "geometry", type: "geo3" },
     { name: "palette", type: "palette", optional: true },
   ],
   outputs: [{ name: "palette", type: "palette" }],

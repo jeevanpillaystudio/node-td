@@ -26,7 +26,7 @@ export const contourRing: Operator<Inputs, Outputs> = {
     { name: "width", type: "number" },
     { name: "height", type: "number" },
   ],
-  outputs: [{ name: "geometry", type: "geometry" }],
+  outputs: [{ name: "geometry", type: "geo3" }],
   params: [
     { key: "levels", label: "Levels", min: 2, max: 20, step: 1, default: 5 },
     { key: "samples", label: "Samples / Edge", min: 10, max: 300, step: 1, default: 150 },

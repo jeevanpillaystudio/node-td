@@ -17,7 +17,7 @@ export const camera2d: Operator<Inputs, Outputs> = {
     { name: "width", type: "number" },
     { name: "height", type: "number" },
   ],
-  outputs: [{ name: "camera", type: "camera" }],
+  outputs: [{ name: "camera", type: "camera2d" }],
   params: [
     { key: "centerX", label: "Center X", min: -2000, max: 2000, step: 1, default: 0 },
     { key: "centerY", label: "Center Y", min: -2000, max: 2000, step: 1, default: 0 },

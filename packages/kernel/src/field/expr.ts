@@ -3,7 +3,7 @@ import type { Field2D } from "../types";
 
 // ─── FieldExpr — Reified field computation as data ──────────────
 //
-// The free algebra over 2D scalar fields. Every TOP field operator
+// The free algebra over 2D scalar fields. Every FIELD operator
 // produces a FieldExpr tree instead of an opaque closure.
 //
 // Two interpreters exist:

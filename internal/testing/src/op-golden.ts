@@ -87,7 +87,7 @@ const fixtureImage: Operator<{ width: number; height: number }, { buffer: Buffer
     { name: "width", type: "number" },
     { name: "height", type: "number" },
   ],
-  outputs: [{ name: "buffer", type: "buffer" }],
+  outputs: [{ name: "buffer", type: "image" }],
   params: [
     {
       key: "pattern",
@@ -133,7 +133,7 @@ const fixturePolyline: Operator<{ width: number; height: number }, { geometry: G
     { name: "width", type: "number" },
     { name: "height", type: "number" },
   ],
-  outputs: [{ name: "geometry", type: "geometry" }],
+  outputs: [{ name: "geometry", type: "geo2" }],
   params: [],
   evaluate({ width, height }) {
     const n = 12;

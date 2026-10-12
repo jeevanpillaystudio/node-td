@@ -21,10 +21,10 @@ export const project3d: Operator<Inputs, Outputs> = {
   category: "sop",
   label: "Project 3D → 2D",
   inputs: [
-    { name: "geometry", type: "geometry" },
+    { name: "geometry", type: "geo3" },
     { name: "camera3d", type: "camera3d" },
   ],
-  outputs: [{ name: "geometry", type: "geometry" }],
+  outputs: [{ name: "geometry", type: "geo2" }],
   params: [],
   evaluate({ geometry: geo, camera3d }) {
     const { project } = camera3d;

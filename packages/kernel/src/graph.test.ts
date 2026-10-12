@@ -31,7 +31,7 @@ const geoSource: Operator = {
   category: "sop",
   label: "Geometry Source",
   inputs: [],
-  outputs: [{ name: "geometry", type: "geometry" }],
+  outputs: [{ name: "geometry", type: "geo2" }],
   params: [
     { key: "count", label: "Count", min: 1, max: 100, step: 1, default: 10 },
     {
@@ -65,8 +65,8 @@ const geoMerge: Operator = {
   id: "geo-merge",
   category: "sop",
   label: "Geometry Merge",
-  inputs: [{ name: "geometry", type: "geometry", variadic: true }],
-  outputs: [{ name: "geometry", type: "geometry" }],
+  inputs: [{ name: "geometry", type: "geo2", variadic: true }],
+  outputs: [{ name: "geometry", type: "geo2" }],
   params: [],
   evaluate: ({ geometry }) => ({ geometry }),
 };
@@ -244,7 +244,7 @@ describe("validateGraph", () => {
       wire("g", "geometry", "b", "n"),
     ]);
     expect(validationError(g)).toBe(
-      'Wire: type mismatch — "g.geometry" (geometry) → "b.n" (number)',
+      'Wire: type mismatch — "g.geometry" (geo2) → "b.n" (number)',
     );
   });
 
@@ -307,7 +307,7 @@ describe("validateGraph on $env wires", () => {
   test("type-checks them against the declared outputs", () => {
     const g = graph({ merge: { type: "geo-merge" } }, [wire("$env", "width", "merge", "geometry")]);
     expect(validationError(g)).toBe(
-      'Wire: type mismatch — "$env.width" (number) → "merge.geometry" (geometry)',
+      'Wire: type mismatch — "$env.width" (number) → "merge.geometry" (geo2)',
     );
   });
 

@@ -163,7 +163,7 @@ function FrameView({ graph, frameId, registry, seed }: FrameViewProps) {
       // instead, even if another branch still produced an image.
       const failure = reportNodeErrors(graph.name, engine.stats.errors);
       // The buffer is already at full pixel resolution (DPR-aware)
-      const buf = engine.findTerminalOutput<Buffer2D>("buffer");
+      const buf = engine.findTerminalOutput<Buffer2D>("image");
       const ctx = canvas.getContext("2d");
       if (failure) message = failure;
       else if (!buf) message = "Nothing to draw: the graph has no image output.";

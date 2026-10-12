@@ -39,7 +39,7 @@ export const circlePack: Operator<Inputs, Outputs> = {
     { name: "width", type: "number" },
     { name: "height", type: "number" },
   ],
-  outputs: [{ name: "geometry", type: "geometry" }],
+  outputs: [{ name: "geometry", type: "geo2" }],
   params: [
     { key: "minRadius", label: "Min Seed Radius", min: 10, max: 150, step: 5, default: 50 },
     { key: "margin", label: "Edge Margin", min: 0, max: 300, step: 10, default: 100 },

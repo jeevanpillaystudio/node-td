@@ -36,8 +36,8 @@ export const composite: Operator<Inputs, Outputs> = {
   id: "composite",
   category: "top",
   label: "Composite",
-  inputs: [{ name: "layers", type: "buffer", variadic: true }],
-  outputs: [{ name: "buffer", type: "buffer" }],
+  inputs: [{ name: "layers", type: "image", variadic: true }],
+  outputs: [{ name: "buffer", type: "image" }],
   params: [
     { key: "mode", label: "Blend Mode", min: 0, max: 3, step: 1, default: 0 },
   ],

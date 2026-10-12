@@ -19,7 +19,7 @@ export const parametricSurface: Operator<Inputs, Outputs> = {
     { name: "width", type: "number" },
     { name: "height", type: "number" },
   ],
-  outputs: [{ name: "geometry", type: "geometry" }],
+  outputs: [{ name: "geometry", type: "geo2" }],
   params: [
     { key: "uSegments", label: "U Segments", min: 4, max: 200, step: 1, default: 60 },
     { key: "vSegments", label: "V Segments", min: 4, max: 200, step: 1, default: 60 },

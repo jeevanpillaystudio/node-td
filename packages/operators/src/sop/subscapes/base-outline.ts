@@ -32,7 +32,7 @@ export const baseOutline: Operator<Inputs, Outputs> = {
     { name: "width", type: "number" },
     { name: "height", type: "number" },
   ],
-  outputs: [{ name: "geometry", type: "geometry" }],
+  outputs: [{ name: "geometry", type: "geo3" }],
   params: [
     { key: "samples", label: "Samples / Edge", min: 10, max: 300, step: 1, default: 150 },
     { key: "amplitude", label: "Height", min: 0, max: 500, step: 1, default: 80 },

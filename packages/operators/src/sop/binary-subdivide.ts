@@ -41,7 +41,7 @@ export const binarySubdivide: Operator<Inputs, Outputs> = {
     { name: "width", type: "number" },
     { name: "height", type: "number" },
   ],
-  outputs: [{ name: "geometry", type: "geometry" }],
+  outputs: [{ name: "geometry", type: "geo2" }],
   params: [
     { key: "maxDepth", label: "Max Depth", min: 1, max: 10, step: 1, default: 5 },
     { key: "minSize", label: "Min Cell Size", min: 2, max: 200, step: 1, default: 10 },

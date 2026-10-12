@@ -144,7 +144,7 @@ const scatter: Operator = {
   category: "sop",
   label: "Scatter",
   inputs: [],
-  outputs: [{ name: "points", type: "geometry" }],
+  outputs: [{ name: "points", type: "geo2" }],
   params: [{ key: "margin", label: "Margin", min: 0, max: 300, step: 10, default: 100 }],
   evaluate: (_inputs, params, env) => {
     const margin = params.margin;
@@ -164,7 +164,7 @@ const draws: Operator = {
   category: "sop",
   label: "Draws",
   inputs: [],
-  outputs: [{ name: "values", type: "geometry" }],
+  outputs: [{ name: "values", type: "geo2" }],
   params: [
     { key: "n", label: "N", min: 0, max: 10, step: 1, default: 3 },
     { key: "fail", label: "Fail", min: 0, max: 1, step: 1, default: 0 },
@@ -185,7 +185,7 @@ const count: Operator = {
   id: "count",
   category: "sop",
   label: "Count",
-  inputs: [{ name: "values", type: "geometry" }],
+  inputs: [{ name: "values", type: "geo2" }],
   outputs: [{ name: "n", type: "number" }],
   params: [],
   evaluate: ({ values }) => ({ n: values.length }),

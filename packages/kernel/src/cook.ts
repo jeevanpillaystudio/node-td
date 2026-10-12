@@ -95,7 +95,7 @@ export interface CookStats {
  *   const engine = new CookEngine(graph, registry);
  *   engine.setParams(values);        // diff against previous — dirty only what changed
  *   engine.cook(env);                // setEnv(values, capabilities), then run()
- *   const buf = engine.findTerminalOutput<Buffer2D>("buffer");
+ *   const buf = engine.findTerminalOutput<Buffer2D>("image");
  *   console.log(engine.stats);       // { cooked: 3, cached: 12, total: 15, errors, ... }
  */
 export class CookEngine {

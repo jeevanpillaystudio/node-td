@@ -16,12 +16,12 @@ export const flowTracer: Operator<Inputs, Outputs> = {
   category: "sop",
   label: "Flow Tracer",
   inputs: [
-    { name: "buffer", type: "buffer" },
-    { name: "geometry", type: "geometry" },
+    { name: "buffer", type: "grid" },
+    { name: "geometry", type: "geo2" },
     { name: "width", type: "number" },
     { name: "height", type: "number" },
   ],
-  outputs: [{ name: "geometry", type: "geometry" }],
+  outputs: [{ name: "geometry", type: "geo2" }],
   params: [
     { key: "numSteps", label: "Trace Steps", min: 50, max: 500, step: 10, default: 250 },
     { key: "stepLength", label: "Step Length (px)", min: 2, max: 40, step: 1, default: 15 },

@@ -25,10 +25,10 @@ export const surfaceLift: Operator<Inputs, Outputs> = {
   category: "sop",
   label: "Surface Lift",
   inputs: [
-    { name: "geometry", type: "geometry" },
+    { name: "geometry", type: "geo2" },
     { name: "field", type: "field" },
   ],
-  outputs: [{ name: "geometry", type: "geometry" }],
+  outputs: [{ name: "geometry", type: "geo3" }],
   params: [
     { key: "amplitude", label: "Height", min: 0, max: 500, step: 1, default: 120 },
     { key: "baseY", label: "Base Y", min: -500, max: 500, step: 1, default: 0 },

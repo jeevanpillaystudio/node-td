@@ -20,7 +20,7 @@ export const fieldRender: Operator<Inputs, Outputs> = {
     { name: "width", type: "number" },
     { name: "height", type: "number" },
   ],
-  outputs: [{ name: "buffer", type: "buffer" }],
+  outputs: [{ name: "buffer", type: "image" }],
   params: [
     { key: "scale", label: "Resolution Scale", min: 0.25, max: 2, step: 0.25, default: 1 },
   ],

@@ -130,7 +130,7 @@ describe("cook outputs are immutable", () => {
         const engine = new CookEngine(graph, fingerprintingRegistry(seen));
         const first = new Map(engine.cook(cookEnv()));
 
-        const terminal = engine.findTerminalOutput<Buffer2D>("buffer");
+        const terminal = engine.findTerminalOutput<Buffer2D>("image");
         if (!terminal) throw new Error(`${graph.id}: no terminal buffer`);
         const firstBlit = blit(terminal);
 
@@ -147,7 +147,7 @@ describe("cook outputs are immutable", () => {
         const second = engine.cook(cookEnv());
         expect(engine.stats.cooked).toBe(0);
         for (const [key, outputs] of first) expect(second.get(key)).toBe(outputs);
-        expect(engine.findTerminalOutput<Buffer2D>("buffer")).toBe(terminal);
+        expect(engine.findTerminalOutput<Buffer2D>("image")).toBe(terminal);
         expect(blit(terminal)).toEqual(firstBlit);
 
         // Re-cooking a composite alone takes the path its first cook took

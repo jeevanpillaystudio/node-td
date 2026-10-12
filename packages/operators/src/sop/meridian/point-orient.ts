@@ -25,10 +25,10 @@ export const pointOrient: Operator<Inputs, Outputs> = {
   category: "sop",
   label: "Point Orient",
   inputs: [
-    { name: "geometry", type: "geometry" },
+    { name: "geometry", type: "geo2" },
     { name: "field", type: "field" },
   ],
-  outputs: [{ name: "geometry", type: "geometry" }],
+  outputs: [{ name: "geometry", type: "geo2" }],
   params: [
     { key: "baseAngle",   label: "Base Angle (rad)", min: -3.14, max: 3.14,   step: 0.01, default: 0 },
     { key: "angleScale",  label: "Angle Scale",       min: 0,    max: 6.28,   step: 0.1,  default: 3.14 },

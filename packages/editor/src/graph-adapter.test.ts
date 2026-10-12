@@ -7,8 +7,8 @@ function op(id: string, inputs: string[], outputs: string[]): Operator {
     id,
     category: "sop",
     label: id,
-    inputs: inputs.map((name) => ({ name, type: "geometry" })),
-    outputs: outputs.map((name) => ({ name, type: "geometry" })),
+    inputs: inputs.map((name) => ({ name, type: "geo2" })),
+    outputs: outputs.map((name) => ({ name, type: "geo2" })),
     params: [],
     evaluate: () => ({}),
   };

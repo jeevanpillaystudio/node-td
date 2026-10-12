@@ -24,10 +24,10 @@ export const geometricNormal: Operator<Inputs, Outputs> = {
   category: "sop",
   label: "Geometric Normal",
   inputs: [
-    { name: "geometry", type: "geometry" },
+    { name: "geometry", type: "geo3" },
     { name: "field", type: "field" },
   ],
-  outputs: [{ name: "geometry", type: "geometry" }],
+  outputs: [{ name: "geometry", type: "geo3" }],
   params: [
     { key: "epsilon", label: "Epsilon", min: 0.0001, max: 10, step: 0.0001, default: 0.00001 },
     { key: "amplitude", label: "Height Scale", min: 0, max: 500, step: 1, default: 120 },

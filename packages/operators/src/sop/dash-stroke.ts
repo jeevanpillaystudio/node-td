@@ -9,8 +9,8 @@ export const dashStroke: Operator<Inputs, Outputs> = {
   id: "dash-stroke",
   category: "sop",
   label: "Dash Stroke",
-  inputs: [{ name: "geometry", type: "geometry" }],
-  outputs: [{ name: "geometry", type: "geometry" }],
+  inputs: [{ name: "geometry", type: "geo2" }],
+  outputs: [{ name: "geometry", type: "geo2" }],
   params: [],
   evaluate({ geometry }, _params, env) {
     const rand = () => env.rng.random();

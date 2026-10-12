@@ -30,11 +30,11 @@ export const visibilityCull: Operator<Inputs, Outputs> = {
   category: "sop",
   label: "Visibility Cull",
   inputs: [
-    { name: "geometry", type: "geometry" },
-    { name: "mesh", type: "geometry" },
+    { name: "geometry", type: "geo3" },
+    { name: "mesh", type: "geo3" },
     { name: "camera3d", type: "camera3d" },
   ],
-  outputs: [{ name: "geometry", type: "geometry" }],
+  outputs: [{ name: "geometry", type: "geo3" }],
   params: [
     { key: "bypass", label: "Bypass", min: 0, max: 1, step: 1, default: 0 },
   ],

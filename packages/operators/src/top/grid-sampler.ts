@@ -13,7 +13,7 @@ export const gridSampler: Operator<Inputs, Outputs> = {
     { name: "width", type: "number" },
     { name: "height", type: "number" },
   ],
-  outputs: [{ name: "buffer", type: "buffer" }],
+  outputs: [{ name: "buffer", type: "grid" }],
   params: [
     { key: "resolution", label: "Resolution (px)", min: 5, max: 60, step: 1, default: 20 },
   ],

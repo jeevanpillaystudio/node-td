@@ -15,8 +15,8 @@ export const merge: Operator<Inputs, Outputs> = {
   id: "merge",
   category: "sop",
   label: "Merge",
-  inputs: [{ name: "geometry", type: "geometry", variadic: true }],
-  outputs: [{ name: "geometry", type: "geometry" }],
+  inputs: [{ name: "geometry", type: "geo2", variadic: true }],
+  outputs: [{ name: "geometry", type: "geo2" }],
   params: [],
 
   evaluate({ geometry: geos }) {

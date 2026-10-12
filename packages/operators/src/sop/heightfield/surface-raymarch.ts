@@ -30,11 +30,11 @@ export const surfaceRaymarch: Operator<Inputs, Outputs> = {
   category: "sop",
   label: "Surface Raymarch",
   inputs: [
-    { name: "seeds", type: "geometry" },
+    { name: "seeds", type: "geo2" },
     { name: "camera3d", type: "camera3d" },
     { name: "field", type: "field" },
   ],
-  outputs: [{ name: "geometry", type: "geometry" }],
+  outputs: [{ name: "geometry", type: "geo2" }],
   params: [
     { key: "amplitude", label: "Terrain Amplitude", min: 1, max: 500, step: 1, default: 80 },
     { key: "maxSteps", label: "Max Steps", min: 50, max: 500, step: 10, default: 150 },
