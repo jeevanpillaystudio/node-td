@@ -197,7 +197,7 @@ function glFloat(n: number): string {
   const e = s.indexOf("e");
   const mantissa = e < 0 ? s : s.slice(0, e);
   const exponent = e < 0 ? "" : s.slice(e);
-  return (mantissa.includes(".") ? mantissa : mantissa + ".0") + exponent;
+  return (mantissa.includes(".") ? mantissa : `${mantissa}.0`) + exponent;
 }
 
 interface GenCtx {
