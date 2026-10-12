@@ -1,18 +1,20 @@
 import { defineOperator } from "@node-td/kernel";
-
-interface Quad {
-  x: number;
-  y: number;
-  size: number;
-}
+import { type Cell, cellsGeometry } from "./cells";
 
 /**
  * Recursive quadtree subdivision of a rectangular area.
+ *
+ * The area is tiled with square roots the size of its shorter side; the
+ * last row or column of roots runs past the area and is clipped to it, and
+ * a quad wholly outside it is dropped.
  *
  * Without a field: subdivides uniformly to maxDepth.
  * With a field: field(cx, cy) at each quad's center determines whether
  * to subdivide further — values above `threshold` trigger subdivision.
  * Produces quilt-like patterns with varying density.
+ *
+ * Output: triangles, two per leaf, with cellId and depth attributes, as
+ * binary-subdivide makes them.
  */
 export const quadtreeSubdivide = defineOperator({
   id: "quadtree-subdivide",
@@ -30,16 +32,24 @@ export const quadtreeSubdivide = defineOperator({
     { key: "minSize", label: "Min Cell Size", min: 4, max: 100, step: 1, default: 8 },
   ],
   evaluate({ field, width, height }, params) {
-    const maxDepth = params.maxDepth;
+    const maxDepth = Math.round(params.maxDepth);
     const threshold = params.threshold;
     const minSize = params.minSize;
 
-    const leaves: Quad[] = [];
+    const leaves: Cell[] = [];
+
+    // A leaf, clipped to the area
+    const leaf = (x: number, y: number, size: number, depth: number): void => {
+      leaves.push({ x, y, w: Math.min(size, width - x), h: Math.min(size, height - y), depth });
+    };
 
     function subdivide(x: number, y: number, size: number, depth: number): void {
+      // Wholly outside the area
+      if (x >= width || y >= height) return;
+
       // Stop conditions
       if (depth >= maxDepth || size <= minSize) {
-        leaves.push({ x, y, size });
+        leaf(x, y, size, depth);
         return;
       }
 
@@ -49,7 +59,7 @@ export const quadtreeSubdivide = defineOperator({
       const shouldSplit = field ? field(cx, cy) > threshold : true;
 
       if (!shouldSplit) {
-        leaves.push({ x, y, size });
+        leaf(x, y, size, depth);
         return;
       }
 
@@ -60,53 +70,18 @@ export const quadtreeSubdivide = defineOperator({
       subdivide(x + half, y + half, half, depth + 1);
     }
 
-    // Start from square cells covering the area
-    const cellSize = Math.max(width, height);
-    const cols = Math.ceil(width / cellSize);
-    const rows = Math.ceil(height / cellSize);
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        subdivide(c * cellSize, r * cellSize, cellSize, 0);
+    // Square roots the size of the shorter side, tiling the area
+    const rootSize = Math.min(width, height);
+    if (rootSize > 0) {
+      const cols = Math.ceil(width / rootSize);
+      const rows = Math.ceil(height / rootSize);
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          subdivide(c * rootSize, r * rootSize, rootSize, 0);
+        }
       }
     }
 
-    // Convert quads to triangulated geometry
-    const vertexCount = leaves.length * 4;
-    const positions = new Float32Array(vertexCount * 2);
-    const indices = new Uint32Array(leaves.length * 6); // 2 triangles per quad
-
-    for (let i = 0; i < leaves.length; i++) {
-      const q = leaves[i]!;
-      const base = i * 4;
-
-      // Vertices: TL, TR, BL, BR
-      positions[base * 2] = q.x;
-      positions[base * 2 + 1] = q.y;
-      positions[(base + 1) * 2] = q.x + q.size;
-      positions[(base + 1) * 2 + 1] = q.y;
-      positions[(base + 2) * 2] = q.x;
-      positions[(base + 2) * 2 + 1] = q.y + q.size;
-      positions[(base + 3) * 2] = q.x + q.size;
-      positions[(base + 3) * 2 + 1] = q.y + q.size;
-
-      // Two triangles: TL-TR-BL, TR-BR-BL
-      const ii = i * 6;
-      indices[ii] = base;
-      indices[ii + 1] = base + 1;
-      indices[ii + 2] = base + 2;
-      indices[ii + 3] = base + 1;
-      indices[ii + 4] = base + 3;
-      indices[ii + 5] = base + 2;
-    }
-
-    return {
-      geometry: {
-        positions,
-        vertexCount,
-        dim: 2,
-        topology: "triangles",
-        indices,
-      },
-    };
+    return { geometry: cellsGeometry(leaves, maxDepth) };
   },
 });

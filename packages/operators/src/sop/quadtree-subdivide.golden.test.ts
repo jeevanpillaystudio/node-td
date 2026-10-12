@@ -10,7 +10,7 @@ opGolden(quadtreeSubdivide, {
     nodes: { noise: { type: "simplex-noise" }, quad: { type: "quadtree-subdivide" } },
     wires: [w("noise.field", "quad.field"), ...extent],
   },
-  // The root cell is max(width, height) square, so it overhangs a landscape extent
+  // Roots the height square: two columns, the second clipped to the extent
   "landscape, field, maxDepth 4, minSize 16": {
     nodes: {
       noise: { type: "simplex-noise" },

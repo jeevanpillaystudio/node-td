@@ -5,7 +5,10 @@ exports[`quadtree-subdivide golden no field 1`] = `
   "nodes": {
     "quad": {
       "geometry": {
-        "attributes": null,
+        "attributes": {
+          "cellId": "a5bef9a5",
+          "depth": "b3f59dc5",
+        },
         "dim": 2,
         "indices": "6e479d54",
         "kind": "geometry",
@@ -52,7 +55,10 @@ exports[`quadtree-subdivide golden field, threshold 0.5 1`] = `
     },
     "quad": {
       "geometry": {
-        "attributes": null,
+        "attributes": {
+          "cellId": "518ae625",
+          "depth": "7ec44ec5",
+        },
         "dim": 2,
         "indices": "00cdaf89",
         "kind": "geometry",
@@ -99,29 +105,32 @@ exports[`quadtree-subdivide golden landscape, field, maxDepth 4, minSize 16 1`] 
     },
     "quad": {
       "geometry": {
-        "attributes": null,
+        "attributes": {
+          "cellId": "0a26125d",
+          "depth": "efc5de35",
+        },
         "dim": 2,
-        "indices": "ddcdbed0",
+        "indices": "518a9d02",
         "kind": "geometry",
         "normals": null,
         "positions": {
-          "hash": "a1951e11",
+          "hash": "0064ea45",
           "stats": [
             {
               "max": 640,
-              "mean": 442.182,
+              "mean": 332.108,
               "min": 0,
             },
             {
-              "max": 640,
-              "mean": 315.636,
+              "max": 400,
+              "mean": 199.096,
               "min": 0,
             },
           ],
         },
         "stripOffsets": null,
         "topology": "triangles",
-        "vertexCount": 220,
+        "vertexCount": 332,
       },
     },
   },
