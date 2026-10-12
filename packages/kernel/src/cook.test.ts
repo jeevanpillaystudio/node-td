@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { CookEngine } from "./cook";
-import type { Graph, Wire } from "./graph";
+import { type Graph, GraphValidationError, type Wire } from "./graph";
 import { OperatorRegistry } from "./registry";
 import { SeededRNG } from "./rng";
 import type { GraphEnv, Operator } from "./types";
@@ -90,6 +90,30 @@ const broken: Operator = {
   },
 };
 
+/** Emits its input plus one, or throws while its param `fail` is 1. */
+const flaky: Operator = {
+  id: "flaky",
+  category: "top",
+  label: "Flaky",
+  inputs: [{ name: "n", type: "number" }],
+  outputs: [{ name: "n", type: "number" }],
+  params: [{ key: "fail", label: "Fail", min: 0, max: 1, step: 1, default: 0 }],
+  evaluate: ({ n }, params) => {
+    if (params.fail === 1) throw new Error("flaky failed");
+    return { n: n + 1 };
+  },
+};
+
+/** Declares no evaluate. */
+const inert: Operator = {
+  id: "inert",
+  category: "top",
+  label: "Inert",
+  inputs: [],
+  outputs: [{ name: "n", type: "number" }],
+  params: [],
+};
+
 /**
  * Stands in for circle-pack: draws from the shared env.rng and offsets
  * the draws by its `margin` param, so the output depends on both.
@@ -114,7 +138,7 @@ const scatter: Operator = {
 
 function makeRegistry(): OperatorRegistry {
   const registry = new OperatorRegistry();
-  for (const op of [source, pass, echoParams, collect, dprReader, broken, scatter]) {
+  for (const op of [source, pass, echoParams, collect, dprReader, broken, flaky, inert, scatter]) {
     registry.register(op);
   }
   return registry;
@@ -146,6 +170,38 @@ const chain = graph(
   },
   [wire("a", "n", "b", "n"), wire("b", "n", "c", "n")],
 );
+
+// ─── Construction ────────────────────────────────────────────────
+
+describe("construction", () => {
+  test("validates the graph, throwing a GraphValidationError that lists every issue", () => {
+    // b's required input is not wired, and c reads an output a lacks
+    const g = graph({ a: { type: "source" }, b: { type: "pass" }, c: { type: "pass" } }, [
+      wire("a", "nope", "c", "n"),
+    ]);
+    let error: unknown;
+    try {
+      new CookEngine(g, makeRegistry());
+    } catch (err) {
+      error = err;
+    }
+    expect(error).toBeInstanceOf(GraphValidationError);
+    expect((error as GraphValidationError).issues).toEqual([
+      'Wire: "a" has no output "nope"',
+      'Node "b": required input "n" is not wired',
+    ]);
+  });
+
+  test("rejects a cycle by name", () => {
+    const g = graph({ a: { type: "pass" }, b: { type: "pass" } }, [
+      wire("a", "n", "b", "n"),
+      wire("b", "n", "a", "n"),
+    ]);
+    expect(() => new CookEngine(g, makeRegistry())).toThrow(
+      'Graph contains a cycle through "a", "b"',
+    );
+  });
+});
 
 // ─── Dirty tracking ──────────────────────────────────────────────
 
@@ -194,6 +250,25 @@ describe("setParams dirty tracking", () => {
     engine.setParams({ "a.k": 5 });
     expect(cooked(engine)).toEqual(["d"]);
     expect(engine.getOutput("d")).toEqual({ n: 1 });
+  });
+
+  test("setParams copies its argument (in-place edit detected)", () => {
+    const engine = new CookEngine(chain, makeRegistry());
+    const params: Record<string, number> = { "a.k": 1 };
+    engine.setParams(params);
+    engine.cook(ENV);
+    params["a.k"] = 2;
+    engine.setParams(params);
+    expect(engine.needsCook).toBe(true);
+    engine.cook(ENV);
+    expect(engine.getOutput("a")).toEqual({ n: 2 });
+  });
+
+  test("a key naming no node dirties nothing", () => {
+    const engine = new CookEngine(chain, makeRegistry());
+    cooked(engine);
+    engine.setParams({ "zzz.k": 3 });
+    expect(engine.needsCook).toBe(false);
   });
 
   test("a key without a dot is ignored", () => {
@@ -334,48 +409,91 @@ describe("caching", () => {
   });
 });
 
+// ─── Per-node errors ─────────────────────────────────────────────
+
+describe("per-node errors", () => {
+  test("a throwing node does not stop independent branches", () => {
+    // "bad" is first in key order, so it cooks before "good"
+    const g = graph({ bad: { type: "broken" }, good: { type: "source" } }, []);
+    const engine = new CookEngine(g, makeRegistry());
+    engine.cook(ENV);
+    expect(engine.getOutput("good")).toEqual({ n: 1 });
+  });
+
+  test("records the error, skips the nodes downstream, and counts them in stats", () => {
+    // bad → p1 → p2, plus an independent good
+    const g = graph(
+      { bad: { type: "broken" }, p1: { type: "pass" }, p2: { type: "pass" }, good: { type: "source" } },
+      [wire("bad", "n", "p1", "n"), wire("p1", "n", "p2", "n")],
+    );
+    const engine = new CookEngine(g, makeRegistry());
+    const cache = engine.cook(ENV);
+
+    const { errors } = engine.stats;
+    expect([...errors.keys()]).toEqual(["bad", "p1", "p2"]);
+    const bad = errors.get("bad");
+    expect(bad?.kind).toBe("error");
+    expect(bad?.kind === "error" && (bad.error as Error).message).toBe("boom");
+    expect(errors.get("p1")).toEqual({ kind: "skipped", cause: "bad" });
+    expect(errors.get("p2")).toEqual({ kind: "skipped", cause: "bad" });
+    expect(engine.stats).toMatchObject({ cooked: 1, cached: 0, total: 4 });
+    expect([...cache.keys()]).toEqual(["good"]);
+  });
+
+  test("a failed node and its descendants stay dirty, keep no output, and recover", () => {
+    // a → f → p, plus an independent d
+    const g = graph(
+      { a: { type: "source" }, f: { type: "flaky" }, p: { type: "pass" }, d: { type: "source" } },
+      [wire("a", "n", "f", "n"), wire("f", "n", "p", "n")],
+    );
+    const engine = new CookEngine(g, makeRegistry());
+    engine.cook(ENV);
+    expect(engine.getOutput("p")).toEqual({ n: 2 });
+
+    engine.setParams({ "f.fail": 1 });
+    expect(cooked(engine)).toEqual([]);
+    expect([...engine.stats.errors.keys()]).toEqual(["f", "p"]);
+    expect(engine.getOutput("f")).toBeUndefined();
+    expect(engine.getOutput("p")).toBeUndefined();
+    expect(engine.getOutput("d")).toEqual({ n: 1 });
+    expect(engine.needsCook).toBe(true);
+
+    // Nothing changed: the next cook tries the failed nodes again
+    expect(cooked(engine)).toEqual([]);
+    expect([...engine.stats.errors.keys()]).toEqual(["f", "p"]);
+
+    engine.setParams({ "f.fail": 0 });
+    expect(cooked(engine)).toEqual(["f", "p"]);
+    expect(engine.stats.errors.size).toBe(0);
+    expect(engine.getOutput("p")).toEqual({ n: 2 });
+    expect(engine.needsCook).toBe(false);
+  });
+
+  test("an operator without evaluate is an error, not a silent cache hit", () => {
+    const g = graph({ i: { type: "inert" }, p: { type: "pass" } }, [wire("i", "n", "p", "n")]);
+    const engine = new CookEngine(g, makeRegistry());
+    engine.cook(ENV);
+    const failure = engine.stats.errors.get("i");
+    expect(failure?.kind === "error" && (failure.error as Error).message).toBe(
+      'Operator "inert" has no evaluate',
+    );
+    expect(engine.stats.errors.get("p")).toEqual({ kind: "skipped", cause: "i" });
+    expect(engine.stats).toMatchObject({ cooked: 0, cached: 0, total: 2 });
+  });
+});
+
 // ─── Known bugs ──────────────────────────────────────────────────
 //
 // Each test below is marked failing: it passes while its bug exists and
 // fails once the bug is fixed, so the fix must turn it into a plain test.
 
 describe("known bugs", () => {
-  test.failing("setParams copies its argument (in-place edit detected)", () => {
-    const engine = new CookEngine(chain, makeRegistry());
-    const params: Record<string, number> = { "a.k": 1 };
-    engine.setParams(params);
-    engine.cook(ENV);
-    params["a.k"] = 2;
-    engine.setParams(params);
-    expect(engine.needsCook).toBe(true);
-    engine.cook(ENV);
-    expect(engine.getOutput("a")).toEqual({ n: 2 });
-  });
-
   test.failing("a dpr change re-cooks dpr readers", () => {
     const g = graph({ r: { type: "dpr-reader" } }, []);
     const engine = new CookEngine(g, makeRegistry());
     engine.cook({ ...ENV, dpr: 1 });
     engine.cook({ ...ENV, dpr: 2 });
     expect(engine.getOutput("r")).toEqual({ dpr: 2 });
-  });
-
-  test.failing("a throwing node does not stop independent branches", () => {
-    // "bad" is first in key order, so it cooks before "good"
-    const g = graph({ bad: { type: "broken" }, good: { type: "source" } }, []);
-    const engine = new CookEngine(g, makeRegistry());
-    try {
-      engine.cook(ENV);
-    } catch {
-      // the fix may report the error by throwing after the cook, or in stats
-    }
-    expect(engine.getOutput("good")).toEqual({ n: 1 });
-  });
-
-  test.failing("validateGraph runs in the constructor", () => {
-    // b's required input is not wired: validateGraph rejects this graph
-    const g = graph({ a: { type: "source" }, b: { type: "pass" } }, []);
-    expect(() => new CookEngine(g, makeRegistry())).toThrow();
   });
 
   test.failing("incremental cook equals full cook with two rng nodes", () => {

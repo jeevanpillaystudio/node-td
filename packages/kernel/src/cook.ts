@@ -1,10 +1,12 @@
+import { isEnvSource } from "./env";
 import type { Graph, Wire } from "./graph";
 import type { Operator, GraphEnv, PortType } from "./types";
-import { topoSort } from "./graph";
+import { topoSort, validateGraph } from "./graph";
 
 // ─── Registry interface (avoids circular import) ─────────────────
 
 interface RegistryLike {
+  has(id: string): boolean;
   resolve(id: string): Operator;
 }
 
@@ -19,17 +21,26 @@ declare const performance: { now(): number };
 
 // ─── Cook Stats ──────────────────────────────────────────────────
 
+/** Why a node has no output after a cook. */
+export type NodeError =
+  /** Its operator threw while evaluating it */
+  | { kind: "error"; error: unknown }
+  /** It was not evaluated, because `cause`, a node upstream of it, threw */
+  | { kind: "skipped"; cause: string };
+
 export interface CookStats {
   /** Number of nodes that were re-evaluated */
   cooked: number;
-  /** Number of nodes that were skipped (cache hit) */
+  /** Number of clean nodes, whose cached outputs were reused */
   cached: number;
-  /** Total nodes in the graph */
+  /** Total nodes in the graph: cooked + cached + errors.size */
   total: number;
   /** Wall-clock time of the cook pass (ms) */
   elapsed: number;
   /** Per-node timing for nodes that cooked (ms) */
   timing: Map<string, number>;
+  /** Nodes that threw, and the nodes downstream of them that were skipped, in cook order */
+  errors: Map<string, NodeError>;
 }
 
 // ─── CookEngine ──────────────────────────────────────────────────
@@ -41,13 +52,19 @@ export interface CookStats {
  * - Nodes only re-evaluate when an upstream dependency changed.
  * - Outputs are cached per node between cooks.
  * - Dirty flags propagate forward through the DAG.
+ * - A node that throws is flagged with its error, and so are the nodes
+ *   downstream of it, which are skipped; independent branches still cook.
+ *   They stay dirty and keep no output, so the next cook tries them again.
+ *
+ * The constructor runs validateGraph and throws its GraphValidationError,
+ * so a cook only ever sees a well-formed graph.
  *
  * Usage:
  *   const engine = new CookEngine(graph, registry);
  *   engine.setParams(values);        // diff against previous — dirty only what changed
  *   engine.cook(env);                // evaluate dirty nodes, cache results
  *   const buf = engine.findTerminalOutput<Buffer2D>("buffer");
- *   console.log(engine.stats);       // { cooked: 3, cached: 12, total: 15, ... }
+ *   console.log(engine.stats);       // { cooked: 3, cached: 12, total: 15, errors, ... }
  */
 export class CookEngine {
   private readonly graph: Graph;
@@ -68,9 +85,17 @@ export class CookEngine {
   private readonly dirty = new Set<string>();
   private prevParams: Record<string, number> = {};
   private prevEnvWires: Record<string, unknown> = {};
-  private _stats: CookStats = { cooked: 0, cached: 0, total: 0, elapsed: 0, timing: new Map() };
+  private _stats: CookStats = {
+    cooked: 0,
+    cached: 0,
+    total: 0,
+    elapsed: 0,
+    timing: new Map(),
+    errors: new Map(),
+  };
 
   constructor(graph: Graph, registry: RegistryLike) {
+    validateGraph(graph, registry);
     this.graph = graph;
     this.registry = registry;
 
@@ -81,7 +106,7 @@ export class CookEngine {
     this.downstream = new Map();
     for (const key of this.order) this.downstream.set(key, new Set());
     for (const w of graph.wires) {
-      if (w.from === "$env") continue;
+      if (isEnvSource(w.from)) continue;
       this.downstream.get(w.from)?.add(w.to);
     }
 
@@ -95,7 +120,7 @@ export class CookEngine {
     // Build env-wire dependents
     this.envDependents = new Map();
     for (const w of graph.wires) {
-      if (w.from !== "$env") continue;
+      if (!isEnvSource(w.from)) continue;
       if (!this.envDependents.has(w.output)) {
         this.envDependents.set(w.output, new Set());
       }
@@ -105,7 +130,7 @@ export class CookEngine {
     // Pre-compute terminal nodes (no downstream consumers)
     const hasConsumer = new Set<string>();
     for (const w of graph.wires) {
-      if (w.from !== "$env") hasConsumer.add(w.from);
+      if (!isEnvSource(w.from)) hasConsumer.add(w.from);
     }
     this.terminalKeys = new Set<string>();
     for (const key of this.order) {
@@ -120,6 +145,8 @@ export class CookEngine {
 
   /** BFS forward from `start`, marking every reachable node dirty. */
   private propagate(start: string): void {
+    // A param key naming no node dirties nothing
+    if (!this.downstream.has(start)) return;
     if (this.dirty.has(start)) return;
     const queue = [start];
     while (queue.length) {
@@ -139,7 +166,9 @@ export class CookEngine {
   /**
    * Set the full params record, diffing against previous values.
    * Only nodes whose params actually changed are marked dirty.
-   * Keys use the `"nodeKey.paramKey"` convention.
+   * Keys use the `"nodeKey.paramKey"` convention. The record is copied,
+   * so a caller that edits it in place and passes it again is diffed
+   * correctly.
    */
   setParams(params: Record<string, number>): void {
     // Detect changed or new keys
@@ -156,7 +185,7 @@ export class CookEngine {
       if (dot === -1) continue;
       this.propagate(prefixed.slice(0, dot));
     }
-    this.prevParams = params;
+    this.prevParams = { ...params };
   }
 
   // ── Cook ───────────────────────────────────────────────────────
@@ -166,12 +195,16 @@ export class CookEngine {
    *
    * 1. Diffs env wire values (width, height, dpr) — dirties dependents.
    * 2. Walks topological order, skipping clean nodes.
-   * 3. For dirty nodes, gathers inputs from pre-indexed wire map.
-   * 4. Caches outputs; clears dirty set; records stats.
+   * 3. Cooks each dirty node (cookNode), unless a node upstream of it
+   *    failed in this cook, and caches its outputs.
+   * 4. Clears the dirty flag of every node that cooked; records stats,
+   *    with any failures in stats.errors.
    *
-   * Returns the cache Map: node key → outputs keyed by port name.
+   * Never throws for a failing node. Returns a read-only view of the
+   * cache: node key → outputs keyed by port name. A node that failed or
+   * was skipped has no entry.
    */
-  cook(env: GraphEnv): Map<string, Record<string, unknown>> {
+  cook(env: GraphEnv): ReadonlyMap<string, Record<string, unknown>> {
     const t0 = performance.now();
 
     // Diff env wire values against previous
@@ -187,71 +220,118 @@ export class CookEngine {
 
     // Nothing dirty → no-op
     if (this.dirty.size === 0) {
-      this._stats = { cooked: 0, cached: this.order.length, total: this.order.length, elapsed: performance.now() - t0, timing: new Map() };
+      this._stats = {
+        cooked: 0,
+        cached: this.order.length,
+        total: this.order.length,
+        elapsed: performance.now() - t0,
+        timing: new Map(),
+        errors: new Map(),
+      };
       return this.cache;
     }
 
     // Walk in topological order, skip clean nodes
     let cooked = 0;
     const timing = new Map<string, number>();
+    const errors = new Map<string, NodeError>();
 
     for (const key of this.order) {
       if (!this.dirty.has(key)) continue;
 
-      const instance = this.graph.nodes[key]!;
-      const op = this.registry.resolve(instance.type);
-      if (!op.evaluate) continue;
-
-      // Variadic port lookup
-      const variadicPorts = new Set<string>();
-      for (const port of op.inputs) {
-        if (port.variadic) variadicPorts.add(port.name);
-      }
-
-      // Gather inputs from pre-indexed wire map
-      const inputs: Record<string, unknown> = {};
-      const wires = this.wiresTo.get(key)!;
-      for (const w of wires) {
-        let value: unknown;
-        if (w.from === "$env") {
-          value = env[w.output];
-        } else {
-          const src = this.cache.get(w.from);
-          if (src) value = src[w.output];
-        }
-
-        if (variadicPorts.has(w.input)) {
-          if (!Array.isArray(inputs[w.input])) inputs[w.input] = [];
-          (inputs[w.input] as unknown[]).push(value);
-        } else {
-          inputs[w.input] = value;
-        }
-      }
-
-      // Resolve params: op defaults → instance overrides → external overrides
-      const resolved: Record<string, number> = {};
-      for (const p of op.params) resolved[p.key] = p.default;
-      if (instance.params) {
-        for (const [k, v] of Object.entries(instance.params)) resolved[k] = v;
-      }
-      const prefix = `${key}.`;
-      for (const [k, v] of Object.entries(this.prevParams)) {
-        if (k.startsWith(prefix)) resolved[k.slice(prefix.length)] = v;
+      // Downstream of a failure: keep no stale output, and stay dirty
+      const cause = this.failedUpstream(key, errors);
+      if (cause !== undefined) {
+        this.cache.delete(key);
+        errors.set(key, { kind: "skipped", cause });
+        continue;
       }
 
       const nt0 = performance.now();
-      this.cache.set(
-        key,
-        op.evaluate(inputs, resolved, env) as Record<string, unknown>,
-      );
+      try {
+        this.cache.set(key, this.cookNode(key, env));
+      } catch (error) {
+        this.cache.delete(key);
+        errors.set(key, { kind: "error", error });
+        continue;
+      }
       timing.set(key, performance.now() - nt0);
+      this.dirty.delete(key);
       cooked++;
     }
 
-    const cached = this.order.length - cooked;
-    this.dirty.clear();
-    this._stats = { cooked, cached, total: this.order.length, elapsed: performance.now() - t0, timing };
+    const cached = this.order.length - cooked - errors.size;
+    this._stats = {
+      cooked,
+      cached,
+      total: this.order.length,
+      elapsed: performance.now() - t0,
+      timing,
+      errors,
+    };
     return this.cache;
+  }
+
+  /**
+   * Evaluate one node from the current cache: gather its inputs from its
+   * sources' cached outputs and the env, resolve its params, and call its
+   * operator. Throws whatever the operator throws.
+   */
+  private cookNode(key: string, env: GraphEnv): Record<string, unknown> {
+    const instance = this.graph.nodes[key]!;
+    const op = this.registry.resolve(instance.type);
+    if (!op.evaluate) throw new Error(`Operator "${op.id}" has no evaluate`);
+
+    // Variadic port lookup
+    const variadicPorts = new Set<string>();
+    for (const port of op.inputs) {
+      if (port.variadic) variadicPorts.add(port.name);
+    }
+
+    // Gather inputs from pre-indexed wire map
+    const inputs: Record<string, unknown> = {};
+    const wires = this.wiresTo.get(key)!;
+    for (const w of wires) {
+      let value: unknown;
+      if (isEnvSource(w.from)) {
+        value = env[w.output];
+      } else {
+        const src = this.cache.get(w.from);
+        if (src) value = src[w.output];
+      }
+
+      if (variadicPorts.has(w.input)) {
+        if (!Array.isArray(inputs[w.input])) inputs[w.input] = [];
+        (inputs[w.input] as unknown[]).push(value);
+      } else {
+        inputs[w.input] = value;
+      }
+    }
+
+    // Resolve params: op defaults → instance overrides → external overrides
+    const resolved: Record<string, number> = {};
+    for (const p of op.params) resolved[p.key] = p.default;
+    if (instance.params) {
+      for (const [k, v] of Object.entries(instance.params)) resolved[k] = v;
+    }
+    const prefix = `${key}.`;
+    for (const [k, v] of Object.entries(this.prevParams)) {
+      if (k.startsWith(prefix)) resolved[k.slice(prefix.length)] = v;
+    }
+
+    return op.evaluate(inputs, resolved, env) as Record<string, unknown>;
+  }
+
+  /**
+   * The node that threw upstream of `key` in this cook, found through
+   * `key`'s first failed or skipped source, or undefined if none failed.
+   */
+  private failedUpstream(key: string, errors: Map<string, NodeError>): string | undefined {
+    for (const w of this.wiresTo.get(key)!) {
+      const failure = errors.get(w.from);
+      if (failure) return failure.kind === "error" ? w.from : failure.cause;
+    }
+    return undefined;
   }
 
   // ── Accessors ──────────────────────────────────────────────────
@@ -292,10 +372,10 @@ export class CookEngine {
    * Drop all cached node outputs and mark everything dirty.
    *
    * Call after blitting the terminal output to free intermediate
-   * Float32Array buffers and canvases. Essential when many
-   * Frame components coexist (e.g., debug page with 10 panels) —
-   * without this, cached buffers from all panels persist simultaneously,
-   * easily reaching 600 MB+ at 2× DPR and crashing the browser tab.
+   * Float32Array buffers and canvases. Essential when many Frame
+   * components coexist, as on the gallery page — without this, the
+   * cached buffers of every panel persist at once, which at 2× DPR can
+   * exhaust the browser tab's memory.
    *
    * The next cook() will be a full re-evaluation (identical to first cook).
    */

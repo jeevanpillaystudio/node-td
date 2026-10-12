@@ -152,7 +152,7 @@ describe("a wire to an unknown node", () => {
     expect(validationError(fromGhost)).toBe('Wire: source node "ghost" not found');
   });
 
-  test.failing("reports unknown node by name", () => {
+  test("reports unknown node by name", () => {
     expect(() => new CookEngine(toGhost, makeRegistry())).toThrow(/ghost/);
     expect(() => new CookEngine(fromGhost, makeRegistry())).toThrow(/ghost/);
   });

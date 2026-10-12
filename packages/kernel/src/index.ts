@@ -31,7 +31,7 @@ export type { EnvOutput } from "./env";
 export { ENV_SOURCE, ENV_OUTPUTS, isEnvSource, envOutputType } from "./env";
 
 // ─── Cook engine ─────────────────────────────────────────────────
-export type { CookStats } from "./cook";
+export type { CookStats, NodeError } from "./cook";
 export { CookEngine } from "./cook";
 
 // ─── Registry ────────────────────────────────────────────────────

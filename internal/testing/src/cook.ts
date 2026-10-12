@@ -18,7 +18,7 @@ export interface CookResult {
   /** Digest of the canvas command stream the cook recorded */
   render: { hash: string; length: number };
   /** The raw cook result: node key → output record */
-  cooked: Map<string, Record<string, unknown>>;
+  cooked: ReadonlyMap<string, Record<string, unknown>>;
   /** The recorded canvas log itself, for debugging a render mismatch */
   log: LogEntry[];
   /** The engine that cooked, for host-side lookups such as findTerminalOutput */
