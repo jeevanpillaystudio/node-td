@@ -49,13 +49,13 @@ describe("composite, CPU path", () => {
     ];
     for (const [mode, want] of cases) {
       const out = blend(mode, backdrop, half);
-      want.forEach((v, c) => expect(out[c]).toBeCloseTo(v, 6));
+      for (const [c, v] of want.entries()) expect(out[c]).toBeCloseTo(v, 6);
     }
   });
 
   it("adds premultiplied colour, so two half-alpha layers make one opaque", () => {
     const out = blend(ADD, px(0, 0, 1, 0.5), px(1, 0, 0, 0.5));
-    [0.5, 0, 0.5, 1].forEach((v, c) => expect(out[c]).toBeCloseTo(v, 6));
+    for (const [c, v] of [0.5, 0, 0.5, 1].entries()) expect(out[c]).toBeCloseTo(v, 6);
   });
 });
 
