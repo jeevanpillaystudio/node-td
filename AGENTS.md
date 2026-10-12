@@ -25,7 +25,7 @@ Each package exports TypeScript source; there is no build step except the app.
 
 - The kernel compiles without DOM and imports no other package.
 - Operators import only the kernel: never render-web, React or another package. Code shared by operators goes in the kernel (geometry.ts, field/) or in a module inside operators.
-- Nothing in kernel, operators or patches imports render-web; canvas and WebGL resources live there or in host code.
+- Kernel, operators and patches source never imports render-web; canvas and WebGL resources live there or in host code. Patches' tests do import it (blitBuffer2D, as a dev dependency) to draw the render goldens.
 - Each package binds the golden helpers to its own registry in its `test/goldens.ts`.
 - `./node_modules/.bin/turbo boundaries` enforces the layer tags in each package's turbo.json.
 
