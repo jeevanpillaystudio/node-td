@@ -5,9 +5,9 @@
     "": {
       "name": "node-td",
       "devDependencies": {
-        "@biomejs/biome": "^2.0.0",
-        "turbo": "^2.5.0",
-        "typescript": "^5.9.0",
+        "@biomejs/biome": "2.4.9",
+        "turbo": "2.8.21",
+        "typescript": "5.9.3",
       },
     },
     "apps/examples": {
