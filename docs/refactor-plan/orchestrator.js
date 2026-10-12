@@ -48,9 +48,9 @@ Where things are:
 - "Orchestrator overrides" in a brief win over its steps.
 
 Environment facts (tested; trust them):
-- No network: the npm registry, GitHub and telemetry hosts are blocked. Never add an external npm dependency that is not already in bun.lock. Never push.
-- bun 1.3.9 is on PATH. For any bun install use exactly: \`BUN_TMPDIR=$TMPDIR bun install --frozen-lockfile\` (TMPDIR is /tmp/claude-501). A non-frozen install fails (it needs the registry). To add/remove workspace packages or dependencies, hand-edit bun.lock (workspaces section entries; "packages" section entries like \`"@node-td/x": ["@node-td/x@workspace:packages/x"],\`) and then run the frozen install. External ranges must match ranges already in bun.lock.
-- Do NOT use bun's isolated linker (bunfig linker="isolated"): it breaks the vite build offline.
+- Network: the npm registry is reachable (since 12 Oct). GitHub is reachable, but you must never push, open pull requests or call GitHub; the orchestrator does that. Telemetry hosts are blocked.
+- bun 1.3.9 is on PATH. Every bun install/add/remove must run with writable temp and cache dirs: \`BUN_TMPDIR=$TMPDIR BUN_INSTALL_CACHE_DIR=$TMPDIR/bun-cache bun install\` (TMPDIR is /tmp/claude-501). Add an external dependency only when your brief calls for it, and commit bun.lock together with the package.json change. If the registry turns out unreachable, fall back to hand-editing bun.lock (workspaces section entries; "packages" entries like \`"@node-td/x": ["@node-td/x@workspace:packages/x"],\`) plus \`--frozen-lockfile\`.
+- Linker: whatever bunfig.toml says (work item T2 decides whether to adopt bun's isolated linker). Do not change it outside T2.
 - Tools: ./node_modules/.bin/tsc, ./node_modules/.bin/biome (2.4.9), ./node_modules/.bin/turbo (2.8.21; prefix with TURBO_TELEMETRY_DISABLED=1; an "IO error: Operation not permitted" warning from turbo is harmless). Tests: \`bun test <path>\` (bun:test, toMatchSnapshot writes __snapshots__/<file>.snap next to the test). The examples app builds with \`bun run --cwd apps/examples build\`.
 - Never try to delete node_modules (the sandbox blocks some paths inside it). Ignore the stray directory .tmp-linktest/ (gitignored scratch).
 - No browser testing is needed. If you ever do browser checks, never use Google Chrome.
