@@ -1,6 +1,6 @@
 {
   "name": "@node-td/frame",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "private": true,
   "type": "module",
   "sideEffects": false,
@@ -27,6 +27,6 @@
     "@node-td/typescript-config": "workspace:*",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "typescript": "^5.9.0"
+    "typescript": "5.9.3"
   }
 }

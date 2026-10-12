@@ -12,7 +12,7 @@
     },
     "apps/examples": {
       "name": "@node-td/examples",
-      "version": "0.1.0",
+      "version": "0.0.0",
       "dependencies": {
         "@node-td/editor": "workspace:*",
         "@node-td/frame": "workspace:*",
@@ -29,7 +29,7 @@
         "@types/react-dom": "^19.0.0",
         "@vitejs/plugin-react": "^4.0.0",
         "tailwindcss": "^4.0.0",
-        "typescript": "^5.9.0",
+        "typescript": "5.9.3",
         "vite": "^6.0.0",
         "vite-tsconfig-paths": "^4.0.0",
       },
@@ -43,7 +43,7 @@
       "devDependencies": {
         "@node-td/typescript-config": "workspace:*",
         "@types/bun": "1.3.9",
-        "typescript": "^5.9.0",
+        "typescript": "5.9.3",
       },
     },
     "internal/typescript": {
@@ -69,7 +69,7 @@
         "@types/bun": "1.3.9",
         "@types/react": "^19.0.0",
         "@types/react-dom": "^19.0.0",
-        "typescript": "^5.9.0",
+        "typescript": "5.9.3",
       },
       "peerDependencies": {
         "react": "^19",
@@ -78,7 +78,7 @@
     },
     "packages/frame": {
       "name": "@node-td/frame",
-      "version": "0.1.0",
+      "version": "0.0.0",
       "dependencies": {
         "@node-td/kernel": "workspace:*",
         "@node-td/operators": "workspace:*",
@@ -88,7 +88,7 @@
         "@node-td/typescript-config": "workspace:*",
         "@types/react": "^19.0.0",
         "@types/react-dom": "^19.0.0",
-        "typescript": "^5.9.0",
+        "typescript": "5.9.3",
       },
       "peerDependencies": {
         "react": "^19",
@@ -101,7 +101,7 @@
       "devDependencies": {
         "@node-td/typescript-config": "workspace:*",
         "@types/bun": "1.3.9",
-        "typescript": "^5.9.0",
+        "typescript": "5.9.3",
       },
     },
     "packages/operators": {
@@ -114,7 +114,7 @@
         "@node-td/testing": "workspace:*",
         "@node-td/typescript-config": "workspace:*",
         "@types/bun": "1.3.9",
-        "typescript": "^5.9.0",
+        "typescript": "5.9.3",
       },
     },
     "packages/patches": {
@@ -129,7 +129,7 @@
         "@node-td/testing": "workspace:*",
         "@node-td/typescript-config": "workspace:*",
         "@types/bun": "1.3.9",
-        "typescript": "^5.9.0",
+        "typescript": "5.9.3",
       },
     },
     "packages/render-web": {
@@ -140,7 +140,7 @@
       },
       "devDependencies": {
         "@node-td/typescript-config": "workspace:*",
-        "typescript": "^5.9.0",
+        "typescript": "5.9.3",
       },
     },
   },
