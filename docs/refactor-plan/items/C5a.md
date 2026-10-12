@@ -54,3 +54,6 @@ kernel/kernel-dom-coupling, kernel/root-barrel-incoherent, field/naming-leftover
 ## Orchestrator overrides (these win over the steps above)
 - Workspace packages: create the package dir + package.json, then `BUN_TMPDIR=$TMPDIR BUN_INSTALL_CACHE_DIR=$TMPDIR/bun-cache bun install` (registry reachable since 12 Oct). Commit bun.lock with the change. Fall back to hand-editing bun.lock + `--frozen-lockfile` only if the registry is unreachable.
 - Skip the rsync pre-check.
+- (added after batch 2) T2 left packages/engine/tsconfig.json with "types": ["bun"] and tests included, so Node and Bun globals are visible to engine source. For @node-td/kernel do it properly: `tsconfig.json` (lib ES2022, types [], src only, tests excluded) for the source, plus `tsconfig.test.json` (types ["bun"], includes src/**/*.test.ts) and a typecheck script that runs both (`tsc --noEmit && tsc --noEmit -p tsconfig.test.json`). Use the same two-config pattern for @node-td/testing if it needs it.
+- The isolated linker is on (bunfig.toml). A new workspace package must declare every dependency it imports, including @types/bun for its tests.
+- A move commit must carry its own import-path edits so it typechecks on its own: `git mv` then edit importers, then `git add` both, then commit. (C2's move commit 5f9f83b did not, which breaks bisect.)

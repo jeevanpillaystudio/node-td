@@ -49,3 +49,7 @@ patches-examples/patches-in-engine, sop/sop-family-structure, td-fidelity/patch-
 ## Orchestrator overrides (these win over the steps above)
 - Same install procedure as C5a.
 - turbo boundaries: confirm the config shape against node_modules/turbo/schema.json before writing it (tags in each package's turbo.json, rules in root turbo.json "boundaries"). Run with TURBO_TELEMETRY_DISABLED=1.
+- (added after batch 2) There is no per-package turbo.json any more (T1 deleted packages/engine/turbo.json). Create one per package for its tag.
+- Same tsconfig split as C5a for operators, render-web and patches: source tsconfig without bun types; tests in tsconfig.test.json.
+- packages/engine/test/boundaries.test.ts's render pattern does not match "@node-td/render-web". When it moves, rewrite it to check package-level imports (or drop it once turbo boundaries enforces the same rule, and say so).
+- A move commit must carry its own import-path edits so it typechecks on its own.
