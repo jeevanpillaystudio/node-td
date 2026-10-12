@@ -18,7 +18,6 @@ import { circlePack } from "./sop/circle-pack";
 import { poissonDisc } from "./sop/poisson-disc";
 import { flowTracer } from "./sop/flow-tracer";
 import { dashStroke } from "./sop/dash-stroke";
-import { continuousStroke } from "./sop/continuous-stroke";
 import { parametricSurface } from "./sop/parametric-surface";
 import { quadtreeSubdivide } from "./sop/quadtree-subdivide";
 import { binarySubdivide } from "./sop/binary-subdivide";
@@ -56,7 +55,6 @@ export const allOperators: Operator[] = [
   poissonDisc,
   flowTracer,
   dashStroke,
-  continuousStroke,
   parametricSurface,
   quadtreeSubdivide,
   binarySubdivide,
