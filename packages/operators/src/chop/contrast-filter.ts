@@ -1,7 +1,4 @@
-import type { Operator, Palette } from "@node-td/kernel";
-
-type Inputs = { palette: Palette; reference: Palette };
-type Outputs = { palette: Palette };
+import { defineOperator } from "@node-td/kernel";
 
 /**
  * sRGB component → linear (inverse of gamma curve).
@@ -48,7 +45,7 @@ function contrastRatio(l1: number, l2: number): number {
  * The reference palette is typically the background color(s).
  * A single-color reference palette (count=1) is the most common case.
  */
-export const contrastFilter: Operator<Inputs, Outputs> = {
+export const contrastFilter = defineOperator({
   id: "contrast-filter",
   category: "chop",
   label: "Contrast Filter",
@@ -62,8 +59,8 @@ export const contrastFilter: Operator<Inputs, Outputs> = {
     { key: "fallbackRatio", label: "Fallback Ratio", min: 1, max: 21, step: 0.1, default: 2.0 },
   ],
   evaluate({ palette: candidates, reference: ref }, params) {
-    const minRatio = params.minRatio ?? 3.0;
-    const fallbackRatio = params.fallbackRatio ?? 2.0;
+    const minRatio = params.minRatio;
+    const fallbackRatio = params.fallbackRatio;
 
     // Pre-compute reference luminances
     const refLums: number[] = [];
@@ -115,4 +112,4 @@ export const contrastFilter: Operator<Inputs, Outputs> = {
 
     return { palette: { colors, count } };
   },
-};
+});

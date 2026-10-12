@@ -1,7 +1,4 @@
-import type { Operator, Palette } from "@node-td/kernel";
-
-type Inputs = Record<string, never>;
-type Outputs = { palette: Palette };
+import { defineOperator } from "@node-td/kernel";
 
 /**
  * OKLAB LCh → linear sRGB.
@@ -55,7 +52,7 @@ function linearToSrgb(x: number): number {
  *   Lino:        L=0.92, C=0.05, hueSpread=360
  *   Metallic:    L=0.65, C=0.15, hueSpread=360
  */
-export const oklabPalette: Operator<Inputs, Outputs> = {
+export const oklabPalette = defineOperator({
   id: "oklab-palette",
   category: "chop",
   label: "OKLAB Palette",
@@ -69,11 +66,11 @@ export const oklabPalette: Operator<Inputs, Outputs> = {
     { key: "hueSpread", label: "Hue Spread", min: 0, max: 360, step: 1, default: 360 },
   ],
   evaluate(_, params) {
-    const count = Math.max(1, Math.round(params.count ?? 5));
-    const L = params.lightness ?? 0.65;
-    const C = params.chroma ?? 0.15;
-    const baseHue = params.hueOffset ?? 0;
-    const spread = params.hueSpread ?? 360;
+    const count = Math.max(1, Math.round(params.count));
+    const L = params.lightness;
+    const C = params.chroma;
+    const baseHue = params.hueOffset;
+    const spread = params.hueSpread;
 
     const colors = new Float32Array(count * 4);
 
@@ -96,4 +93,4 @@ export const oklabPalette: Operator<Inputs, Outputs> = {
 
     return { palette: { colors, count } };
   },
-};
+});

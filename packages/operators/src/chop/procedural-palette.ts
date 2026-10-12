@@ -1,7 +1,4 @@
-import type { Operator, Palette } from "@node-td/kernel";
-
-type Inputs = Record<string, never>;
-type Outputs = { palette: Palette };
+import { defineOperator } from "@node-td/kernel";
 
 /**
  * Generates a uniformly distributed high-contrast color palette.
@@ -10,7 +7,7 @@ type Outputs = { palette: Palette };
  * between adjacent colors. Saturation and lightness are varied
  * within narrow bands for coherence while maintaining contrast.
  */
-export const proceduralPalette: Operator<Inputs, Outputs> = {
+export const proceduralPalette = defineOperator({
   id: "procedural-palette",
   category: "chop",
   label: "Procedural Palette",
@@ -23,10 +20,10 @@ export const proceduralPalette: Operator<Inputs, Outputs> = {
     { key: "hueOffset", label: "Hue Offset", min: 0, max: 360, step: 1, default: 0 },
   ],
   evaluate(_inputs, params) {
-    const count = Math.round(params.count ?? 5);
-    const sat = params.saturation ?? 0.65;
-    const lit = params.lightness ?? 0.55;
-    const hueOff = params.hueOffset ?? 0;
+    const count = Math.round(params.count);
+    const sat = params.saturation;
+    const lit = params.lightness;
+    const hueOff = params.hueOffset;
 
     const colors = new Float32Array(count * 4);
 
@@ -45,7 +42,7 @@ export const proceduralPalette: Operator<Inputs, Outputs> = {
 
     return { palette: { colors, count } };
   },
-};
+});
 
 /** HSL to RGB conversion — h in [0,1], s in [0,1], l in [0,1] → [r,g,b] in [0,1] */
 function hslToRgb(h: number, s: number, l: number): [number, number, number] {
