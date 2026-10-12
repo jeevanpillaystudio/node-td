@@ -1,7 +1,4 @@
-import type { Operator, Geometry, Field2D } from "@node-td/kernel";
-
-type Inputs = { geometry: Geometry<2>; field: Field2D };
-type Outputs = { geometry: Geometry<2> };
+import { defineOperator } from "@node-td/kernel";
 
 /**
  * Point Orient — adds `angle` and `length` attributes to point geometry
@@ -20,7 +17,7 @@ type Outputs = { geometry: Geometry<2> };
  *   angle  — stroke orientation in radians
  *   length — stroke half-length in pixels
  */
-export const pointOrient: Operator<Inputs, Outputs> = {
+export const pointOrient = defineOperator({
   id: "point-orient",
   category: "sop",
   label: "Point Orient",
@@ -40,7 +37,7 @@ export const pointOrient: Operator<Inputs, Outputs> = {
     const baseAngle   = params.baseAngle   ?? 0;
     const angleScale  = params.angleScale  ?? 3.14;
     const baseLength  = params.baseLength  ?? 14;
-    const lengthScale = params.lengthScale ?? 0.3;
+    const lengthScale = params.lengthScale;
     const noiseScale  = params.noiseScale  ?? 0.025;
 
     const n     = geometry.vertexCount;
@@ -81,4 +78,4 @@ export const pointOrient: Operator<Inputs, Outputs> = {
       },
     };
   },
-};
+});
