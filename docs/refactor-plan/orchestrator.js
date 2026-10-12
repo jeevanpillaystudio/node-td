@@ -1,11 +1,11 @@
 export const meta = {
   name: 'node-td-refactor-exec',
-  description: 'Execute node-td refactor work items in order: implement with small commits, review through two independent lenses, repair once, stop on failure',
+  description: 'Execute node-td refactor work items in order: implement on Claude with small commits, verify with GPT-6.1 Sol, repair once, stop on failure',
   phases: [
     { title: 'Implement', detail: 'one agent per work item, commits on the branch' },
-    { title: 'Review', detail: 'behaviour-preservation and plan-conformance reviewers per item' },
+    { title: 'Review', detail: 'GPT-6.1 Sol checks three claims per item: checks green, behaviour as intended, plan conformance' },
     { title: 'Repair', detail: 'one repair round when a reviewer finds a blocker or major problem' },
-    { title: 'Checkpoint', detail: 'run the whole-repo checks after the batch' },
+    { title: 'Checkpoint', detail: 'GPT-6.1 Sol runs the whole-repo checks after the batch' },
   ],
 }
 
@@ -102,16 +102,73 @@ const REVIEW_SCHEMA = {
   required: ['pass', 'problems', 'checksRun'],
 }
 
-const LENSES = [
+// Verification runs on GPT-6.1 Sol, never on Claude, and Sol never writes code
+// (Jeevan, 12 October 2026). Sol is reached through sol_check.py: a cheap Claude
+// agent runs it and hands back what it printed. Do not set an agent's model to
+// 'gpt-6.1-sol': the desktop app drops it and runs Claude instead.
+const SOL_CHECK = '/Users/jeevanpillay/Code/@lightfastai/query-v2/.claude/worktrees/gpt-sol-workflow-integration-4d8903/.agents/connectors/sol_check.py'
+const SOL_ALLOW = ['Bash(bun test:*)', 'Bash(bun run --cwd apps/examples build:*)', 'Bash(./node_modules/.bin/tsc:*)',
+  'Bash(./node_modules/.bin/turbo:*)', 'Bash(./node_modules/.bin/biome lint:*)', 'Bash(./node_modules/.bin/biome check:*)',
+  'Bash(grep:*)', 'Bash(rg:*)', 'Bash(ls:*)', 'Bash(wc:*)']
+
+const CLAIMS = [
+  {
+    key: 'checks',
+    text: `Claim: after this item every check is green and the golden snapshots are unchanged. Run every verification command in the brief (skip any bun install; the orchestrator runs installs), plus \`bun test\` at the root, \`./node_modules/.bin/turbo run typecheck test\`, \`./node_modules/.bin/biome lint .\` and \`bun run --cwd apps/examples build\`. Check that golden snapshot files are byte-identical to <startSha> unless the brief explicitly re-pins them (\`git diff <startSha> HEAD --stat -M -- ':(glob)**/__snapshots__/**'\`; a pure rename is fine). Report each command and what it printed in checksRun.`,
+  },
   {
     key: 'behaviour',
-    text: `Lens: BEHAVIOUR PRESERVATION. Your job is to find any way this item changed what the code does that the brief did not intend. Check: every verification command in the brief (run them all); \`bun test\` across the repo passes; golden snapshot files are byte-identical to before the item unless the brief explicitly re-pins (\`git diff <startSha> HEAD --stat -- ':(glob)**/__snapshots__/**'\`); moves are real renames (\`git show -M --stat\`) with no hidden logic edits in move commits; deleted code truly had no callers (grep); typecheck of every package (TURBO_TELEMETRY_DISABLED=1 ./node_modules/.bin/turbo run typecheck); the examples app still builds. Read the diff (\`git diff <startSha> HEAD\`) line by line for semantic changes.`,
+    text: `Claim: the diff from <startSha> to HEAD changes what the code does only as the brief intends. Read \`git diff <startSha> HEAD\` line by line for semantic changes the brief did not ask for. Check that move commits are real renames with only import-path edits (\`git show -M --stat <sha>\`), that deleted code had no remaining callers (grep), and that no layering rule in context.md is broken.`,
   },
   {
     key: 'conformance',
-    text: `Lens: PLAN CONFORMANCE AND QUALITY. Your job is to check the item achieved its goal fully and cleanly. Check: every step of the brief is done or its skip is justified; the result matches the target layout, layering rules and taxonomy in context.md; nothing out of scope was changed without being listed as a deviation; commits are small, staged by path, conventionally named, end with the Co-Authored-By line, and no stray files were committed (\`git show --stat <each commit>\`); no leftover dead code, TODOs, debug output, or half-renamed identifiers; new code reads like the surrounding code; package.json/tsconfig/turbo/biome configs are coherent; \`./node_modules/.bin/biome lint .\` (or \`biome check .\` once the format commit exists) passes; \`git status --porcelain\` is clean.`,
+    text: `Claim: the item achieved its goal fully and cleanly. Every step of the brief is done or its skip is justified in the report's deviations; the result matches the target layout, layering rules and taxonomy in context.md; nothing out of scope changed without being listed as a deviation; commits are small, conventionally named and end with a Co-Authored-By line, with no stray files (\`git show --stat <each commit>\`); there is no leftover dead code, TODO, debug output or half-renamed identifier; \`git status --porcelain\` is clean.`,
   },
 ]
+
+const SOL_REVIEW_SCHEMA = {
+  ...REVIEW_SCHEMA,
+  properties: {
+    ...REVIEW_SCHEMA.properties,
+    unchecked: { type: 'array', items: { type: 'string' }, description: 'what the verdict rests on that you could not check' },
+  },
+  required: [...REVIEW_SCHEMA.required, 'unchecked'],
+}
+
+// Runs one Sol check and returns its verdict object, or null when no check was made.
+async function solCheck(claim, schema, label, phaseName, extraAllow) {
+  const allow = [...SOL_ALLOW, ...(extraAllow || [])].map(r => `--allow '${r}'`).join(' ')
+  const cmd = `cd ${ROOT} && /usr/bin/python3 -I ${SOL_CHECK} --effort high --schema '${JSON.stringify(schema)}' ${allow} <<'CLAIM'\n${claim}\nCLAIM`
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const raw = await run(
+      'Run this one shell command with a Bash timeout of 600000 ms, and return its standard output and standard error verbatim, with nothing added:\n\n' + cmd,
+      { label: attempt ? `${label}#retry` : label, phase: phaseName, model: 'claude-haiku-5-5', effort: 'low' })
+    const text = typeof raw === 'string' ? raw : JSON.stringify(raw)
+    const start = text ? text.indexOf('{') : -1
+    const end = text ? text.lastIndexOf('}') : -1
+    if (start >= 0 && end > start) {
+      try {
+        const out = JSON.parse(text.slice(start, end + 1))
+        if (out && out.verdict) return { ...out.verdict, solModels: out.models, solSeconds: out.seconds, refused: out.refused }
+      } catch (e) { /* fall through to retry */ }
+    }
+    log(`${label}: Sol check not made (${(text || '').slice(0, 200)})`)
+  }
+  return null
+}
+
+function claimText(id, impl, c) {
+  const start = impl.fix ? impl.fix.startSha : impl.startSha
+  return `You are verifying work item ${id} of a refactor of this repository (branch claude/touchdesigner-monorepo-refactor-6d0a2d, a git worktree at ${ROOT}). You did not write it. Be skeptical: report only problems you verified in the files or by running a command, and default to pass=false when the evidence does not show the claim holds.
+
+${c.text.split('<startSha>').join(start)}
+
+The brief is ${AUDIT}/items/${id}.md; shared context (target layout, layering rules, taxonomy, done checks) is ${AUDIT}/context.md. Shared rules every implementer follows: commits staged by path, git mv for moves, no amend/rebase/push, golden snapshots re-pinned only where the brief says so.
+The implementer's report (claims to check, not facts):
+${JSON.stringify(impl, null, 1)}
+
+Severity: blocker = broken build or tests, regression, wrong behaviour; major = goal not met, a required step missing, layering or taxonomy broken, unintended snapshot change, wrong files committed; minor = style or polish. pass=false iff any blocker or major.`
+}
 
 function implPrompt(id) {
   return `${SHARED}
@@ -124,20 +181,6 @@ Procedure:
 3. Run every verification command in the brief, plus \`bun test\` at the repo root and \`TURBO_TELEMETRY_DISABLED=1 ./node_modules/.bin/turbo run typecheck\`. Fix what fails. Report each command with its exit code.
 4. End with a clean \`git status --porcelain\`. Record endSha.
 Return status "done" only if every verification passes. Use "partial" if some step had to be deferred but the tree is consistent and green; "blocked" if you could not leave it green (then explain exactly what is broken).`
-}
-
-function reviewPrompt(id, impl, lens) {
-  return `${SHARED}
-
-You are an independent reviewer of work item ${id}. You did not write it. Be skeptical: default to reporting a problem when unsure, but only report problems you verified in the code or by running a command. You may run any read-only command and tests. Never run git checkout, switch, reset, restore or stash: to look at an older commit use \`git show <sha>:<path>\`, or \`git worktree add --detach $TMPDIR/<name> <sha>\` and remove it with \`git worktree remove\` when done. Do NOT modify, stage or commit anything; if a command writes files (e.g. a snapshot appearing), restore them with \`git restore -- <path>\` (the one git command allowed for this) / delete the new untracked file before you finish, and report it as a problem.
-
-${lens.text}
-
-Brief: ${AUDIT}/items/${id}.md. Context: ${AUDIT}/context.md.
-The implementer reported (treat as claims to check, not facts):
-${JSON.stringify(impl, null, 1)}
-
-Severity guide: blocker = broken build/tests, regression, data loss, wrong behaviour; major = goal not met, a required step missing, layering/taxonomy violated, unintended snapshot change, wrong files committed; minor = style or polish. pass=false iff any blocker or major.`
 }
 
 function fixPrompt(id, impl, problems) {
@@ -156,13 +199,14 @@ Return the same report shape: startSha = HEAD before your fixes, endSha = HEAD a
 }
 
 async function review(id, impl, phaseName) {
-  const verdicts = await parallel(LENSES.map(l => () =>
-    run(reviewPrompt(id, impl, l), { label: `review:${id}:${l.key}`, phase: phaseName, schema: REVIEW_SCHEMA })))
-  const ok = verdicts.filter(Boolean)
-  if (ok.length < LENSES.length) log(`${id}: ${LENSES.length - ok.length} reviewer(s) returned nothing`)
-  const problems = ok.flatMap((v, i) => v.problems.map(p => ({ ...p, lens: LENSES[i] ? LENSES[i].key : '?' })))
+  const verdicts = await parallel(CLAIMS.map(c => () =>
+    solCheck(claimText(id, impl, c), SOL_REVIEW_SCHEMA, `sol:${id}:${c.key}`, phaseName)))
+  const missing = CLAIMS.filter((c, i) => !verdicts[i]).map(c => c.key)
+  if (missing.length) log(`${id}: no Sol verdict for ${missing.join(', ')}`)
+  const problems = verdicts.flatMap((v, i) => (v ? v.problems.map(p => ({ ...p, claim: CLAIMS[i].key })) : []))
   const blocking = problems.filter(p => p.severity !== 'minor')
-  return { pass: ok.length > 0 && blocking.length === 0, problems, blocking }
+  const unchecked = verdicts.flatMap((v, i) => (v ? v.unchecked.map(u => `${CLAIMS[i].key}: ${u}`) : []))
+  return { pass: !missing.length && verdicts.every(v => v && v.pass) && blocking.length === 0, missing, problems, blocking, unchecked }
 }
 
 const report = []
@@ -175,15 +219,16 @@ for (const id of ITEMS) {
   if (impl.status === 'blocked') { report.push({ id, impl }); stopped = `${id}: blocked`; break }
 
   let rev = await review(id, impl, 'Review')
+  if (rev.missing.length) { report.push({ id, impl, review: rev }); stopped = `${id}: Sol could not check ${rev.missing.join(', ')}`; break }
   let fix = null
   let rev2 = null
   if (!rev.pass) {
     log(`${id}: ${rev.blocking.length} blocking problem(s); repairing`)
     fix = await run(fixPrompt(id, impl, rev.problems), { label: `fix:${id}`, phase: 'Repair', schema: IMPL_SCHEMA })
-    if (fix) rev2 = await review(id, { original: impl, fix }, 'Repair')
+    if (fix) rev2 = await review(id, { ...impl, fix }, 'Repair')
   }
   const passed = rev.pass || (rev2 && rev2.pass)
-  report.push({ id, impl, review: rev.problems, fix, review2: rev2 ? rev2.problems : null, passed })
+  report.push({ id, impl, review: rev, fix, review2: rev2, passed })
   if (!passed) {
     stopped = `${id}: still failing review after one repair`
     log(stopped)
@@ -193,21 +238,19 @@ for (const id of ITEMS) {
 }
 
 phase('Checkpoint')
-const checkpoint = await run(`${SHARED}
-
-Batch "${BATCH}" of the refactor has run (items: ${ITEMS.join(', ')}${stopped ? `; stopped early: ${stopped}` : ''}). Read-only checkpoint: do not modify or commit anything (restore any file a command writes).
-Run and report: \`git log --oneline 22fd93a..HEAD\`; \`git status --porcelain\`; \`BUN_TMPDIR=$TMPDIR bun install --frozen-lockfile\`; \`TURBO_TELEMETRY_DISABLED=1 ./node_modules/.bin/turbo run typecheck test\`; \`bun test\`; \`./node_modules/.bin/biome lint .\`; \`bun run --cwd apps/examples build\`; and every done check in ${AUDIT}/context.md that is already applicable at this point (say which are not yet applicable). Then list, in plain words, anything in the repository that is now inconsistent or half-done (e.g. README describing a layout that no longer exists), so the next batch can pick it up.`, {
-  label: 'checkpoint', phase: 'Checkpoint',
-  schema: {
-    type: 'object',
-    properties: {
-      green: { type: 'boolean' },
-      commands: { type: 'array', items: { type: 'object', properties: { command: { type: 'string' }, exitCode: { type: 'number' }, summary: { type: 'string' } }, required: ['command', 'exitCode', 'summary'] } },
-      doneChecks: { type: 'array', items: { type: 'object', properties: { check: { type: 'string' }, state: { type: 'string', enum: ['pass', 'fail', 'not-yet-applicable'] }, note: { type: 'string' } }, required: ['check', 'state', 'note'] } },
-      inconsistencies: { type: 'array', items: { type: 'string' } },
-    },
-    required: ['green', 'commands', 'doneChecks', 'inconsistencies'],
+const CHECKPOINT_SCHEMA = {
+  type: 'object',
+  properties: {
+    green: { type: 'boolean' },
+    commands: { type: 'array', items: { type: 'object', properties: { command: { type: 'string' }, exitCode: { type: 'number' }, summary: { type: 'string' } }, required: ['command', 'exitCode', 'summary'] } },
+    doneChecks: { type: 'array', items: { type: 'object', properties: { check: { type: 'string' }, state: { type: 'string', enum: ['pass', 'fail', 'not-yet-applicable'] }, note: { type: 'string' } }, required: ['check', 'state', 'note'] } },
+    inconsistencies: { type: 'array', items: { type: 'string' } },
+    unchecked: { type: 'array', items: { type: 'string' } },
   },
-})
+  required: ['green', 'commands', 'doneChecks', 'inconsistencies', 'unchecked'],
+}
+const checkpoint = await solCheck(`You are checking the state of this repository (branch claude/touchdesigner-monorepo-refactor-6d0a2d at ${ROOT}) after batch "${BATCH}" of a refactor ran (items: ${ITEMS.join(', ')}${stopped ? `; stopped early: ${stopped}` : ''}).
+Claim: the repository is green. Run and report: \`git log --oneline 22fd93a..HEAD | head -60\`; \`git status --porcelain\`; \`./node_modules/.bin/turbo run typecheck test\`; \`bun test\`; \`./node_modules/.bin/biome lint .\`; \`./node_modules/.bin/turbo boundaries\`; \`bun run --cwd apps/examples build\`. Then go through the done checks in ${AUDIT}/context.md and mark each pass, fail or not-yet-applicable at this point. Then list, in plain words, anything in the repository that is now inconsistent or half-done, so the next batch can pick it up. green=true only if every command passed.`,
+  CHECKPOINT_SCHEMA, 'sol:checkpoint', 'Checkpoint')
 
 return { batch: BATCH, stopped, report, checkpoint }

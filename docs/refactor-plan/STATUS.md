@@ -38,6 +38,16 @@ Jeevan paused all work on 12 Oct 2026 while he reworks which agents run which
 jobs: "Do not run any extra ultracode/workflow until I lift the restriction."
 The batch-4 workflow was stopped after K5's review, before K6a made any change.
 
+Who does what (Jeevan, 12 October 2026, relayed by the session that set it
+up): code work runs on Claude Opus 5.5; review and verification run on
+GPT-6.1 Sol, which never writes code; Codex is not used. `orchestrator.js`
+follows this: implementers and the repair round run on the session's Claude
+model, and every review claim and the checkpoint go to Sol through
+`sol_check.py` (in the query-v2 worktree `gpt-sol-workflow-integration-4d8903`
+until that branch merges), run by a `claude-haiku-5-5` agent that only carries
+the claim and the verdict. A single Sol check from this worktree was run on
+12 Oct 2026 and passed in 40 s.
+
 ## Next
 
 Owner: the agent resuming this branch, once Jeevan lifts the restriction and
