@@ -1,7 +1,4 @@
-import type { Operator, Field2D, Buffer2D } from "@node-td/kernel";
-
-type Inputs = { field: Field2D; width: number; height: number };
-type Outputs = { buffer: Buffer2D };
+import { defineOperator, type Field2D, type Buffer2D } from "@node-td/kernel";
 
 /**
  * Field Render — rasterizes a Field2D into a Buffer2D.
@@ -11,7 +8,7 @@ type Outputs = { buffer: Buffer2D };
  *
  * Output is a single-channel Buffer2D at full resolution.
  */
-export const fieldRender: Operator<Inputs, Outputs> = {
+export const fieldRender = defineOperator({
   id: "field-render",
   category: "top",
   label: "Field Render",
@@ -27,7 +24,7 @@ export const fieldRender: Operator<Inputs, Outputs> = {
   envReads: ["dpr"],
 
   evaluate({ field, width, height }, params, env) {
-    const scale = params.scale ?? 1;
+    const scale = params.scale;
     const dpr = env.dpr;
     const bufW = Math.round(width * scale * dpr);
     const bufH = Math.round(height * scale * dpr);
@@ -43,4 +40,4 @@ export const fieldRender: Operator<Inputs, Outputs> = {
 
     return { buffer: { data, width: bufW, height: bufH, channels: 1 } };
   },
-};
+});

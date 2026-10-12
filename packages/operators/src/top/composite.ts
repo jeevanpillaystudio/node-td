@@ -1,8 +1,5 @@
 import { asOffscreen } from "../canvas-handle";
-import type { Operator, Buffer2D } from "@node-td/kernel";
-
-type Inputs = { layers: Buffer2D[] };
-type Outputs = { buffer: Buffer2D };
+import { defineOperator, type Buffer2D } from "@node-td/kernel";
 
 /**
  * Blend mode → Canvas2D globalCompositeOperation mapping.
@@ -32,7 +29,7 @@ const BLEND_OPS: GlobalCompositeOperation[] = [
  *   2 = multiply
  *   3 = screen
  */
-export const composite: Operator<Inputs, Outputs> = {
+export const composite = defineOperator({
   id: "composite",
   category: "top",
   label: "Composite",
@@ -54,7 +51,7 @@ export const composite: Operator<Inputs, Outputs> = {
   ],
 
   evaluate({ layers }, params, env) {
-    if (!layers || layers.length === 0) {
+    if (layers.length === 0) {
       return { buffer: { data: new Float32Array(0), width: 0, height: 0, channels: 4 } };
     }
 
@@ -62,7 +59,7 @@ export const composite: Operator<Inputs, Outputs> = {
       return { buffer: layers[0]! };
     }
 
-    const mode = Math.round(params.mode ?? 0);
+    const mode = Math.round(params.mode);
     const { width, height } = layers[0]!;
 
     // ── Canvas-native fast path ───────────────────────────────
@@ -102,7 +99,7 @@ export const composite: Operator<Inputs, Outputs> = {
           height,
           channels: 4,
           _canvas: canvas,
-        } as Buffer2D,
+        },
       };
     }
 
@@ -167,4 +164,4 @@ export const composite: Operator<Inputs, Outputs> = {
 
     return { buffer: { data: result, width, height, channels: 4 } };
   },
-};
+});

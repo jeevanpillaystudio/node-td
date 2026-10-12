@@ -1,10 +1,7 @@
-import type { Operator, Field2D, Buffer2D } from "@node-td/kernel";
-
-type Inputs = { field: Field2D; width: number; height: number };
-type Outputs = { buffer: Buffer2D };
+import { defineOperator, type Field2D, type Buffer2D } from "@node-td/kernel";
 
 /** Discretizes a continuous Field2D into a Buffer2D of angles (0..2π). */
-export const gridSampler: Operator<Inputs, Outputs> = {
+export const gridSampler = defineOperator({
   id: "grid-sampler",
   category: "top",
   label: "Grid Sampler",
@@ -18,7 +15,7 @@ export const gridSampler: Operator<Inputs, Outputs> = {
     { key: "resolution", label: "Resolution (px)", min: 5, max: 60, step: 1, default: 20 },
   ],
   evaluate({ field, width, height }, params) {
-    const resolution = params.resolution ?? 20;
+    const resolution = params.resolution;
     const cols = Math.ceil(width / resolution);
     const rows = Math.ceil(height / resolution);
 
@@ -32,4 +29,4 @@ export const gridSampler: Operator<Inputs, Outputs> = {
 
     return { buffer: { data, width: cols, height: rows, channels: 1 } };
   },
-};
+});

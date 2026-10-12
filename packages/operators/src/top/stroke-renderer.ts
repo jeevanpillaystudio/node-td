@@ -1,7 +1,6 @@
 import { asOffscreen } from "../canvas-handle";
-import type { Operator, Geometry, Camera2D, Palette, Buffer2D } from "@node-td/kernel";
+import { defineOperator, type Geometry, type Camera2D, type Palette, type Buffer2D } from "@node-td/kernel";
 
-type Inputs = { geometry: Geometry<2>; camera: Camera2D; palette?: Palette };
 type Outputs = { buffer: Buffer2D };
 
 /**
@@ -22,7 +21,7 @@ type Outputs = { buffer: Buffer2D };
  *    stroking them. Used for the terrain base outline fill that occludes
  *    strokes behind the terrain.
  */
-export const strokeRenderer: Operator<Inputs, Outputs> = {
+export const strokeRenderer = defineOperator({
   id: "stroke-renderer",
   category: "top",
   label: "Stroke Renderer",
@@ -60,16 +59,16 @@ export const strokeRenderer: Operator<Inputs, Outputs> = {
     const dpr = env.dpr;
     const pixelW = Math.round(worldW * dpr);
     const pixelH = Math.round(worldH * dpr);
-    const lineWidth = params.lineWidth ?? 1.8;
-    const alpha = params.strokeAlpha ?? 0.65;
-    const bgR = params.bgR ?? 26;
-    const bgG = params.bgG ?? 26;
-    const bgB = params.bgB ?? 26;
-    const bgAlpha = params.bgAlpha ?? 1;
-    const renderMode = params.renderMode ?? 0;
-    const fillR = params.fillR ?? 26;
-    const fillG = params.fillG ?? 26;
-    const fillB = params.fillB ?? 26;
+    const lineWidth = params.lineWidth;
+    const alpha = params.strokeAlpha;
+    const bgR = params.bgR;
+    const bgG = params.bgG;
+    const bgB = params.bgB;
+    const bgAlpha = params.bgAlpha;
+    const renderMode = params.renderMode;
+    const fillR = params.fillR;
+    const fillG = params.fillG;
+    const fillB = params.fillB;
 
     // Resolve uniform stroke color from palette or default
     let sr = 217, sg = 217, sb = 217;
@@ -340,7 +339,7 @@ export const strokeRenderer: Operator<Inputs, Outputs> = {
 
     return canvasBuffer(offscreen, pixelW, pixelH);
   },
-};
+});
 
 /**
  * Read canvas pixels into a CPU-side Buffer2D.
