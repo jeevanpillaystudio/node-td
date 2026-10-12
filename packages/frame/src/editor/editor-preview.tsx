@@ -1,14 +1,9 @@
 import { useEffect, useRef } from "react";
 import type { Graph, Geometry, Buffer2D } from "@node-td/engine";
 import { createDefaultRegistry, CookEngine, SeededRNG } from "@node-td/engine";
-import { drawCanvas2D, blitBuffer2D, createWebGL2 } from "@node-td/engine/render";
+import { drawCanvas2D, blitBuffer2D } from "@node-td/engine/render";
 
 const registry = createDefaultRegistry();
-
-function makeGL() {
-  const canvas = new OffscreenCanvas(1, 1);
-  return createWebGL2(canvas);
-}
 
 interface EditorPreviewProps {
   graph: Graph;
@@ -20,8 +15,6 @@ export function EditorPreview({ graph, values }: EditorPreviewProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const engineRef = useRef<CookEngine | null>(null);
   const engineGraphRef = useRef<Graph | null>(null);
-  const glRef = useRef<WebGL2RenderingContext | null>(null);
-  if (!glRef.current) glRef.current = makeGL();
 
   useEffect(() => {
     // Create or replace engine when graph identity changes
@@ -64,7 +57,6 @@ export function EditorPreview({ graph, values }: EditorPreviewProps) {
         height: virtualH,
         dpr: 1, // Preview handles its own scaling via canvas transform
         rng: new SeededRNG(149149941),
-        _gl: glRef.current,
         createCanvas: (cw: number, ch: number) => new OffscreenCanvas(cw, ch),
       });
 

@@ -2,25 +2,10 @@ import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react"
 import { cn } from "./ui/utils";
 import type { Graph, Geometry, Buffer2D } from "@node-td/engine";
 import { collectParams, createDefaultRegistry, CookEngine, SeededRNG } from "@node-td/engine";
-import { drawCanvas2D, blitBuffer2D, createWebGL2 } from "@node-td/engine/render";
+import { drawCanvas2D, blitBuffer2D } from "@node-td/engine/render";
 import { useOptionalFrameContext } from "./frame-provider";
 
 const registry = createDefaultRegistry();
-
-// ── Shared WebGL2 context (lazy singleton) ────────────────────
-// One GL context shared across ALL Frame instances. Eliminates the
-// browser's ~8-16 context limit issue. The field-render shader cache
-// is keyed by GL context, so sharing also shares the cache.
-let _sharedGL: WebGL2RenderingContext | null | undefined;
-function getSharedGL(): WebGL2RenderingContext | null {
-  if (_sharedGL !== undefined) return _sharedGL;
-  if (typeof OffscreenCanvas === "undefined") {
-    _sharedGL = null;
-    return null;
-  }
-  _sharedGL = createWebGL2(new OffscreenCanvas(1, 1));
-  return _sharedGL;
-}
 
 // ── Staggered cook scheduler ──────────────────────────────────
 // When many Frames mount simultaneously (e.g., debug page with 10
@@ -133,13 +118,12 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
       canvas.width = w * dpr;
       canvas.height = h * dpr;
 
-      // Cook — shared GL context, env diff auto-dirties on resize
+      // Cook — env diff auto-dirties on resize
       engine.cook({
         width: w,
         height: h,
         dpr,
         rng: new SeededRNG(42),
-        _gl: getSharedGL(),
         createCanvas: (cw: number, ch: number) => new OffscreenCanvas(cw, ch),
       });
 
