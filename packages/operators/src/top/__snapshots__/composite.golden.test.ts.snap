@@ -317,12 +317,12 @@ exports[`composite golden Add, CPU layers 1`] = `
     "comp": {
       "buffer": {
         "channels": 4,
-        "hash": "1c751c6d",
+        "hash": "e698ed10",
         "height": 32,
         "kind": "buffer",
         "stats": {
           "max": 1,
-          "mean": 0.854,
+          "mean": 0.756,
           "min": 0,
         },
         "width": 32,
@@ -492,12 +492,12 @@ exports[`composite golden Multiply, CPU layers 1`] = `
     "comp": {
       "buffer": {
         "channels": 4,
-        "hash": "204e7a28",
+        "hash": "5358e274",
         "height": 32,
         "kind": "buffer",
         "stats": {
           "max": 1,
-          "mean": 0.406,
+          "mean": 0.516,
           "min": 0,
         },
         "width": 32,
@@ -667,12 +667,12 @@ exports[`composite golden Screen, CPU layers 1`] = `
     "comp": {
       "buffer": {
         "channels": 4,
-        "hash": "2cb6c275",
+        "hash": "6d6b8c69",
         "height": 32,
         "kind": "buffer",
         "stats": {
           "max": 1,
-          "mean": 0.781,
+          "mean": 0.703,
           "min": 0,
         },
         "width": 32,

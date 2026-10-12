@@ -104,6 +104,20 @@ export const composite = defineOperator({
     }
 
     // ── CPU fallback (no _canvas on some layers) ──────────────
+    // Straight (not premultiplied) RGBA, blended as the canvas's
+    // globalCompositeOperation blends it (W3C Compositing and Blending):
+    //
+    //   over, multiply, screen: the source, mixed with the blend B(Cb, Cs)
+    //   as far as the backdrop is opaque, laid over the backdrop
+    //     Cs' = (1 − αb)·Cs + αb·B(Cb, Cs)
+    //     αo  = αs + αb·(1 − αs)
+    //     Co  = (αs·Cs' + αb·(1 − αs)·Cb) / αo
+    //   with B = Cs (over), Cb·Cs (multiply), Cb + Cs − Cb·Cs (screen)
+    //
+    //   add ("lighter"): the premultiplied sum, clamped
+    //     αo = min(1, αs + αb),  Co = min(1, αs·Cs + αb·Cb) / αo
+    //
+    // A pixel left with no alpha is (0, 0, 0, 0).
     const len = width * height * 4;
 
     // Start with a copy of the bottom layer
@@ -113,52 +127,24 @@ export const composite = defineOperator({
       const src = layers[li]!.data;
 
       for (let i = 0; i < len; i += 4) {
-        const sr = src[i]!;
-        const sg = src[i + 1]!;
-        const sb = src[i + 2]!;
         const sa = src[i + 3]!;
-        const dr = result[i]!;
-        const dg = result[i + 1]!;
-        const db = result[i + 2]!;
         const da = result[i + 3]!;
+        const outA = mode === 1 ? Math.min(1, sa + da) : sa + da * (1 - sa);
 
-        switch (mode) {
-          case 0: {
-            // Porter-Duff "over"
-            const outA = sa + da * (1 - sa);
-            if (outA > 0) {
-              result[i] = (sr * sa + dr * da * (1 - sa)) / outA;
-              result[i + 1] = (sg * sa + dg * da * (1 - sa)) / outA;
-              result[i + 2] = (sb * sa + db * da * (1 - sa)) / outA;
-            }
-            result[i + 3] = outA;
-            break;
+        for (let c = 0; c < 3; c++) {
+          const cs = src[i + c]!;
+          const cb = result[i + c]!;
+          let co: number;
+          if (mode === 1) {
+            co = Math.min(1, sa * cs + da * cb);
+          } else {
+            const blend = mode === 2 ? cb * cs : mode === 3 ? cb + cs - cb * cs : cs;
+            const mixed = (1 - da) * cs + da * blend;
+            co = sa * mixed + da * (1 - sa) * cb;
           }
-          case 1: {
-            // Additive
-            result[i] = Math.min(1, dr + sr);
-            result[i + 1] = Math.min(1, dg + sg);
-            result[i + 2] = Math.min(1, db + sb);
-            result[i + 3] = Math.min(1, da + sa);
-            break;
-          }
-          case 2: {
-            // Multiply
-            result[i] = dr * sr;
-            result[i + 1] = dg * sg;
-            result[i + 2] = db * sb;
-            result[i + 3] = Math.min(1, da + sa * (1 - da));
-            break;
-          }
-          case 3: {
-            // Screen
-            result[i] = 1 - (1 - dr) * (1 - sr);
-            result[i + 1] = 1 - (1 - dg) * (1 - sg);
-            result[i + 2] = 1 - (1 - db) * (1 - sb);
-            result[i + 3] = Math.min(1, da + sa * (1 - da));
-            break;
-          }
+          result[i + c] = outA > 0 ? co / outA : 0;
         }
+        result[i + 3] = outA;
       }
     }
 
