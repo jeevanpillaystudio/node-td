@@ -88,7 +88,7 @@ class StubImageData {
 }
 
 /** Run fn with a global ImageData, installing the stub only for the call. */
-function withImageData<T>(fn: () => T): T {
+export function withImageData<T>(fn: () => T): T {
   const g = globalThis as { ImageData?: unknown };
   const installed = !("ImageData" in g);
   if (installed) g.ImageData = StubImageData;
