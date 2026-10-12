@@ -29,7 +29,8 @@ replaces it and deletes this folder.
 | K4 operator families and port types | done, reviewed |
 | K5 defineOperator, param lint, widened ranges | done, reviewed |
 | K6a defineOperator for field, top, chop, mat, comp; restated defaults gone | done, reviewed by Sol |
-| K6b, G1, B1, B2, B3, E2, E1, E3 | not started |
+| K6b defineOperator for every SOP; restated defaults gone | done, reviewed by Sol |
+| G1, B1, B2, B3, E2, E1, E3 | not started |
 
 At this point `turbo run typecheck test` (12 tasks), `bun test` (517 pass),
 `biome lint .`, `turbo boundaries` and the examples build pass; the five
@@ -63,7 +64,7 @@ workflow's implementers, including no amend.
 Owner: the agent resuming this branch, once Jeevan lifts the restriction and
 says which agents to use.
 
-1. K6b, G1 (rest of batch 4: typed SOPs, geometry attributes).
+1. G1 (rest of batch 4: geometry attributes and colour on the geometry).
 2. B1, B2, B3, E2, E1 (labelled output changes, bug fixes, docs, format pass).
 3. E3 (CI workflow): commit, but push only on Jeevan's go-ahead, because it
    adds a pull-request trigger.
