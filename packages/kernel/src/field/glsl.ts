@@ -186,10 +186,18 @@ function analyze(expr: FieldExpr, ctx: CompileCtx): void {
 
 // ─── Code generation ─────────────────────────────────────────────
 
-/** Format a number as a GLSL float literal */
+/** Format a number as a GLSL float literal: always a mantissa with '.', then any exponent. */
 function glFloat(n: number): string {
-  const s = n.toString();
-  return s.includes(".") ? s : s + ".0";
+  // A value that is not finite as a 32-bit float has no GLSL literal
+  if (!Number.isFinite(Math.fround(n))) {
+    throw new RangeError(`compileField: ${n} has no GLSL float literal`);
+  }
+  if (Object.is(n, -0)) return "-0.0";
+  const s = n.toString(); // "5", "-0.25", "1e-7", "1.5e+21"
+  const e = s.indexOf("e");
+  const mantissa = e < 0 ? s : s.slice(0, e);
+  const exponent = e < 0 ? "" : s.slice(e);
+  return (mantissa.includes(".") ? mantissa : mantissa + ".0") + exponent;
 }
 
 interface GenCtx {
@@ -265,7 +273,8 @@ function genInline(expr: FieldExpr, scope: Scope): string {
     case "smoothstep": return `smoothstep(${genExpr(expr.edge0, scope)}, ${genExpr(expr.edge1, scope)}, ${genExpr(expr.x, scope)})`;
 
     case "abs": return `abs(${genExpr(expr.a, scope)})`;
-    case "neg": return `(-${genExpr(expr.a, scope)})`;
+    // Parenthesized, so a negative operand never forms "--"
+    case "neg": return `(-(${genExpr(expr.a, scope)}))`;
     case "floor": return `floor(${genExpr(expr.a, scope)})`;
     case "round": return `(floor(${genExpr(expr.a, scope)} + 0.5))`;
 
