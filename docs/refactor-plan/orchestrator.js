@@ -106,7 +106,10 @@ const REVIEW_SCHEMA = {
 // (Jeevan, 12 October 2026). Sol is reached through sol_check.py: a cheap Claude
 // agent runs it and hands back what it printed. Do not set an agent's model to
 // 'gpt-6.1-sol': the desktop app drops it and runs Claude instead.
-const SOL_CHECK = '/Users/jeevanpillay/Code/@lightfastai/query-v2/.claude/worktrees/gpt-sol-workflow-integration-4d8903/.agents/connectors/sol_check.py'
+// Merged into query-v2's main (its pull request 18). Until the main checkout
+// there is level with GitHub, take a copy first:
+//   git -C /Users/jeevanpillay/Code/@lightfastai/query-v2 show origin/main:.agents/connectors/sol_check.py > "$TMPDIR/sol_check.py"
+const SOL_CHECK = '/Users/jeevanpillay/Code/@lightfastai/query-v2/.agents/connectors/sol_check.py'
 const SOL_ALLOW = ['Bash(bun test:*)', 'Bash(bun run --cwd apps/examples build:*)', 'Bash(./node_modules/.bin/tsc:*)',
   'Bash(./node_modules/.bin/turbo:*)', 'Bash(./node_modules/.bin/biome lint:*)', 'Bash(./node_modules/.bin/biome check:*)',
   'Bash(TURBO_TELEMETRY_DISABLED=1 ./node_modules/.bin/turbo:*)', 'Bash(git reflog:*)',
