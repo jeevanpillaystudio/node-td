@@ -1,4 +1,4 @@
-import type { Graph } from "../../src/index";
+import type { Graph, OperatorRegistry } from "../../src/index";
 import { CookEngine, createDefaultRegistry, SeededRNG } from "../../src/index";
 import { type Digest, digest, digestLog } from "./digest";
 import { createRecordingCanvasFactory, type LogEntry } from "./recording-canvas";
@@ -8,6 +8,8 @@ export interface CookOptions {
   height: number;
   dpr: number;
   seed: number | string;
+  /** Operators to resolve node types with; a fresh default registry when omitted */
+  registry?: OperatorRegistry;
 }
 
 export interface CookResult {
@@ -19,6 +21,8 @@ export interface CookResult {
   cooked: Map<string, Record<string, unknown>>;
   /** The recorded canvas log itself, for debugging a render mismatch */
   log: LogEntry[];
+  /** The engine that cooked, for host-side lookups such as findTerminalOutput */
+  engine: CookEngine;
 }
 
 /**
@@ -31,7 +35,7 @@ export interface CookResult {
  * a lazily read-back buffer calls getImageData and would extend the log.
  */
 export function cookGraph(graph: Graph, opts: CookOptions): CookResult {
-  const registry = createDefaultRegistry();
+  const registry = opts.registry ?? createDefaultRegistry();
   const engine = new CookEngine(graph, registry);
   engine.setParams({});
 
@@ -55,5 +59,5 @@ export function cookGraph(graph: Graph, opts: CookOptions): CookResult {
     nodes[key] = ports;
   }
 
-  return { nodes, render, cooked, log: recorded };
+  return { nodes, render, cooked, log: recorded, engine };
 }
