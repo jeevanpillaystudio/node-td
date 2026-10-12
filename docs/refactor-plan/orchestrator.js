@@ -129,7 +129,7 @@ Return status "done" only if every verification passes. Use "partial" if some st
 function reviewPrompt(id, impl, lens) {
   return `${SHARED}
 
-You are an independent reviewer of work item ${id}. You did not write it. Be skeptical: default to reporting a problem when unsure, but only report problems you verified in the code or by running a command. You may run any read-only command and tests. Do NOT modify, stage or commit anything; if a command writes files (e.g. a snapshot appearing), restore them with \`git checkout -- <path>\` / delete the new untracked file before you finish, and report it as a problem.
+You are an independent reviewer of work item ${id}. You did not write it. Be skeptical: default to reporting a problem when unsure, but only report problems you verified in the code or by running a command. You may run any read-only command and tests. Never run git checkout, switch, reset, restore or stash: to look at an older commit use `git show <sha>:<path>`, or `git worktree add --detach $TMPDIR/<name> <sha>` and remove it with `git worktree remove` when done. Do NOT modify, stage or commit anything; if a command writes files (e.g. a snapshot appearing), restore them with \`git restore -- <path>\` (the one git command allowed for this) / delete the new untracked file before you finish, and report it as a problem.
 
 ${lens.text}
 

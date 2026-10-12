@@ -15,34 +15,33 @@ replaces it and deletes this folder.
   correct on 12 Oct 2026; recheck registry and GitHub reachability before reuse.
   Pass `{"title": "...", "items": ["C1", ...]}` as its args.
 
-## Where it stands (12 Oct 2026, after batch 2)
+## Where it stands (12 Oct 2026, after batch 3)
 
 | Item | State |
 | --- | --- |
-| T1 tooling baseline | done, reviewed |
-| S1 headless test harness | done, reviewed |
-| S2 kernel tests | done, reviewed |
-| S3 golden baseline (patches + every operator) | done, reviewed |
-| T2 dependency trim, exact pins, typechecked tests, isolated linker | done, reviewed |
-| C1 dead code deleted | done, reviewed |
-| C2 noise moved into the kernel | done, reviewed |
-| C3 CPU-only field path | done, reviewed |
-| C4 immutable cook outputs | done, reviewed |
+| T1, S1, S2, S3, T2 tooling and safety net | done, reviewed |
+| C1, C2, C3, C4 dead code, kernel noise, CPU-only fields, immutable outputs | done, reviewed |
+| C5a @node-td/kernel (no DOM types) and @node-td/testing | done, reviewed |
+| C5b operators, render-web, patches; @node-td/engine deleted | done, reviewed |
+| K3 compileField terminates, ordered, tested | done, reviewed |
+| C6 patches registry drives the gallery; continuous-stroke removed | done, reviewed |
+| C7 frame (runtime) split from editor (dev) | done, reviewed |
 | everything else | not started |
 
-At this point `bun test` (348 pass), `turbo run typecheck test`, `biome lint .`
-and the examples build pass; render goldens are unchanged since the baseline
-(only point-renderer's own operator snapshot was removed, on purpose).
+At this point `turbo run typecheck test` (12 tasks), `bun test` (440 pass),
+`biome lint .`, `turbo boundaries` and the examples build pass; the five
+render goldens are byte-identical to the baseline.
 
 ## Next
 
 Owner: the agent resuming this branch. Run the orchestrator batch by batch:
 
-1. C5a, C5b, K3, C6, C7 (package split, patches registry, frame/editor split).
-2. K1, C8, K2, K4, K5, K6a, K6b, G1 (kernel semantics, taxonomy, typed ops).
-3. B1, B2, B3, E2, E1 (labelled output changes, bug fixes, docs, format pass).
-4. E3 (CI workflow): commit, but push only on Jeevan's go-ahead, because it
+1. K1, C8, K2, K4, K5, K6a, K6b, G1 (kernel semantics, taxonomy, typed ops).
+2. B1, B2, B3, E2, E1 (labelled output changes, bug fixes, docs, format pass).
+3. E3 (CI workflow): commit, but push only on Jeevan's go-ahead, because it
    adds a pull-request trigger.
+4. After pull request #1: the review phase in `next-phase.md` (performance
+   review with node viewers, and a per-operator review), on a new branch.
 
 Briefs carry notes added after each batch at the end of their overrides.
 
