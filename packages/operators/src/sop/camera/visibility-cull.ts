@@ -50,14 +50,20 @@ export const visibilityCull = defineOperator({
       return { geometry: strokes };
     }
 
-    if (strokes.topology !== "line-strip" || !strokes.stripOffsets) {
-      // Nothing to cull — pass through non-strip geometry
+    if (strokes.vertexCount === 0) {
       return { geometry: strokes };
     }
 
-    if (!mesh.indices || mesh.topology !== "triangles") {
-      // No collision mesh — pass through
-      return { geometry: strokes };
+    // Input it cannot cull is an error, not strokes passed through unculled.
+    // A line strip without stripOffsets is one strip.
+    if (strokes.topology !== "line-strip") {
+      throw new Error(`visibility-cull: geometry is ${strokes.topology}, but it culls line strips`);
+    }
+
+    if (mesh.topology !== "triangles" || !mesh.indices) {
+      throw new Error(
+        `visibility-cull: mesh is ${mesh.indices ? "indexed" : "unindexed"} ${mesh.topology}, but it needs indexed triangles, as parametric-surface makes`,
+      );
     }
 
     // ── Build triangle data from mesh ────────────────────────────
