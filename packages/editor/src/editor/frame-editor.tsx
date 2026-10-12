@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { useFrameContext } from "../frame-provider";
 import { EditorSidebar } from "./editor-sidebar";
@@ -19,6 +19,15 @@ export function FrameEditor({ onClose }: FrameEditorProps) {
   const onNodeSelect = useCallback((key: string | null) => {
     setSelectedNode(key);
   }, []);
+
+  // Escape closes the editor
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [onClose]);
 
   if (!entry) return null;
 
