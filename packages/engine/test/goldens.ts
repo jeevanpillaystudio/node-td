@@ -1,11 +1,8 @@
 import { createDefaultRegistry } from "../src/index";
 import { blitBuffer2D } from "../src/render/canvas-2d";
-import { opGoldens, patchGoldens } from "@node-td/testing";
+import { patchGoldens } from "@node-td/testing";
 
-export { type FixtureGraph, type NodeInstance, type OpFixture, w } from "@node-td/testing";
-
-/** The golden helpers, bound to the engine's operators and its blit. */
-export const { opGolden } = opGoldens(createDefaultRegistry);
+/** The patch golden helpers, bound to the default operators and the engine's blit. */
 export const { renderGolden, nodesGolden } = patchGoldens({
   createRegistry: createDefaultRegistry,
   blit: blitBuffer2D,

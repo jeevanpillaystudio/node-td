@@ -28,7 +28,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@node-td/kernel": "workspace:*"
+    "@node-td/kernel": "workspace:*",
+    "@node-td/operators": "workspace:*"
   },
   "devDependencies": {
     "@node-td/testing": "workspace:*",
