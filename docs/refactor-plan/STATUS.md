@@ -33,7 +33,8 @@ replaces it and deletes this folder.
 | G1 colours and attributes on the geometry, kernel geometry helpers, MAT retired | done, reviewed by Sol |
 | B1 Meridian raymarch reaches the terrain at every size (labelled output change) | done, reviewed by Sol; one scope finding answered in the brief |
 | B2 geometric-normal sign, Subscapes light mirrored (labelled output change) | done, reviewed by Sol; boundary-only check not read by Sol |
-| B3, E2, E1, E3 | not started |
+| B3 operator bug fixes: merge, transform-2d, quadtree, camera pan, zero size, composite blends, cull errors | done, reviewed by Sol after one repair; two deviations answered in the brief |
+| E2, E1, E3 | not started |
 
 At this point `turbo run typecheck test` (12 tasks), `bun test` (517 pass),
 `biome lint .`, `turbo boundaries` and the examples build pass; the five
@@ -48,8 +49,9 @@ up): code work runs on Claude Opus 5.5; review and verification run on
 GPT-6.1 Sol, which never writes code; Codex is not used. `orchestrator.js`
 follows this: implementers and the repair round run on the session's Claude
 model, and every review claim and the checkpoint go to Sol through
-`sol_check.py` (in the query-v2 worktree `gpt-sol-workflow-integration-4d8903`
-until that branch merges), run by a `claude-haiku-5-5` agent that only carries
+`sol_check.py` (merged into query-v2's main in its pull request 18; until the
+main checkout there is level with GitHub, run a copy taken with
+`git -C <query-v2> show origin/main:.agents/connectors/sol_check.py`), run by a `claude-haiku-5-5` agent that only carries
 the claim and the verdict. A single Sol check from this worktree was run on
 12 Oct 2026 and passed in 40 s.
 
@@ -77,12 +79,19 @@ After one repair round each, two findings stay open by the rule of one round:
   recoloured strokes all start on the grid's edge; with the light left
   unmirrored the same check fails at every size (behaviour passed).
 
+B3's first read by Sol found three things: a lone implicit strip passed
+through merge without explicit strips (fixed in 5b1b02d); visibility-cull
+culls an implicit strip instead of reporting it, as its finding recommends;
+composite's canvas path has no pixel test, since nothing in the tests draws.
+The last two are answered in B3.md's overrides, and the parity check is owed
+to docs/roadmap.md, which E2 writes. The re-check passed all three claims.
+
 ## Next
 
 Owner: the agent resuming this branch, once Jeevan lifts the restriction and
 says which agents to use.
 
-1. B3 (operator bug fixes), then E2, E1 (docs, format pass).
+1. E2, then E1 (docs, format pass).
 2. E3 (CI workflow): commit, but push only on Jeevan's go-ahead, because it
    adds a pull-request trigger.
 4. After pull request #1: the review phase in `next-phase.md` (performance
