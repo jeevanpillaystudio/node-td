@@ -1,5 +1,5 @@
 import type { Operator, Field2D } from "../../kernel/types";
-import { P } from "../../noise-utils";
+import { P } from "../../kernel/noise";
 import { createField, X, Y, c, u, mul, add, perlin as pn } from "../../kernel/field-expr";
 
 type Inputs = Record<string, never>;
