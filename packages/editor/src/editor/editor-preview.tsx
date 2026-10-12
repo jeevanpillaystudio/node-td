@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
-import type { Graph, Geometry, Buffer2D } from "@node-td/kernel";
+import type { Graph, Buffer2D } from "@node-td/kernel";
 import { CookEngine, SeededRNG } from "@node-td/kernel";
 import { defaultRegistry } from "@node-td/operators";
-import { drawCanvas2D, blitBuffer2D } from "@node-td/render-web";
+import { blitBuffer2D } from "@node-td/render-web";
 
 const registry = defaultRegistry();
 
@@ -61,7 +61,6 @@ export function EditorPreview({ graph, values }: EditorPreviewProps) {
         createCanvas: (cw: number, ch: number) => new OffscreenCanvas(cw, ch),
       });
 
-      // ROP path: graph terminates with Buffer2D
       const buf = engine.findTerminalOutput<Buffer2D>("buffer");
       if (buf) {
         // putImageData ignores canvas transforms, so we blit to a temp canvas
@@ -70,12 +69,6 @@ export function EditorPreview({ graph, values }: EditorPreviewProps) {
         const tmpCtx = tmp.getContext("2d")!;
         blitBuffer2D(tmpCtx, buf);
         ctx.drawImage(tmp, 0, 0);
-      } else {
-        // Legacy fallback: graph terminates with Geometry
-        const geo = engine.findTerminalOutput<Geometry<2>>("geometry");
-        if (geo) {
-          drawCanvas2D(ctx, virtualW, virtualH, geo);
-        }
       }
     }
 

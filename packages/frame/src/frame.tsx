@@ -8,10 +8,10 @@ import {
   useRef,
   useState,
 } from "react";
-import type { Graph, Geometry, Buffer2D, OperatorRegistry } from "@node-td/kernel";
+import type { Graph, Buffer2D, OperatorRegistry } from "@node-td/kernel";
 import { collectParams, CookEngine, SeededRNG } from "@node-td/kernel";
 import { defaultRegistry } from "@node-td/operators";
-import { drawCanvas2D, blitBuffer2D } from "@node-td/render-web";
+import { blitBuffer2D } from "@node-td/render-web";
 import { FrameHostContext } from "./frame-host";
 
 /** The seed every gallery artwork was tuned with. */
@@ -135,18 +135,9 @@ export function Frame({
         createCanvas: (cw: number, ch: number) => new OffscreenCanvas(cw, ch),
       });
 
-      // ROP path: buffer is already at full pixel resolution (DPR-aware)
+      // The buffer is already at full pixel resolution (DPR-aware)
       const buf = engine.findTerminalOutput<Buffer2D>("buffer");
-      if (buf) {
-        blitBuffer2D(canvasCtx, buf);
-      } else {
-        // Legacy fallback: apply DPR transform for direct geometry drawing
-        canvasCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        const geo = engine.findTerminalOutput<Geometry<2>>("geometry");
-        if (geo) {
-          drawCanvas2D(canvasCtx, w, h, geo);
-        }
-      }
+      if (buf) blitBuffer2D(canvasCtx, buf);
 
       // Free intermediate buffers — critical for multi-panel pages.
       // Without this, cached Float32Arrays from all panels persist
