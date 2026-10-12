@@ -1,0 +1,79 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`camera-2d golden default 1`] = `
+{
+  "nodes": {
+    "camera": {
+      "camera": {
+        "center": [
+          128,
+          128,
+        ],
+        "kind": "camera2d",
+        "rotation": 0,
+        "viewport": [
+          256,
+          256,
+        ],
+        "zoom": 1,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`camera-2d golden centre offset, zoom 2, rotation 0.3 1`] = `
+{
+  "nodes": {
+    "camera": {
+      "camera": {
+        "center": [
+          138,
+          108,
+        ],
+        "kind": "camera2d",
+        "rotation": 0.3,
+        "viewport": [
+          256,
+          256,
+        ],
+        "zoom": 2,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`camera-2d golden landscape 1`] = `
+{
+  "nodes": {
+    "camera": {
+      "camera": {
+        "center": [
+          320,
+          200,
+        ],
+        "kind": "camera2d",
+        "rotation": 0,
+        "viewport": [
+          640,
+          400,
+        ],
+        "zoom": 1,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

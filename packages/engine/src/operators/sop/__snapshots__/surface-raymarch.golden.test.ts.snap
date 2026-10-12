@@ -1,0 +1,368 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`surface-raymarch golden meridian params 1`] = `
+{
+  "nodes": {
+    "cam": {
+      "camera3d": {
+        "kind": "camera3d",
+        "project": "b7bd729c",
+        "unproject": "ea711e8c",
+        "viewport": [
+          256,
+          256,
+        ],
+      },
+    },
+    "march": {
+      "geometry": {
+        "attributes": {
+          "ao": "3e0d2bbc",
+          "depth": "3f0a9e38",
+          "normalX": "a6565340",
+          "normalY": "ef79b992",
+          "normalZ": "680b5637",
+          "worldX": "eea25ced",
+          "worldY": "97948920",
+          "worldZ": "b1fdead0",
+        },
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "f614e083",
+          "stats": [
+            {
+              "max": 255.904,
+              "mean": 129,
+              "min": 0.602,
+            },
+            {
+              "max": 255.782,
+              "mean": 131.57,
+              "min": 0.63,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 113,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "f0653aa7",
+        "kind": "field",
+        "max": 0.952,
+        "mean": 0.506,
+        "min": 0.047,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "f614e083",
+          "stats": [
+            {
+              "max": 255.904,
+              "mean": 129,
+              "min": 0.602,
+            },
+            {
+              "max": 255.782,
+              "mean": 131.57,
+              "min": 0.63,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 113,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`surface-raymarch golden aoSteps 0 1`] = `
+{
+  "nodes": {
+    "cam": {
+      "camera3d": {
+        "kind": "camera3d",
+        "project": "b7bd729c",
+        "unproject": "ea711e8c",
+        "viewport": [
+          256,
+          256,
+        ],
+      },
+    },
+    "march": {
+      "geometry": {
+        "attributes": {
+          "ao": "4874addc",
+          "depth": "3f0a9e38",
+          "normalX": "a6565340",
+          "normalY": "ef79b992",
+          "normalZ": "680b5637",
+          "worldX": "eea25ced",
+          "worldY": "97948920",
+          "worldZ": "b1fdead0",
+        },
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "f614e083",
+          "stats": [
+            {
+              "max": 255.904,
+              "mean": 129,
+              "min": 0.602,
+            },
+            {
+              "max": 255.782,
+              "mean": 131.57,
+              "min": 0.63,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 113,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "f0653aa7",
+        "kind": "field",
+        "max": 0.952,
+        "mean": 0.506,
+        "min": 0.047,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "f614e083",
+          "stats": [
+            {
+              "max": 255.904,
+              "mean": 129,
+              "min": 0.602,
+            },
+            {
+              "max": 255.782,
+              "mean": 131.57,
+              "min": 0.63,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 113,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`surface-raymarch golden meridian params, 400 × 400 1`] = `
+{
+  "nodes": {
+    "cam": {
+      "camera3d": {
+        "kind": "camera3d",
+        "project": "c9b5cba0",
+        "unproject": "a80bf8d9",
+        "viewport": [
+          400,
+          400,
+        ],
+      },
+    },
+    "march": {
+      "geometry": {
+        "attributes": {
+          "ao": "bc9b166b",
+          "depth": "94f09ef3",
+          "normalX": "55a109a9",
+          "normalY": "61e7479f",
+          "normalZ": "6775a572",
+          "worldX": "25b336fb",
+          "worldY": "910e5fe4",
+          "worldZ": "5aaef0e0",
+        },
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "d99c80ad",
+          "stats": [
+            {
+              "max": 399.045,
+              "mean": 201.007,
+              "min": 0.308,
+            },
+            {
+              "max": 399.223,
+              "mean": 285.667,
+              "min": 156.997,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 154,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "01a2f330",
+        "kind": "field",
+        "max": 0.949,
+        "mean": 0.503,
+        "min": 0.04,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "6fd30092",
+          "stats": [
+            {
+              "max": 399.979,
+              "mean": 201.065,
+              "min": 0.308,
+            },
+            {
+              "max": 399.223,
+              "mean": 199.892,
+              "min": 1.442,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 265,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`surface-raymarch golden maxDist 50, no hits 1`] = `
+{
+  "nodes": {
+    "cam": {
+      "camera3d": {
+        "kind": "camera3d",
+        "project": "b7bd729c",
+        "unproject": "ea711e8c",
+        "viewport": [
+          256,
+          256,
+        ],
+      },
+    },
+    "march": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "811c9dc5",
+          "stats": [
+            {
+              "max": null,
+              "mean": null,
+              "min": null,
+            },
+            {
+              "max": null,
+              "mean": null,
+              "min": null,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 0,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "f0653aa7",
+        "kind": "field",
+        "max": 0.952,
+        "mean": 0.506,
+        "min": 0.047,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "f614e083",
+          "stats": [
+            {
+              "max": 255.904,
+              "mean": 129,
+              "min": 0.602,
+            },
+            {
+              "max": 255.782,
+              "mean": 131.57,
+              "min": 0.63,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 113,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

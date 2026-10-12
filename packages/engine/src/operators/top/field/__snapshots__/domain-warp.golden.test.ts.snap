@@ -1,0 +1,133 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`domain-warp golden default 1`] = `
+{
+  "nodes": {
+    "dw": {
+      "field": {
+        "hash": "b4dd8685",
+        "kind": "field",
+        "max": 0.999,
+        "mean": 0.487,
+        "min": 0.018,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "warp": {
+      "field": {
+        "hash": "2aba7cec",
+        "kind": "field",
+        "max": 0.816,
+        "mean": 0.496,
+        "min": 0.181,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`domain-warp golden amount 120, offset (300, 40) 1`] = `
+{
+  "nodes": {
+    "dw": {
+      "field": {
+        "hash": "9918c58d",
+        "kind": "field",
+        "max": 0.984,
+        "mean": 0.513,
+        "min": 0.062,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "warp": {
+      "field": {
+        "hash": "2aba7cec",
+        "kind": "field",
+        "max": 0.816,
+        "mean": 0.496,
+        "min": 0.181,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`domain-warp golden opaque inputs 1`] = `
+{
+  "nodes": {
+    "dw": {
+      "field": {
+        "hash": "b4dd8685",
+        "kind": "field",
+        "max": 0.999,
+        "mean": 0.487,
+        "min": 0.018,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "opaqueField": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "opaqueWarp": {
+      "field": {
+        "hash": "2aba7cec",
+        "kind": "field",
+        "max": 0.816,
+        "mean": 0.496,
+        "min": 0.181,
+      },
+    },
+    "warp": {
+      "field": {
+        "hash": "2aba7cec",
+        "kind": "field",
+        "max": 0.816,
+        "mean": 0.496,
+        "min": 0.181,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

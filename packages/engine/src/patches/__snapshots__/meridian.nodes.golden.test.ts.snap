@@ -1,0 +1,1046 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`meridian nodes resolved params 1`] = `
+{
+  "cam3d": {
+    "params": {
+      "eyeX": 0.281,
+      "eyeY": 1.172,
+      "eyeZ": -1.281,
+      "far": 5000,
+      "fov": 60,
+      "near": 0.1,
+      "orthoSize": 1.367,
+      "projection": 0,
+      "targetX": 0,
+      "targetY": 0,
+      "targetZ": 0,
+    },
+    "type": "camera-3d",
+  },
+  "camera": {
+    "params": {
+      "centerX": 0,
+      "centerY": 0,
+      "rotation": 0,
+      "zoom": 1,
+    },
+    "type": "camera-2d",
+  },
+  "noise": {
+    "params": {
+      "noiseScale": 0.018,
+    },
+    "type": "simplex-noise",
+  },
+  "noiseAngle": {
+    "params": {
+      "noiseScale": 0.03,
+    },
+    "type": "simplex-noise",
+  },
+  "orient": {
+    "params": {
+      "angleScale": 3.14,
+      "baseAngle": 0,
+      "baseLength": 14,
+      "lengthScale": 0.3,
+      "noiseScale": 0.025,
+    },
+    "type": "point-orient",
+  },
+  "palette": {
+    "params": {
+      "chroma": 0.15,
+      "count": 5,
+      "hueOffset": 200,
+      "hueSpread": 360,
+      "lightness": 0.65,
+    },
+    "type": "oklab-palette",
+  },
+  "raymarch": {
+    "params": {
+      "amplitude": 80,
+      "aoRadius": 12,
+      "aoSteps": 4,
+      "epsilon": 0.3,
+      "maxDist": 700,
+      "maxSteps": 150,
+      "normalEps": 0.5,
+    },
+    "type": "surface-raymarch",
+  },
+  "render": {
+    "params": {
+      "bgAlpha": 1,
+      "bgB": 18,
+      "bgG": 14,
+      "bgR": 12,
+      "fillB": 26,
+      "fillG": 26,
+      "fillR": 26,
+      "lineWidth": 1,
+      "renderMode": 2,
+      "strokeAlpha": 0.65,
+    },
+    "type": "stroke-renderer",
+  },
+  "ridge": {
+    "params": {
+      "hi": 1,
+      "lo": 0,
+      "mode": 2,
+      "power": 1.5,
+      "steps": 6,
+    },
+    "type": "field-remap",
+  },
+  "seeds": {
+    "params": {
+      "densityScale": 1.5,
+      "margin": 0,
+      "minRadius": 20,
+    },
+    "type": "poisson-disc",
+  },
+  "terrain": {
+    "params": {
+      "amplitude": 1,
+      "domainRotation": 0.646,
+      "gain": 0.5,
+      "lacunarity": 2,
+      "octaves": 6,
+    },
+    "type": "fbm",
+  },
+}
+`;
+
+exports[`meridian nodes 256x256 dpr1 1`] = `
+{
+  "cam3d": {
+    "camera3d": {
+      "kind": "camera3d",
+      "project": "b7bd729c",
+      "unproject": "ea711e8c",
+      "viewport": [
+        256,
+        256,
+      ],
+    },
+  },
+  "camera": {
+    "camera": {
+      "center": [
+        128,
+        128,
+      ],
+      "kind": "camera2d",
+      "rotation": 0,
+      "viewport": [
+        256,
+        256,
+      ],
+      "zoom": 1,
+    },
+  },
+  "noise": {
+    "field": {
+      "hash": "f0653aa7",
+      "kind": "field",
+      "max": 0.952,
+      "mean": 0.506,
+      "min": 0.047,
+    },
+  },
+  "noiseAngle": {
+    "field": {
+      "hash": "65dcf2b9",
+      "kind": "field",
+      "max": 0.969,
+      "mean": 0.495,
+      "min": 0.033,
+    },
+  },
+  "orient": {
+    "geometry": {
+      "attributes": {
+        "angle": "6e529ad4",
+        "ao": "5f3ce957",
+        "depth": "907788cb",
+        "length": "a147b0cd",
+        "normalX": "0c1c7daa",
+        "normalY": "0c8ce4b4",
+        "normalZ": "9c27de76",
+        "worldX": "e0631081",
+        "worldY": "bf1f6f3b",
+        "worldZ": "df91b196",
+      },
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "f614e083",
+        "stats": [
+          {
+            "max": 255.904,
+            "mean": 129,
+            "min": 0.602,
+          },
+          {
+            "max": 255.782,
+            "mean": 131.57,
+            "min": 0.63,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "points",
+      "vertexCount": 113,
+    },
+  },
+  "palette": {
+    "palette": {
+      "colors": "7d4175ed",
+      "count": 5,
+      "kind": "palette",
+    },
+  },
+  "raymarch": {
+    "geometry": {
+      "attributes": {
+        "ao": "5f3ce957",
+        "depth": "907788cb",
+        "normalX": "0c1c7daa",
+        "normalY": "0c8ce4b4",
+        "normalZ": "9c27de76",
+        "worldX": "e0631081",
+        "worldY": "bf1f6f3b",
+        "worldZ": "df91b196",
+      },
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "f614e083",
+        "stats": [
+          {
+            "max": 255.904,
+            "mean": 129,
+            "min": 0.602,
+          },
+          {
+            "max": 255.782,
+            "mean": 131.57,
+            "min": 0.63,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "points",
+      "vertexCount": 113,
+    },
+  },
+  "render": {
+    "buffer": {
+      "channels": 4,
+      "hash": "279c9dc5",
+      "height": 256,
+      "kind": "buffer",
+      "stats": {
+        "max": 0,
+        "mean": 0,
+        "min": 0,
+      },
+      "width": 256,
+    },
+  },
+  "ridge": {
+    "field": {
+      "hash": "93e7a80c",
+      "kind": "field",
+      "max": 0.632,
+      "mean": 0.197,
+      "min": 0,
+    },
+  },
+  "seeds": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "f614e083",
+        "stats": [
+          {
+            "max": 255.904,
+            "mean": 129,
+            "min": 0.602,
+          },
+          {
+            "max": 255.782,
+            "mean": 131.57,
+            "min": 0.63,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "points",
+      "vertexCount": 113,
+    },
+  },
+  "terrain": {
+    "field": {
+      "hash": "cc082165",
+      "kind": "field",
+      "max": 0.816,
+      "mean": 0.511,
+      "min": 0.204,
+    },
+  },
+}
+`;
+
+exports[`meridian nodes 400x400 dpr1 1`] = `
+{
+  "cam3d": {
+    "camera3d": {
+      "kind": "camera3d",
+      "project": "c9b5cba0",
+      "unproject": "a80bf8d9",
+      "viewport": [
+        400,
+        400,
+      ],
+    },
+  },
+  "camera": {
+    "camera": {
+      "center": [
+        200,
+        200,
+      ],
+      "kind": "camera2d",
+      "rotation": 0,
+      "viewport": [
+        400,
+        400,
+      ],
+      "zoom": 1,
+    },
+  },
+  "noise": {
+    "field": {
+      "hash": "01a2f330",
+      "kind": "field",
+      "max": 0.949,
+      "mean": 0.503,
+      "min": 0.04,
+    },
+  },
+  "noiseAngle": {
+    "field": {
+      "hash": "f856a0c6",
+      "kind": "field",
+      "max": 0.955,
+      "mean": 0.506,
+      "min": 0.045,
+    },
+  },
+  "orient": {
+    "geometry": {
+      "attributes": {
+        "angle": "6c7210ad",
+        "ao": "7e56d362",
+        "depth": "d049b828",
+        "length": "6aa4c395",
+        "normalX": "9b871b4f",
+        "normalY": "7a14e96e",
+        "normalZ": "adb1802c",
+        "worldX": "1a064c2d",
+        "worldY": "631c9211",
+        "worldZ": "d7b35846",
+      },
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "c4f35e0d",
+        "stats": [
+          {
+            "max": 399.045,
+            "mean": 203.997,
+            "min": 0.308,
+          },
+          {
+            "max": 399.223,
+            "mean": 295.165,
+            "min": 167.783,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "points",
+      "vertexCount": 142,
+    },
+  },
+  "palette": {
+    "palette": {
+      "colors": "7d4175ed",
+      "count": 5,
+      "kind": "palette",
+    },
+  },
+  "raymarch": {
+    "geometry": {
+      "attributes": {
+        "ao": "7e56d362",
+        "depth": "d049b828",
+        "normalX": "9b871b4f",
+        "normalY": "7a14e96e",
+        "normalZ": "adb1802c",
+        "worldX": "1a064c2d",
+        "worldY": "631c9211",
+        "worldZ": "d7b35846",
+      },
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "c4f35e0d",
+        "stats": [
+          {
+            "max": 399.045,
+            "mean": 203.997,
+            "min": 0.308,
+          },
+          {
+            "max": 399.223,
+            "mean": 295.165,
+            "min": 167.783,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "points",
+      "vertexCount": 142,
+    },
+  },
+  "render": {
+    "buffer": {
+      "channels": 4,
+      "hash": "229b1dc5",
+      "height": 400,
+      "kind": "buffer",
+      "stats": {
+        "max": 0,
+        "mean": 0,
+        "min": 0,
+      },
+      "width": 400,
+    },
+  },
+  "ridge": {
+    "field": {
+      "hash": "c108f552",
+      "kind": "field",
+      "max": 0.695,
+      "mean": 0.23,
+      "min": 0,
+    },
+  },
+  "seeds": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "6fd30092",
+        "stats": [
+          {
+            "max": 399.979,
+            "mean": 201.065,
+            "min": 0.308,
+          },
+          {
+            "max": 399.223,
+            "mean": 199.892,
+            "min": 1.442,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "points",
+      "vertexCount": 265,
+    },
+  },
+  "terrain": {
+    "field": {
+      "hash": "3389e058",
+      "kind": "field",
+      "max": 0.848,
+      "mean": 0.507,
+      "min": 0.197,
+    },
+  },
+}
+`;
+
+exports[`meridian nodes 800x800 dpr1 1`] = `
+{
+  "cam3d": {
+    "camera3d": {
+      "kind": "camera3d",
+      "project": "30e13f63",
+      "unproject": "6c4c0c02",
+      "viewport": [
+        800,
+        800,
+      ],
+    },
+  },
+  "camera": {
+    "camera": {
+      "center": [
+        400,
+        400,
+      ],
+      "kind": "camera2d",
+      "rotation": 0,
+      "viewport": [
+        800,
+        800,
+      ],
+      "zoom": 1,
+    },
+  },
+  "noise": {
+    "field": {
+      "hash": "a6f7424a",
+      "kind": "field",
+      "max": 0.949,
+      "mean": 0.481,
+      "min": 0.041,
+    },
+  },
+  "noiseAngle": {
+    "field": {
+      "hash": "e873e16e",
+      "kind": "field",
+      "max": 0.968,
+      "mean": 0.497,
+      "min": 0.031,
+    },
+  },
+  "orient": {
+    "geometry": {
+      "attributes": {
+        "angle": "811c9dc5",
+        "length": "811c9dc5",
+      },
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "811c9dc5",
+        "stats": [
+          {
+            "max": null,
+            "mean": null,
+            "min": null,
+          },
+          {
+            "max": null,
+            "mean": null,
+            "min": null,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "points",
+      "vertexCount": 0,
+    },
+  },
+  "palette": {
+    "palette": {
+      "colors": "7d4175ed",
+      "count": 5,
+      "kind": "palette",
+    },
+  },
+  "raymarch": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "811c9dc5",
+        "stats": [
+          {
+            "max": null,
+            "mean": null,
+            "min": null,
+          },
+          {
+            "max": null,
+            "mean": null,
+            "min": null,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "points",
+      "vertexCount": 0,
+    },
+  },
+  "render": {
+    "buffer": {
+      "channels": 4,
+      "hash": "87169dc5",
+      "height": 800,
+      "kind": "buffer",
+      "stats": {
+        "max": 0,
+        "mean": 0,
+        "min": 0,
+      },
+      "width": 800,
+    },
+  },
+  "ridge": {
+    "field": {
+      "hash": "22485011",
+      "kind": "field",
+      "max": 0.71,
+      "mean": 0.226,
+      "min": 0,
+    },
+  },
+  "seeds": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "9a8211df",
+        "stats": [
+          {
+            "max": 799.722,
+            "mean": 399.078,
+            "min": 1.395,
+          },
+          {
+            "max": 799.68,
+            "mean": 400.223,
+            "min": 0.027,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "points",
+      "vertexCount": 1031,
+    },
+  },
+  "terrain": {
+    "field": {
+      "hash": "b619d6f5",
+      "kind": "field",
+      "max": 0.855,
+      "mean": 0.511,
+      "min": 0.196,
+    },
+  },
+}
+`;
+
+exports[`meridian nodes 640x400 dpr1 1`] = `
+{
+  "cam3d": {
+    "camera3d": {
+      "kind": "camera3d",
+      "project": "ee062aea",
+      "unproject": "dcc0c420",
+      "viewport": [
+        640,
+        400,
+      ],
+    },
+  },
+  "camera": {
+    "camera": {
+      "center": [
+        320,
+        200,
+      ],
+      "kind": "camera2d",
+      "rotation": 0,
+      "viewport": [
+        640,
+        400,
+      ],
+      "zoom": 1,
+    },
+  },
+  "noise": {
+    "field": {
+      "hash": "46f98196",
+      "kind": "field",
+      "max": 0.957,
+      "mean": 0.5,
+      "min": 0.044,
+    },
+  },
+  "noiseAngle": {
+    "field": {
+      "hash": "242cd17f",
+      "kind": "field",
+      "max": 0.961,
+      "mean": 0.523,
+      "min": 0.03,
+    },
+  },
+  "orient": {
+    "geometry": {
+      "attributes": {
+        "angle": "f151f566",
+        "ao": "93ee1cac",
+        "depth": "34752eb5",
+        "length": "d385093c",
+        "normalX": "e6714dbd",
+        "normalY": "3e7e7297",
+        "normalZ": "3c25665c",
+        "worldX": "1090618a",
+        "worldY": "15473c52",
+        "worldZ": "eef89674",
+      },
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "9cec8aba",
+        "stats": [
+          {
+            "max": 635.144,
+            "mean": 323.508,
+            "min": 0.234,
+          },
+          {
+            "max": 399.347,
+            "mean": 293.445,
+            "min": 167.783,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "points",
+      "vertexCount": 226,
+    },
+  },
+  "palette": {
+    "palette": {
+      "colors": "7d4175ed",
+      "count": 5,
+      "kind": "palette",
+    },
+  },
+  "raymarch": {
+    "geometry": {
+      "attributes": {
+        "ao": "93ee1cac",
+        "depth": "34752eb5",
+        "normalX": "e6714dbd",
+        "normalY": "3e7e7297",
+        "normalZ": "3c25665c",
+        "worldX": "1090618a",
+        "worldY": "15473c52",
+        "worldZ": "eef89674",
+      },
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "9cec8aba",
+        "stats": [
+          {
+            "max": 635.144,
+            "mean": 323.508,
+            "min": 0.234,
+          },
+          {
+            "max": 399.347,
+            "mean": 293.445,
+            "min": 167.783,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "points",
+      "vertexCount": 226,
+    },
+  },
+  "render": {
+    "buffer": {
+      "channels": 4,
+      "hash": "83809dc5",
+      "height": 400,
+      "kind": "buffer",
+      "stats": {
+        "max": 0,
+        "mean": 0,
+        "min": 0,
+      },
+      "width": 640,
+    },
+  },
+  "ridge": {
+    "field": {
+      "hash": "284838f6",
+      "kind": "field",
+      "max": 0.706,
+      "mean": 0.223,
+      "min": 0,
+    },
+  },
+  "seeds": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "0f4981f7",
+        "stats": [
+          {
+            "max": 635.7,
+            "mean": 319.666,
+            "min": 0.234,
+          },
+          {
+            "max": 399.347,
+            "mean": 200.449,
+            "min": 0.543,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "points",
+      "vertexCount": 415,
+    },
+  },
+  "terrain": {
+    "field": {
+      "hash": "6be053ad",
+      "kind": "field",
+      "max": 0.853,
+      "mean": 0.499,
+      "min": 0.167,
+    },
+  },
+}
+`;
+
+exports[`meridian nodes 400x400 dpr2 1`] = `
+{
+  "cam3d": {
+    "camera3d": {
+      "kind": "camera3d",
+      "project": "c9b5cba0",
+      "unproject": "a80bf8d9",
+      "viewport": [
+        400,
+        400,
+      ],
+    },
+  },
+  "camera": {
+    "camera": {
+      "center": [
+        200,
+        200,
+      ],
+      "kind": "camera2d",
+      "rotation": 0,
+      "viewport": [
+        400,
+        400,
+      ],
+      "zoom": 1,
+    },
+  },
+  "noise": {
+    "field": {
+      "hash": "01a2f330",
+      "kind": "field",
+      "max": 0.949,
+      "mean": 0.503,
+      "min": 0.04,
+    },
+  },
+  "noiseAngle": {
+    "field": {
+      "hash": "f856a0c6",
+      "kind": "field",
+      "max": 0.955,
+      "mean": 0.506,
+      "min": 0.045,
+    },
+  },
+  "orient": {
+    "geometry": {
+      "attributes": {
+        "angle": "6c7210ad",
+        "ao": "7e56d362",
+        "depth": "d049b828",
+        "length": "6aa4c395",
+        "normalX": "9b871b4f",
+        "normalY": "7a14e96e",
+        "normalZ": "adb1802c",
+        "worldX": "1a064c2d",
+        "worldY": "631c9211",
+        "worldZ": "d7b35846",
+      },
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "c4f35e0d",
+        "stats": [
+          {
+            "max": 399.045,
+            "mean": 203.997,
+            "min": 0.308,
+          },
+          {
+            "max": 399.223,
+            "mean": 295.165,
+            "min": 167.783,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "points",
+      "vertexCount": 142,
+    },
+  },
+  "palette": {
+    "palette": {
+      "colors": "7d4175ed",
+      "count": 5,
+      "kind": "palette",
+    },
+  },
+  "raymarch": {
+    "geometry": {
+      "attributes": {
+        "ao": "7e56d362",
+        "depth": "d049b828",
+        "normalX": "9b871b4f",
+        "normalY": "7a14e96e",
+        "normalZ": "adb1802c",
+        "worldX": "1a064c2d",
+        "worldY": "631c9211",
+        "worldZ": "d7b35846",
+      },
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "c4f35e0d",
+        "stats": [
+          {
+            "max": 399.045,
+            "mean": 203.997,
+            "min": 0.308,
+          },
+          {
+            "max": 399.223,
+            "mean": 295.165,
+            "min": 167.783,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "points",
+      "vertexCount": 142,
+    },
+  },
+  "render": {
+    "buffer": {
+      "channels": 4,
+      "hash": "87169dc5",
+      "height": 800,
+      "kind": "buffer",
+      "stats": {
+        "max": 0,
+        "mean": 0,
+        "min": 0,
+      },
+      "width": 800,
+    },
+  },
+  "ridge": {
+    "field": {
+      "hash": "c108f552",
+      "kind": "field",
+      "max": 0.695,
+      "mean": 0.23,
+      "min": 0,
+    },
+  },
+  "seeds": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "6fd30092",
+        "stats": [
+          {
+            "max": 399.979,
+            "mean": 201.065,
+            "min": 0.308,
+          },
+          {
+            "max": 399.223,
+            "mean": 199.892,
+            "min": 1.442,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "points",
+      "vertexCount": 265,
+    },
+  },
+  "terrain": {
+    "field": {
+      "hash": "3389e058",
+      "kind": "field",
+      "max": 0.848,
+      "mean": 0.507,
+      "min": 0.197,
+    },
+  },
+}
+`;

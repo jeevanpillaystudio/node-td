@@ -1,0 +1,691 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`diffuse-shade golden no palette 1`] = `
+{
+  "nodes": {
+    "lift": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "072c7da6",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 116.282,
+              "mean": 56.602,
+              "min": 3.908,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "mesh": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "9c0a8925",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "normals": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": "f3ae4029",
+        "positions": {
+          "hash": "072c7da6",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 116.282,
+              "mean": 56.602,
+              "min": 3.908,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "shade": {
+      "palette": {
+        "colors": "1b90d286",
+        "count": 81,
+        "kind": "palette",
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`diffuse-shade golden one-colour palette (subscapes) 1`] = `
+{
+  "nodes": {
+    "lift": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "072c7da6",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 116.282,
+              "mean": 56.602,
+              "min": 3.908,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "mesh": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "9c0a8925",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "normals": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": "f3ae4029",
+        "positions": {
+          "hash": "072c7da6",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 116.282,
+              "mean": 56.602,
+              "min": 3.908,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "palette": {
+      "palette": {
+        "colors": "993890f6",
+        "count": 1,
+        "kind": "palette",
+      },
+    },
+    "shade": {
+      "palette": {
+        "colors": "ec51878c",
+        "count": 81,
+        "kind": "palette",
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`diffuse-shade golden five-colour palette ramp 1`] = `
+{
+  "nodes": {
+    "lift": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "072c7da6",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 116.282,
+              "mean": 56.602,
+              "min": 3.908,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "mesh": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "9c0a8925",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "normals": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": "f3ae4029",
+        "positions": {
+          "hash": "072c7da6",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 116.282,
+              "mean": 56.602,
+              "min": 3.908,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "palette": {
+      "palette": {
+        "colors": "c5df01d1",
+        "count": 5,
+        "kind": "palette",
+      },
+    },
+    "shade": {
+      "palette": {
+        "colors": "998087f6",
+        "count": 81,
+        "kind": "palette",
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`diffuse-shade golden steps 0 1`] = `
+{
+  "nodes": {
+    "lift": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "072c7da6",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 116.282,
+              "mean": 56.602,
+              "min": 3.908,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "mesh": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "9c0a8925",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "normals": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": "f3ae4029",
+        "positions": {
+          "hash": "072c7da6",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 116.282,
+              "mean": 56.602,
+              "min": 3.908,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "shade": {
+      "palette": {
+        "colors": "fd270a46",
+        "count": 81,
+        "kind": "palette",
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`diffuse-shade golden zero light vector 1`] = `
+{
+  "nodes": {
+    "lift": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "072c7da6",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 116.282,
+              "mean": 56.602,
+              "min": 3.908,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "mesh": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "9c0a8925",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "normals": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": "f3ae4029",
+        "positions": {
+          "hash": "072c7da6",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 116.282,
+              "mean": 56.602,
+              "min": 3.908,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "shade": {
+      "palette": {
+        "colors": "1b90d286",
+        "count": 81,
+        "kind": "palette",
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`diffuse-shade golden geometry without normals 1`] = `
+{
+  "nodes": {
+    "lift": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "072c7da6",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 116.282,
+              "mean": 56.602,
+              "min": 3.908,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "mesh": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "9c0a8925",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "shade": {
+      "palette": {
+        "colors": "e7e96585",
+        "count": 81,
+        "kind": "palette",
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

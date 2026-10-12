@@ -1,0 +1,180 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`field-render golden default 1`] = `
+{
+  "nodes": {
+    "noise": {
+      "field": {
+        "hash": "7e09a693",
+        "kind": "field",
+        "max": 0.946,
+        "mean": 0.514,
+        "min": 0.06,
+      },
+    },
+    "render": {
+      "buffer": {
+        "channels": 1,
+        "hash": "388953f2",
+        "height": 128,
+        "kind": "buffer",
+        "stats": {
+          "max": 0.967,
+          "mean": 0.515,
+          "min": 0.041,
+        },
+        "width": 128,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`field-render golden scale 0.5 1`] = `
+{
+  "nodes": {
+    "noise": {
+      "field": {
+        "hash": "7e09a693",
+        "kind": "field",
+        "max": 0.946,
+        "mean": 0.514,
+        "min": 0.06,
+      },
+    },
+    "render": {
+      "buffer": {
+        "channels": 1,
+        "hash": "4deec402",
+        "height": 64,
+        "kind": "buffer",
+        "stats": {
+          "max": 0.967,
+          "mean": 0.515,
+          "min": 0.043,
+        },
+        "width": 64,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`field-render golden dpr 2 1`] = `
+{
+  "nodes": {
+    "noise": {
+      "field": {
+        "hash": "7e09a693",
+        "kind": "field",
+        "max": 0.946,
+        "mean": 0.514,
+        "min": 0.06,
+      },
+    },
+    "render": {
+      "buffer": {
+        "channels": 1,
+        "hash": "bdbb87e6",
+        "height": 256,
+        "kind": "buffer",
+        "stats": {
+          "max": 0.968,
+          "mean": 0.515,
+          "min": 0.04,
+        },
+        "width": 256,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`field-render golden opaque field 1`] = `
+{
+  "nodes": {
+    "noise": {
+      "field": {
+        "hash": "7e09a693",
+        "kind": "field",
+        "max": 0.946,
+        "mean": 0.514,
+        "min": 0.06,
+      },
+    },
+    "opaque": {
+      "field": {
+        "hash": "7e09a693",
+        "kind": "field",
+        "max": 0.946,
+        "mean": 0.514,
+        "min": 0.06,
+      },
+    },
+    "render": {
+      "buffer": {
+        "channels": 1,
+        "hash": "388953f2",
+        "height": 128,
+        "kind": "buffer",
+        "stats": {
+          "max": 0.967,
+          "mean": 0.515,
+          "min": 0.041,
+        },
+        "width": 128,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`field-render golden landscape 1`] = `
+{
+  "nodes": {
+    "noise": {
+      "field": {
+        "hash": "96e4cb6f",
+        "kind": "field",
+        "max": 0.955,
+        "mean": 0.494,
+        "min": 0.05,
+      },
+    },
+    "render": {
+      "buffer": {
+        "channels": 1,
+        "hash": "eacd5611",
+        "height": 96,
+        "kind": "buffer",
+        "stats": {
+          "max": 0.967,
+          "mean": 0.496,
+          "min": 0.041,
+        },
+        "width": 160,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

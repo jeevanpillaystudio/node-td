@@ -1,0 +1,97 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`contrast-filter golden minRatio 7 1`] = `
+{
+  "nodes": {
+    "candidates": {
+      "palette": {
+        "colors": "410f7b0b",
+        "count": 8,
+        "kind": "palette",
+      },
+    },
+    "dark": {
+      "palette": {
+        "colors": "993890f6",
+        "count": 1,
+        "kind": "palette",
+      },
+    },
+    "filter": {
+      "palette": {
+        "colors": "12c84ca9",
+        "count": 4,
+        "kind": "palette",
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`contrast-filter golden minRatio 21, fallbackRatio 3 1`] = `
+{
+  "nodes": {
+    "candidates": {
+      "palette": {
+        "colors": "410f7b0b",
+        "count": 8,
+        "kind": "palette",
+      },
+    },
+    "dark": {
+      "palette": {
+        "colors": "993890f6",
+        "count": 1,
+        "kind": "palette",
+      },
+    },
+    "filter": {
+      "palette": {
+        "colors": "cbd52cd0",
+        "count": 7,
+        "kind": "palette",
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`contrast-filter golden minRatio 21, fallbackRatio 21 1`] = `
+{
+  "nodes": {
+    "candidates": {
+      "palette": {
+        "colors": "410f7b0b",
+        "count": 8,
+        "kind": "palette",
+      },
+    },
+    "dark": {
+      "palette": {
+        "colors": "993890f6",
+        "count": 1,
+        "kind": "palette",
+      },
+    },
+    "filter": {
+      "palette": {
+        "colors": "410f7b0b",
+        "count": 8,
+        "kind": "palette",
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

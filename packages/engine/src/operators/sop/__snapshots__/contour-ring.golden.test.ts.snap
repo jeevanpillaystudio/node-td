@@ -1,0 +1,157 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`contour-ring golden default 1`] = `
+{
+  "nodes": {
+    "contour": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "f0a4bb8a",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 191.616,
+              "min": 0,
+            },
+            {
+              "max": 71.495,
+              "mean": 9.82,
+              "min": 0,
+            },
+            {
+              "max": 256,
+              "mean": 191.616,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": "d06d91f3",
+        "topology": "line-strip",
+        "vertexCount": 1499,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`contour-ring golden levels 5, samples 150, amplitude 120, baseY 6 1`] = `
+{
+  "nodes": {
+    "contour": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "d3022e35",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 191.616,
+              "min": 0,
+            },
+            {
+              "max": 113.242,
+              "mean": 20.73,
+              "min": 6,
+            },
+            {
+              "max": 256,
+              "mean": 191.616,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": "d06d91f3",
+        "topology": "line-strip",
+        "vertexCount": 1499,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`contour-ring golden landscape, levels 2, samples 10 1`] = `
+{
+  "nodes": {
+    "contour": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "998b8dd4",
+          "stats": [
+            {
+              "max": 640,
+              "mean": 457.143,
+              "min": 0,
+            },
+            {
+              "max": 64.176,
+              "mean": 17.239,
+              "min": 0,
+            },
+            {
+              "max": 400,
+              "mean": 285.714,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": "e745a217",
+        "topology": "line-strip",
+        "vertexCount": 42,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "242cd17f",
+        "kind": "field",
+        "max": 0.961,
+        "mean": 0.523,
+        "min": 0.03,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

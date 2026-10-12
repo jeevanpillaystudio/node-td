@@ -1,0 +1,55 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`procedural-palette golden default 1`] = `
+{
+  "nodes": {
+    "palette": {
+      "palette": {
+        "colors": "f0d525fd",
+        "count": 5,
+        "kind": "palette",
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`procedural-palette golden count 8, saturation 0 1`] = `
+{
+  "nodes": {
+    "palette": {
+      "palette": {
+        "colors": "7efbdd35",
+        "count": 8,
+        "kind": "palette",
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`procedural-palette golden count 3, lightness 0.3, hueOffset 200 1`] = `
+{
+  "nodes": {
+    "palette": {
+      "palette": {
+        "colors": "6d64799d",
+        "count": 3,
+        "kind": "palette",
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

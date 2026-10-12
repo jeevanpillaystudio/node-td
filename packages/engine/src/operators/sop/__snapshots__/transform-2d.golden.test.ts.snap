@@ -1,0 +1,357 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`transform-2d golden identity 1`] = `
+{
+  "nodes": {
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "84beaba5",
+          "stats": [
+            {
+              "max": 353.425,
+              "mean": 124.718,
+              "min": -98.556,
+            },
+            {
+              "max": 352.355,
+              "mean": 128.908,
+              "min": -99.971,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 63,
+      },
+    },
+    "xf": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "84beaba5",
+          "stats": [
+            {
+              "max": 353.425,
+              "mean": 124.718,
+              "min": -98.556,
+            },
+            {
+              "max": 352.355,
+              "mean": 128.908,
+              "min": -99.971,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 63,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`transform-2d golden translate, rotate, scale 1`] = `
+{
+  "nodes": {
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "84beaba5",
+          "stats": [
+            {
+              "max": 353.425,
+              "mean": 124.718,
+              "min": -98.556,
+            },
+            {
+              "max": 352.355,
+              "mean": 128.908,
+              "min": -99.971,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 63,
+      },
+    },
+    "xf": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "f2012a72",
+          "stats": [
+            {
+              "max": 521.189,
+              "mean": 147.825,
+              "min": -223.466,
+            },
+            {
+              "max": 432.565,
+              "mean": 154.536,
+              "min": -126.849,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 63,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`transform-2d golden strips keep their offsets 1`] = `
+{
+  "nodes": {
+    "grid": {
+      "buffer": {
+        "channels": 1,
+        "hash": "3dc40518",
+        "height": 13,
+        "kind": "buffer",
+        "stats": {
+          "max": 6.001,
+          "mean": 3.046,
+          "min": 0.305,
+        },
+        "width": 13,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "84beaba5",
+          "stats": [
+            {
+              "max": 353.425,
+              "mean": 124.718,
+              "min": -98.556,
+            },
+            {
+              "max": 352.355,
+              "mean": 128.908,
+              "min": -99.971,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 63,
+      },
+    },
+    "trace": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "46749c58",
+          "stats": [
+            {
+              "max": 337.397,
+              "mean": 105.985,
+              "min": -90.22,
+            },
+            {
+              "max": 337.005,
+              "mean": 131.961,
+              "min": -78.943,
+            },
+          ],
+        },
+        "stripOffsets": "1b1866c7",
+        "topology": "line-strip",
+        "vertexCount": 11473,
+      },
+    },
+    "xf": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "f0d2d5d6",
+          "stats": [
+            {
+              "max": 478.133,
+              "mean": 122.067,
+              "min": -181.415,
+            },
+            {
+              "max": 433.327,
+              "mean": 143.073,
+              "min": -103.932,
+            },
+          ],
+        },
+        "stripOffsets": "1b1866c7",
+        "topology": "line-strip",
+        "vertexCount": 11473,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`transform-2d golden 3D input 1`] = `
+{
+  "nodes": {
+    "lift": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": "cb9e1596",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "3709413f",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 116.282,
+              "mean": 60.042,
+              "min": 3.908,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 25,
+      },
+    },
+    "mesh": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": "cb9e1596",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "96c85b4d",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 25,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "xf": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": "cb9e1596",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "7ada98c6",
+          "stats": [
+            {
+              "max": 365.587,
+              "mean": 176.906,
+              "min": -4.899,
+            },
+            {
+              "max": 221.88,
+              "mean": 111.569,
+              "min": 2.417,
+            },
+            {
+              "max": 0,
+              "mean": 0,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 25,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

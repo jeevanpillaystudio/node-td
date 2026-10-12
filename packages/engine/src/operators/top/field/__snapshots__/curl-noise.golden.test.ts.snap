@@ -1,0 +1,97 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`curl-noise golden default 1`] = `
+{
+  "nodes": {
+    "curl": {
+      "field": {
+        "hash": "fd01d987",
+        "kind": "field",
+        "max": 0.999,
+        "mean": 0.494,
+        "min": 0.007,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`curl-noise golden epsilon 2, scale 0.5 1`] = `
+{
+  "nodes": {
+    "curl": {
+      "field": {
+        "hash": "d809c2ac",
+        "kind": "field",
+        "max": 0.999,
+        "mean": 0.501,
+        "min": 0.002,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`curl-noise golden opaque input 1`] = `
+{
+  "nodes": {
+    "curl": {
+      "field": {
+        "hash": "fd01d987",
+        "kind": "field",
+        "max": 0.999,
+        "mean": 0.494,
+        "min": 0.007,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "opaque": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

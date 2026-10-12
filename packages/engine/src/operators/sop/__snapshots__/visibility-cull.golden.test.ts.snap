@@ -1,0 +1,1017 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`visibility-cull golden isometric camera 1`] = `
+{
+  "nodes": {
+    "cam": {
+      "camera3d": {
+        "kind": "camera3d",
+        "project": "5488f632",
+        "unproject": "237e4d3c",
+        "viewport": [
+          256,
+          256,
+        ],
+      },
+    },
+    "cull": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": null,
+        "kind": "geometry",
+        "normals": "3cfd306e",
+        "positions": {
+          "hash": "1138933c",
+          "stats": [
+            {
+              "max": 254.837,
+              "mean": 113.56,
+              "min": 1.382,
+            },
+            {
+              "max": 125.871,
+              "mean": 69.197,
+              "min": 10.962,
+            },
+            {
+              "max": 255.867,
+              "mean": 115.14,
+              "min": 8.789,
+            },
+          ],
+        },
+        "stripOffsets": "9d7186f6",
+        "topology": "line-strip",
+        "vertexCount": 4124,
+      },
+    },
+    "grid": {
+      "buffer": {
+        "channels": 1,
+        "hash": "3dc40518",
+        "height": 13,
+        "kind": "buffer",
+        "stats": {
+          "max": 6.001,
+          "mean": 3.046,
+          "min": 0.305,
+        },
+        "width": 13,
+      },
+    },
+    "lift": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "845c1ef8",
+          "stats": [
+            {
+              "max": 337.397,
+              "mean": 105.985,
+              "min": -90.22,
+            },
+            {
+              "max": 125.871,
+              "mean": 67.487,
+              "min": 10.404,
+            },
+            {
+              "max": 337.005,
+              "mean": 131.961,
+              "min": -78.943,
+            },
+          ],
+        },
+        "stripOffsets": "1b1866c7",
+        "topology": "line-strip",
+        "vertexCount": 11473,
+      },
+    },
+    "liftmesh": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "52dad0a6",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 122.282,
+              "mean": 62.602,
+              "min": 9.908,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "mesh": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "9c0a8925",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "normals": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": null,
+        "kind": "geometry",
+        "normals": "ee9bc048",
+        "positions": {
+          "hash": "845c1ef8",
+          "stats": [
+            {
+              "max": 337.397,
+              "mean": 105.985,
+              "min": -90.22,
+            },
+            {
+              "max": 125.871,
+              "mean": 67.487,
+              "min": 10.404,
+            },
+            {
+              "max": 337.005,
+              "mean": 131.961,
+              "min": -78.943,
+            },
+          ],
+        },
+        "stripOffsets": "1b1866c7",
+        "topology": "line-strip",
+        "vertexCount": 11473,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "84beaba5",
+          "stats": [
+            {
+              "max": 353.425,
+              "mean": 124.718,
+              "min": -98.556,
+            },
+            {
+              "max": 352.355,
+              "mean": 128.908,
+              "min": -99.971,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 63,
+      },
+    },
+    "trace": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "46749c58",
+          "stats": [
+            {
+              "max": 337.397,
+              "mean": 105.985,
+              "min": -90.22,
+            },
+            {
+              "max": 337.005,
+              "mean": 131.961,
+              "min": -78.943,
+            },
+          ],
+        },
+        "stripOffsets": "1b1866c7",
+        "topology": "line-strip",
+        "vertexCount": 11473,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`visibility-cull golden bypass 1`] = `
+{
+  "nodes": {
+    "cam": {
+      "camera3d": {
+        "kind": "camera3d",
+        "project": "5488f632",
+        "unproject": "237e4d3c",
+        "viewport": [
+          256,
+          256,
+        ],
+      },
+    },
+    "cull": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": null,
+        "kind": "geometry",
+        "normals": "ee9bc048",
+        "positions": {
+          "hash": "845c1ef8",
+          "stats": [
+            {
+              "max": 337.397,
+              "mean": 105.985,
+              "min": -90.22,
+            },
+            {
+              "max": 125.871,
+              "mean": 67.487,
+              "min": 10.404,
+            },
+            {
+              "max": 337.005,
+              "mean": 131.961,
+              "min": -78.943,
+            },
+          ],
+        },
+        "stripOffsets": "1b1866c7",
+        "topology": "line-strip",
+        "vertexCount": 11473,
+      },
+    },
+    "grid": {
+      "buffer": {
+        "channels": 1,
+        "hash": "3dc40518",
+        "height": 13,
+        "kind": "buffer",
+        "stats": {
+          "max": 6.001,
+          "mean": 3.046,
+          "min": 0.305,
+        },
+        "width": 13,
+      },
+    },
+    "lift": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "845c1ef8",
+          "stats": [
+            {
+              "max": 337.397,
+              "mean": 105.985,
+              "min": -90.22,
+            },
+            {
+              "max": 125.871,
+              "mean": 67.487,
+              "min": 10.404,
+            },
+            {
+              "max": 337.005,
+              "mean": 131.961,
+              "min": -78.943,
+            },
+          ],
+        },
+        "stripOffsets": "1b1866c7",
+        "topology": "line-strip",
+        "vertexCount": 11473,
+      },
+    },
+    "liftmesh": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "52dad0a6",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 122.282,
+              "mean": 62.602,
+              "min": 9.908,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "mesh": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "9c0a8925",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "normals": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": null,
+        "kind": "geometry",
+        "normals": "ee9bc048",
+        "positions": {
+          "hash": "845c1ef8",
+          "stats": [
+            {
+              "max": 337.397,
+              "mean": 105.985,
+              "min": -90.22,
+            },
+            {
+              "max": 125.871,
+              "mean": 67.487,
+              "min": 10.404,
+            },
+            {
+              "max": 337.005,
+              "mean": 131.961,
+              "min": -78.943,
+            },
+          ],
+        },
+        "stripOffsets": "1b1866c7",
+        "topology": "line-strip",
+        "vertexCount": 11473,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "84beaba5",
+          "stats": [
+            {
+              "max": 353.425,
+              "mean": 124.718,
+              "min": -98.556,
+            },
+            {
+              "max": 352.355,
+              "mean": 128.908,
+              "min": -99.971,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 63,
+      },
+    },
+    "trace": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "46749c58",
+          "stats": [
+            {
+              "max": 337.397,
+              "mean": 105.985,
+              "min": -90.22,
+            },
+            {
+              "max": 337.005,
+              "mean": 131.961,
+              "min": -78.943,
+            },
+          ],
+        },
+        "stripOffsets": "1b1866c7",
+        "topology": "line-strip",
+        "vertexCount": 11473,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`visibility-cull golden strokes without normals 1`] = `
+{
+  "nodes": {
+    "cam": {
+      "camera3d": {
+        "kind": "camera3d",
+        "project": "5488f632",
+        "unproject": "237e4d3c",
+        "viewport": [
+          256,
+          256,
+        ],
+      },
+    },
+    "cull": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "1138933c",
+          "stats": [
+            {
+              "max": 254.837,
+              "mean": 113.56,
+              "min": 1.382,
+            },
+            {
+              "max": 125.871,
+              "mean": 69.197,
+              "min": 10.962,
+            },
+            {
+              "max": 255.867,
+              "mean": 115.14,
+              "min": 8.789,
+            },
+          ],
+        },
+        "stripOffsets": "9d7186f6",
+        "topology": "line-strip",
+        "vertexCount": 4124,
+      },
+    },
+    "grid": {
+      "buffer": {
+        "channels": 1,
+        "hash": "3dc40518",
+        "height": 13,
+        "kind": "buffer",
+        "stats": {
+          "max": 6.001,
+          "mean": 3.046,
+          "min": 0.305,
+        },
+        "width": 13,
+      },
+    },
+    "lift": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "845c1ef8",
+          "stats": [
+            {
+              "max": 337.397,
+              "mean": 105.985,
+              "min": -90.22,
+            },
+            {
+              "max": 125.871,
+              "mean": 67.487,
+              "min": 10.404,
+            },
+            {
+              "max": 337.005,
+              "mean": 131.961,
+              "min": -78.943,
+            },
+          ],
+        },
+        "stripOffsets": "1b1866c7",
+        "topology": "line-strip",
+        "vertexCount": 11473,
+      },
+    },
+    "liftmesh": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "52dad0a6",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 122.282,
+              "mean": 62.602,
+              "min": 9.908,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "mesh": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "9c0a8925",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "normals": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": null,
+        "kind": "geometry",
+        "normals": "ee9bc048",
+        "positions": {
+          "hash": "845c1ef8",
+          "stats": [
+            {
+              "max": 337.397,
+              "mean": 105.985,
+              "min": -90.22,
+            },
+            {
+              "max": 125.871,
+              "mean": 67.487,
+              "min": 10.404,
+            },
+            {
+              "max": 337.005,
+              "mean": 131.961,
+              "min": -78.943,
+            },
+          ],
+        },
+        "stripOffsets": "1b1866c7",
+        "topology": "line-strip",
+        "vertexCount": 11473,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "84beaba5",
+          "stats": [
+            {
+              "max": 353.425,
+              "mean": 124.718,
+              "min": -98.556,
+            },
+            {
+              "max": 352.355,
+              "mean": 128.908,
+              "min": -99.971,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 63,
+      },
+    },
+    "trace": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "46749c58",
+          "stats": [
+            {
+              "max": 337.397,
+              "mean": 105.985,
+              "min": -90.22,
+            },
+            {
+              "max": 337.005,
+              "mean": 131.961,
+              "min": -78.943,
+            },
+          ],
+        },
+        "stripOffsets": "1b1866c7",
+        "topology": "line-strip",
+        "vertexCount": 11473,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`visibility-cull golden default camera 1`] = `
+{
+  "nodes": {
+    "cam": {
+      "camera3d": {
+        "kind": "camera3d",
+        "project": "dd2bebdd",
+        "unproject": "f1880d0f",
+        "viewport": [
+          256,
+          256,
+        ],
+      },
+    },
+    "cull": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": null,
+        "kind": "geometry",
+        "normals": "d050f2e6",
+        "positions": {
+          "hash": "e834e6fd",
+          "stats": [
+            {
+              "max": 254.837,
+              "mean": 102.888,
+              "min": 0.519,
+            },
+            {
+              "max": 125.863,
+              "mean": 65.836,
+              "min": 10.404,
+            },
+            {
+              "max": 255.867,
+              "mean": 141.844,
+              "min": 0.032,
+            },
+          ],
+        },
+        "stripOffsets": "9085eb54",
+        "topology": "line-strip",
+        "vertexCount": 8462,
+      },
+    },
+    "grid": {
+      "buffer": {
+        "channels": 1,
+        "hash": "3dc40518",
+        "height": 13,
+        "kind": "buffer",
+        "stats": {
+          "max": 6.001,
+          "mean": 3.046,
+          "min": 0.305,
+        },
+        "width": 13,
+      },
+    },
+    "lift": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "845c1ef8",
+          "stats": [
+            {
+              "max": 337.397,
+              "mean": 105.985,
+              "min": -90.22,
+            },
+            {
+              "max": 125.871,
+              "mean": 67.487,
+              "min": 10.404,
+            },
+            {
+              "max": 337.005,
+              "mean": 131.961,
+              "min": -78.943,
+            },
+          ],
+        },
+        "stripOffsets": "1b1866c7",
+        "topology": "line-strip",
+        "vertexCount": 11473,
+      },
+    },
+    "liftmesh": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "52dad0a6",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 122.282,
+              "mean": 62.602,
+              "min": 9.908,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "mesh": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "9c0a8925",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "normals": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": null,
+        "kind": "geometry",
+        "normals": "ee9bc048",
+        "positions": {
+          "hash": "845c1ef8",
+          "stats": [
+            {
+              "max": 337.397,
+              "mean": 105.985,
+              "min": -90.22,
+            },
+            {
+              "max": 125.871,
+              "mean": 67.487,
+              "min": 10.404,
+            },
+            {
+              "max": 337.005,
+              "mean": 131.961,
+              "min": -78.943,
+            },
+          ],
+        },
+        "stripOffsets": "1b1866c7",
+        "topology": "line-strip",
+        "vertexCount": 11473,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "84beaba5",
+          "stats": [
+            {
+              "max": 353.425,
+              "mean": 124.718,
+              "min": -98.556,
+            },
+            {
+              "max": 352.355,
+              "mean": 128.908,
+              "min": -99.971,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 63,
+      },
+    },
+    "trace": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "46749c58",
+          "stats": [
+            {
+              "max": 337.397,
+              "mean": 105.985,
+              "min": -90.22,
+            },
+            {
+              "max": 337.005,
+              "mean": 131.961,
+              "min": -78.943,
+            },
+          ],
+        },
+        "stripOffsets": "1b1866c7",
+        "topology": "line-strip",
+        "vertexCount": 11473,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

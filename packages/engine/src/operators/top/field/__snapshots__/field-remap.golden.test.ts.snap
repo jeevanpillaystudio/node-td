@@ -1,0 +1,515 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`field-remap golden Clamp, lo 0.3, hi 0.7 1`] = `
+{
+  "nodes": {
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "remap": {
+      "field": {
+        "hash": "7e0d6ce9",
+        "kind": "field",
+        "max": 0.7,
+        "mean": 0.498,
+        "min": 0.3,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`field-remap golden Clamp, lo 0.3, hi 0.7, opaque input 1`] = `
+{
+  "nodes": {
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "opaque": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "remap": {
+      "field": {
+        "hash": "7e0d6ce9",
+        "kind": "field",
+        "max": 0.7,
+        "mean": 0.498,
+        "min": 0.3,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`field-remap golden Quantize, steps 4 1`] = `
+{
+  "nodes": {
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "remap": {
+      "field": {
+        "hash": "4b2b3c5b",
+        "kind": "field",
+        "max": 1,
+        "mean": 0.497,
+        "min": 0,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`field-remap golden Quantize, steps 4, opaque input 1`] = `
+{
+  "nodes": {
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "opaque": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "remap": {
+      "field": {
+        "hash": "4b2b3c5b",
+        "kind": "field",
+        "max": 1,
+        "mean": 0.497,
+        "min": 0,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`field-remap golden Ridge 1`] = `
+{
+  "nodes": {
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "remap": {
+      "field": {
+        "hash": "4f6397d8",
+        "kind": "field",
+        "max": 0.938,
+        "mean": 0.385,
+        "min": 0,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`field-remap golden Ridge, opaque input 1`] = `
+{
+  "nodes": {
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "opaque": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "remap": {
+      "field": {
+        "hash": "4f6397d8",
+        "kind": "field",
+        "max": 0.938,
+        "mean": 0.385,
+        "min": 0,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`field-remap golden Smoothstep, lo 0.3, hi 0.7 1`] = `
+{
+  "nodes": {
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "remap": {
+      "field": {
+        "hash": "82928843",
+        "kind": "field",
+        "max": 1,
+        "mean": 0.492,
+        "min": 0,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`field-remap golden Smoothstep, lo 0.3, hi 0.7, opaque input 1`] = `
+{
+  "nodes": {
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "opaque": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "remap": {
+      "field": {
+        "hash": "82928843",
+        "kind": "field",
+        "max": 1,
+        "mean": 0.492,
+        "min": 0,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`field-remap golden Power 2 1`] = `
+{
+  "nodes": {
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "remap": {
+      "field": {
+        "hash": "d0df84ed",
+        "kind": "field",
+        "max": 0.939,
+        "mean": 0.297,
+        "min": 0.001,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`field-remap golden Power 2, opaque input 1`] = `
+{
+  "nodes": {
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "opaque": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "remap": {
+      "field": {
+        "hash": "d0df84ed",
+        "kind": "field",
+        "max": 0.939,
+        "mean": 0.297,
+        "min": 0.001,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`field-remap golden Invert 1`] = `
+{
+  "nodes": {
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "remap": {
+      "field": {
+        "hash": "2566617b",
+        "kind": "field",
+        "max": 0.967,
+        "mean": 0.505,
+        "min": 0.031,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`field-remap golden Invert, opaque input 1`] = `
+{
+  "nodes": {
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "opaque": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "remap": {
+      "field": {
+        "hash": "2566617b",
+        "kind": "field",
+        "max": 0.967,
+        "mean": 0.505,
+        "min": 0.031,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`field-remap golden Abs 1`] = `
+{
+  "nodes": {
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "remap": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`field-remap golden Abs, opaque input 1`] = `
+{
+  "nodes": {
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "opaque": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "remap": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`field-remap golden Abs, signed input 1`] = `
+{
+  "nodes": {
+    "grad": {
+      "dx": {
+        "hash": "8f77c84b",
+        "kind": "field",
+        "max": 0.095,
+        "mean": 0,
+        "min": -0.078,
+      },
+      "dy": {
+        "hash": "564854f4",
+        "kind": "field",
+        "max": 0.077,
+        "mean": 0.001,
+        "min": -0.095,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "remap": {
+      "field": {
+        "hash": "5efbfb9a",
+        "kind": "field",
+        "max": 0.095,
+        "mean": 0.028,
+        "min": 0,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

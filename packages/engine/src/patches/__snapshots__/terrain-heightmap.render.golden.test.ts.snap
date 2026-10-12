@@ -1,0 +1,126 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`terrain-heightmap render 256x256 dpr1 1`] = `
+{
+  "blit": {
+    "hash": "6f258e54",
+    "length": 2,
+  },
+  "cook": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+  "terminal": {
+    "channels": 1,
+    "hash": "c13625ac",
+    "height": 256,
+    "kind": "buffer",
+    "stats": {
+      "max": 0.838,
+      "mean": 0.215,
+      "min": 0,
+    },
+    "width": 256,
+  },
+}
+`;
+
+exports[`terrain-heightmap render 400x400 dpr1 1`] = `
+{
+  "blit": {
+    "hash": "09622342",
+    "length": 2,
+  },
+  "cook": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+  "terminal": {
+    "channels": 1,
+    "hash": "b10c403a",
+    "height": 400,
+    "kind": "buffer",
+    "stats": {
+      "max": 0.838,
+      "mean": 0.224,
+      "min": 0,
+    },
+    "width": 400,
+  },
+}
+`;
+
+exports[`terrain-heightmap render 800x800 dpr1 1`] = `
+{
+  "blit": {
+    "hash": "75a64a4c",
+    "length": 2,
+  },
+  "cook": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+  "terminal": {
+    "channels": 1,
+    "hash": "49cb43f7",
+    "height": 800,
+    "kind": "buffer",
+    "stats": {
+      "max": 0.844,
+      "mean": 0.226,
+      "min": 0,
+    },
+    "width": 800,
+  },
+}
+`;
+
+exports[`terrain-heightmap render 640x400 dpr1 1`] = `
+{
+  "blit": {
+    "hash": "a0ead9ae",
+    "length": 2,
+  },
+  "cook": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+  "terminal": {
+    "channels": 1,
+    "hash": "3adc6202",
+    "height": 400,
+    "kind": "buffer",
+    "stats": {
+      "max": 0.844,
+      "mean": 0.225,
+      "min": 0,
+    },
+    "width": 640,
+  },
+}
+`;
+
+exports[`terrain-heightmap render 400x400 dpr2 1`] = `
+{
+  "blit": {
+    "hash": "10da05f8",
+    "length": 2,
+  },
+  "cook": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+  "terminal": {
+    "channels": 1,
+    "hash": "047d22fe",
+    "height": 800,
+    "kind": "buffer",
+    "stats": {
+      "max": 0.838,
+      "mean": 0.224,
+      "min": 0,
+    },
+    "width": 800,
+  },
+}
+`;

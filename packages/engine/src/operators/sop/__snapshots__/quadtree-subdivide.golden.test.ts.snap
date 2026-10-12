@@ -1,0 +1,133 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`quadtree-subdivide golden no field 1`] = `
+{
+  "nodes": {
+    "quad": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": "6e479d54",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "c0c3eb75",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 4096,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`quadtree-subdivide golden field, threshold 0.5 1`] = `
+{
+  "nodes": {
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "quad": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": "00cdaf89",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "36f0a361",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 211.163,
+              "min": 0,
+            },
+            {
+              "max": 256,
+              "mean": 43.721,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 172,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`quadtree-subdivide golden landscape, field, maxDepth 4, minSize 16 1`] = `
+{
+  "nodes": {
+    "noise": {
+      "field": {
+        "hash": "242cd17f",
+        "kind": "field",
+        "max": 0.961,
+        "mean": 0.523,
+        "min": 0.03,
+      },
+    },
+    "quad": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": "ddcdbed0",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "a1951e11",
+          "stats": [
+            {
+              "max": 640,
+              "mean": 442.182,
+              "min": 0,
+            },
+            {
+              "max": 640,
+              "mean": 315.636,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 220,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

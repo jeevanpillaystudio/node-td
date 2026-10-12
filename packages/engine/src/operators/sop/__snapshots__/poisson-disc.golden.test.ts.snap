@@ -1,0 +1,217 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`poisson-disc golden default 1`] = `
+{
+  "nodes": {
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "797ddaa2",
+          "stats": [
+            {
+              "max": 354.908,
+              "mean": 128.813,
+              "min": -98.968,
+            },
+            {
+              "max": 354.77,
+              "mean": 130.227,
+              "min": -98.365,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 92,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`poisson-disc golden minRadius 20, margin 0 1`] = `
+{
+  "nodes": {
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "f614e083",
+          "stats": [
+            {
+              "max": 255.904,
+              "mean": 129,
+              "min": 0.602,
+            },
+            {
+              "max": 255.782,
+              "mean": 131.57,
+              "min": 0.63,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 113,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`poisson-disc golden partitions, minRadius 10 1`] = `
+{
+  "nodes": {
+    "partitions": {
+      "geometry": {
+        "attributes": {
+          "cellId": "463ce525",
+          "depth": "6af365c5",
+        },
+        "dim": 2,
+        "indices": "feabe268",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "7249953d",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 125.755,
+              "min": 0,
+            },
+            {
+              "max": 256,
+              "mean": 127.668,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 128,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": {
+          "cellId": "43006fbe",
+        },
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "f71b06f1",
+          "stats": [
+            {
+              "max": 355.995,
+              "mean": 127.883,
+              "min": -99.769,
+            },
+            {
+              "max": 355.913,
+              "mean": 128.12,
+              "min": -99.88,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 1338,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`poisson-disc golden partitions, minRadius 10, densityScale 3 1`] = `
+{
+  "nodes": {
+    "partitions": {
+      "geometry": {
+        "attributes": {
+          "cellId": "463ce525",
+          "depth": "6af365c5",
+        },
+        "dim": 2,
+        "indices": "feabe268",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "7249953d",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 125.755,
+              "min": 0,
+            },
+            {
+              "max": 256,
+              "mean": 127.668,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 128,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": {
+          "cellId": "43006fbe",
+        },
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "f71b06f1",
+          "stats": [
+            {
+              "max": 355.995,
+              "mean": 127.883,
+              "min": -99.769,
+            },
+            {
+              "max": 355.913,
+              "mean": 128.12,
+              "min": -99.88,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 1338,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

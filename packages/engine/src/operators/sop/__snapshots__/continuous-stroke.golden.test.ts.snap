@@ -1,0 +1,116 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`continuous-stroke golden strips 1`] = `
+{
+  "nodes": {
+    "grid": {
+      "buffer": {
+        "channels": 1,
+        "hash": "3dc40518",
+        "height": 13,
+        "kind": "buffer",
+        "stats": {
+          "max": 6.001,
+          "mean": 3.046,
+          "min": 0.305,
+        },
+        "width": 13,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "84beaba5",
+          "stats": [
+            {
+              "max": 353.425,
+              "mean": 124.718,
+              "min": -98.556,
+            },
+            {
+              "max": 352.355,
+              "mean": 128.908,
+              "min": -99.971,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 63,
+      },
+    },
+    "stroke": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "46749c58",
+          "stats": [
+            {
+              "max": 337.397,
+              "mean": 105.985,
+              "min": -90.22,
+            },
+            {
+              "max": 337.005,
+              "mean": 131.961,
+              "min": -78.943,
+            },
+          ],
+        },
+        "stripOffsets": "1b1866c7",
+        "topology": "line-strip",
+        "vertexCount": 11473,
+      },
+    },
+    "trace": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "46749c58",
+          "stats": [
+            {
+              "max": 337.397,
+              "mean": 105.985,
+              "min": -90.22,
+            },
+            {
+              "max": 337.005,
+              "mean": 131.961,
+              "min": -78.943,
+            },
+          ],
+        },
+        "stripOffsets": "1b1866c7",
+        "topology": "line-strip",
+        "vertexCount": 11473,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

@@ -1,0 +1,41 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`perlin-noise golden default 1`] = `
+{
+  "nodes": {
+    "noise": {
+      "field": {
+        "hash": "2aba7cec",
+        "kind": "field",
+        "max": 0.816,
+        "mean": 0.496,
+        "min": 0.181,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`perlin-noise golden noiseScale 0.01 1`] = `
+{
+  "nodes": {
+    "noise": {
+      "field": {
+        "hash": "91a6b8b6",
+        "kind": "field",
+        "max": 0.761,
+        "mean": 0.441,
+        "min": 0.154,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

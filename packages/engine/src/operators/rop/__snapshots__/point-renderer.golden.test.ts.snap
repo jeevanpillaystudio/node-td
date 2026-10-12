@@ -1,0 +1,276 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`point-renderer golden default 1`] = `
+{
+  "nodes": {
+    "camera": {
+      "camera": {
+        "center": [
+          64,
+          64,
+        ],
+        "kind": "camera2d",
+        "rotation": 0,
+        "viewport": [
+          128,
+          128,
+        ],
+        "zoom": 1,
+      },
+    },
+    "render": {
+      "buffer": {
+        "channels": 4,
+        "hash": "6abc9dc5",
+        "height": 128,
+        "kind": "buffer",
+        "stats": {
+          "max": 0,
+          "mean": 0,
+          "min": 0,
+        },
+        "width": 128,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "ee777772",
+          "stats": [
+            {
+              "max": 126.983,
+              "mean": 61.403,
+              "min": 0.268,
+            },
+            {
+              "max": 123.842,
+              "mean": 64.583,
+              "min": 1.428,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 29,
+      },
+    },
+  },
+  "render": {
+    "hash": "b091042a",
+    "length": 121,
+  },
+}
+`;
+
+exports[`point-renderer golden palette cycling 1`] = `
+{
+  "nodes": {
+    "camera": {
+      "camera": {
+        "center": [
+          64,
+          64,
+        ],
+        "kind": "camera2d",
+        "rotation": 0,
+        "viewport": [
+          128,
+          128,
+        ],
+        "zoom": 1,
+      },
+    },
+    "palette": {
+      "palette": {
+        "colors": "c5df01d1",
+        "count": 5,
+        "kind": "palette",
+      },
+    },
+    "render": {
+      "buffer": {
+        "channels": 4,
+        "hash": "6abc9dc5",
+        "height": 128,
+        "kind": "buffer",
+        "stats": {
+          "max": 0,
+          "mean": 0,
+          "min": 0,
+        },
+        "width": 128,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "ee777772",
+          "stats": [
+            {
+              "max": 126.983,
+              "mean": 61.403,
+              "min": 0.268,
+            },
+            {
+              "max": 123.842,
+              "mean": 64.583,
+              "min": 1.428,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 29,
+      },
+    },
+  },
+  "render": {
+    "hash": "9cb5fc58",
+    "length": 121,
+  },
+}
+`;
+
+exports[`point-renderer golden camera zoom 2, rotation 0.3 1`] = `
+{
+  "nodes": {
+    "camera": {
+      "camera": {
+        "center": [
+          64,
+          64,
+        ],
+        "kind": "camera2d",
+        "rotation": 0.3,
+        "viewport": [
+          128,
+          128,
+        ],
+        "zoom": 2,
+      },
+    },
+    "render": {
+      "buffer": {
+        "channels": 4,
+        "hash": "6abc9dc5",
+        "height": 128,
+        "kind": "buffer",
+        "stats": {
+          "max": 0,
+          "mean": 0,
+          "min": 0,
+        },
+        "width": 128,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "ee777772",
+          "stats": [
+            {
+              "max": 126.983,
+              "mean": 61.403,
+              "min": 0.268,
+            },
+            {
+              "max": 123.842,
+              "mean": 64.583,
+              "min": 1.428,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 29,
+      },
+    },
+  },
+  "render": {
+    "hash": "85755ac0",
+    "length": 125,
+  },
+}
+`;
+
+exports[`point-renderer golden dpr 2 1`] = `
+{
+  "nodes": {
+    "camera": {
+      "camera": {
+        "center": [
+          64,
+          64,
+        ],
+        "kind": "camera2d",
+        "rotation": 0,
+        "viewport": [
+          128,
+          128,
+        ],
+        "zoom": 1,
+      },
+    },
+    "render": {
+      "buffer": {
+        "channels": 4,
+        "hash": "279c9dc5",
+        "height": 256,
+        "kind": "buffer",
+        "stats": {
+          "max": 0,
+          "mean": 0,
+          "min": 0,
+        },
+        "width": 256,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "ee777772",
+          "stats": [
+            {
+              "max": 126.983,
+              "mean": 61.403,
+              "min": 0.268,
+            },
+            {
+              "max": 123.842,
+              "mean": 64.583,
+              "min": 1.428,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 29,
+      },
+    },
+  },
+  "render": {
+    "hash": "64148dea",
+    "length": 121,
+  },
+}
+`;

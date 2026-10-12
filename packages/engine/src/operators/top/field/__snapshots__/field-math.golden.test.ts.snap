@@ -1,0 +1,426 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`field-math golden Add 1`] = `
+{
+  "nodes": {
+    "a": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "b": {
+      "field": {
+        "hash": "2aba7cec",
+        "kind": "field",
+        "max": 0.816,
+        "mean": 0.496,
+        "min": 0.181,
+      },
+    },
+    "math": {
+      "field": {
+        "hash": "4da13199",
+        "kind": "field",
+        "max": 1,
+        "mean": 0.893,
+        "min": 0.396,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`field-math golden Add, opaque a 1`] = `
+{
+  "nodes": {
+    "a": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "b": {
+      "field": {
+        "hash": "2aba7cec",
+        "kind": "field",
+        "max": 0.816,
+        "mean": 0.496,
+        "min": 0.181,
+      },
+    },
+    "math": {
+      "field": {
+        "hash": "4da13199",
+        "kind": "field",
+        "max": 1,
+        "mean": 0.893,
+        "min": 0.396,
+      },
+    },
+    "opaque": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`field-math golden Multiply 1`] = `
+{
+  "nodes": {
+    "a": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "b": {
+      "field": {
+        "hash": "2aba7cec",
+        "kind": "field",
+        "max": 0.816,
+        "mean": 0.496,
+        "min": 0.181,
+      },
+    },
+    "math": {
+      "field": {
+        "hash": "ddc7e0c1",
+        "kind": "field",
+        "max": 0.663,
+        "mean": 0.245,
+        "min": 0.015,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`field-math golden Multiply, opaque a 1`] = `
+{
+  "nodes": {
+    "a": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "b": {
+      "field": {
+        "hash": "2aba7cec",
+        "kind": "field",
+        "max": 0.816,
+        "mean": 0.496,
+        "min": 0.181,
+      },
+    },
+    "math": {
+      "field": {
+        "hash": "ddc7e0c1",
+        "kind": "field",
+        "max": 0.663,
+        "mean": 0.245,
+        "min": 0.015,
+      },
+    },
+    "opaque": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`field-math golden Min 1`] = `
+{
+  "nodes": {
+    "a": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "b": {
+      "field": {
+        "hash": "2aba7cec",
+        "kind": "field",
+        "max": 0.816,
+        "mean": 0.496,
+        "min": 0.181,
+      },
+    },
+    "math": {
+      "field": {
+        "hash": "83cebd37",
+        "kind": "field",
+        "max": 0.783,
+        "mean": 0.393,
+        "min": 0.033,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`field-math golden Min, opaque a 1`] = `
+{
+  "nodes": {
+    "a": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "b": {
+      "field": {
+        "hash": "2aba7cec",
+        "kind": "field",
+        "max": 0.816,
+        "mean": 0.496,
+        "min": 0.181,
+      },
+    },
+    "math": {
+      "field": {
+        "hash": "83cebd37",
+        "kind": "field",
+        "max": 0.783,
+        "mean": 0.393,
+        "min": 0.033,
+      },
+    },
+    "opaque": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`field-math golden Max 1`] = `
+{
+  "nodes": {
+    "a": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "b": {
+      "field": {
+        "hash": "2aba7cec",
+        "kind": "field",
+        "max": 0.816,
+        "mean": 0.496,
+        "min": 0.181,
+      },
+    },
+    "math": {
+      "field": {
+        "hash": "ab2348b2",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.598,
+        "min": 0.278,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`field-math golden Max, opaque a 1`] = `
+{
+  "nodes": {
+    "a": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "b": {
+      "field": {
+        "hash": "2aba7cec",
+        "kind": "field",
+        "max": 0.816,
+        "mean": 0.496,
+        "min": 0.181,
+      },
+    },
+    "math": {
+      "field": {
+        "hash": "ab2348b2",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.598,
+        "min": 0.278,
+      },
+    },
+    "opaque": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`field-math golden Lerp, mix 0.25 1`] = `
+{
+  "nodes": {
+    "a": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "b": {
+      "field": {
+        "hash": "2aba7cec",
+        "kind": "field",
+        "max": 0.816,
+        "mean": 0.496,
+        "min": 0.181,
+      },
+    },
+    "math": {
+      "field": {
+        "hash": "2a388ad7",
+        "kind": "field",
+        "max": 0.874,
+        "mean": 0.495,
+        "min": 0.128,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`field-math golden Lerp, mix 0.25, opaque a 1`] = `
+{
+  "nodes": {
+    "a": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "b": {
+      "field": {
+        "hash": "2aba7cec",
+        "kind": "field",
+        "max": 0.816,
+        "mean": 0.496,
+        "min": 0.181,
+      },
+    },
+    "math": {
+      "field": {
+        "hash": "2a388ad7",
+        "kind": "field",
+        "max": 0.874,
+        "mean": 0.495,
+        "min": 0.128,
+      },
+    },
+    "opaque": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

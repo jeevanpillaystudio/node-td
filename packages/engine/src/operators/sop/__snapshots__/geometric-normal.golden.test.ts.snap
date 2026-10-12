@@ -1,0 +1,334 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`geometric-normal golden grid mesh, epsilon 1, amplitude 120 1`] = `
+{
+  "nodes": {
+    "lift": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "52dad0a6",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 122.282,
+              "mean": 62.602,
+              "min": 9.908,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "mesh": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "9c0a8925",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "normals": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": "f3ae4029",
+        "positions": {
+          "hash": "52dad0a6",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 122.282,
+              "mean": 62.602,
+              "min": 9.908,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`geometric-normal golden grid mesh, default epsilon 1`] = `
+{
+  "nodes": {
+    "lift": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "52dad0a6",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 122.282,
+              "mean": 62.602,
+              "min": 9.908,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "mesh": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "9c0a8925",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "normals": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": "53308452",
+        "positions": {
+          "hash": "52dad0a6",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 122.282,
+              "mean": 62.602,
+              "min": 9.908,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`geometric-normal golden grid mesh, epsilon 4, amplitude 60 1`] = `
+{
+  "nodes": {
+    "lift": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "52dad0a6",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 122.282,
+              "mean": 62.602,
+              "min": 9.908,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "mesh": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "9c0a8925",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "normals": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": "60213a37",
+        "positions": {
+          "hash": "52dad0a6",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 122.282,
+              "mean": 62.602,
+              "min": 9.908,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

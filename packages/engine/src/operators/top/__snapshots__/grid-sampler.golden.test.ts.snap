@@ -1,0 +1,146 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`grid-sampler golden resolution 20 1`] = `
+{
+  "nodes": {
+    "grid": {
+      "buffer": {
+        "channels": 1,
+        "hash": "3dc40518",
+        "height": 13,
+        "kind": "buffer",
+        "stats": {
+          "max": 6.001,
+          "mean": 3.046,
+          "min": 0.305,
+        },
+        "width": 13,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`grid-sampler golden resolution 5 1`] = `
+{
+  "nodes": {
+    "grid": {
+      "buffer": {
+        "channels": 1,
+        "hash": "bee0ccf4",
+        "height": 52,
+        "kind": "buffer",
+        "stats": {
+          "max": 6.23,
+          "mean": 3.147,
+          "min": 0.054,
+        },
+        "width": 52,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`grid-sampler golden resolution 5, opaque field 1`] = `
+{
+  "nodes": {
+    "grid": {
+      "buffer": {
+        "channels": 1,
+        "hash": "bee0ccf4",
+        "height": 52,
+        "kind": "buffer",
+        "stats": {
+          "max": 6.23,
+          "mean": 3.147,
+          "min": 0.054,
+        },
+        "width": 52,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "opaque": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`grid-sampler golden landscape, resolution 18 1`] = `
+{
+  "nodes": {
+    "grid": {
+      "buffer": {
+        "channels": 1,
+        "hash": "9a2e4477",
+        "height": 23,
+        "kind": "buffer",
+        "stats": {
+          "max": 6.21,
+          "mean": 3.149,
+          "min": 0.017,
+        },
+        "width": 36,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "242cd17f",
+        "kind": "field",
+        "max": 0.961,
+        "mean": 0.523,
+        "min": 0.03,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

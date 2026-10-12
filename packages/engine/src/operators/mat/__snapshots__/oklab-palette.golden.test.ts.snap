@@ -1,0 +1,73 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`oklab-palette golden default 1`] = `
+{
+  "nodes": {
+    "palette": {
+      "palette": {
+        "colors": "c5df01d1",
+        "count": 5,
+        "kind": "palette",
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`oklab-palette golden meridian 1`] = `
+{
+  "nodes": {
+    "palette": {
+      "palette": {
+        "colors": "7d4175ed",
+        "count": 5,
+        "kind": "palette",
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`oklab-palette golden one grey (subscapes) 1`] = `
+{
+  "nodes": {
+    "palette": {
+      "palette": {
+        "colors": "993890f6",
+        "count": 1,
+        "kind": "palette",
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`oklab-palette golden hueSpread 90, chroma 0.3 1`] = `
+{
+  "nodes": {
+    "palette": {
+      "palette": {
+        "colors": "f2832170",
+        "count": 5,
+        "kind": "palette",
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

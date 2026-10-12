@@ -1,0 +1,971 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`composite golden Over, canvas layers 1`] = `
+{
+  "nodes": {
+    "base": {
+      "buffer": {
+        "channels": 4,
+        "hash": "6abc9dc5",
+        "height": 128,
+        "kind": "buffer",
+        "stats": {
+          "max": 0,
+          "mean": 0,
+          "min": 0,
+        },
+        "width": 128,
+      },
+    },
+    "camera": {
+      "camera": {
+        "center": [
+          64,
+          64,
+        ],
+        "kind": "camera2d",
+        "rotation": 0,
+        "viewport": [
+          128,
+          128,
+        ],
+        "zoom": 1,
+      },
+    },
+    "comp": {
+      "buffer": {
+        "channels": 4,
+        "hash": "6abc9dc5",
+        "height": 128,
+        "kind": "buffer",
+        "stats": {
+          "max": 0,
+          "mean": 0,
+          "min": 0,
+        },
+        "width": 128,
+      },
+    },
+    "mesh": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": "cb9e1596",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "90b755ed",
+          "stats": [
+            {
+              "max": 128,
+              "mean": 64,
+              "min": 0,
+            },
+            {
+              "max": 128,
+              "mean": 64,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 25,
+      },
+    },
+    "overlay": {
+      "buffer": {
+        "channels": 4,
+        "hash": "6abc9dc5",
+        "height": 128,
+        "kind": "buffer",
+        "stats": {
+          "max": 0,
+          "mean": 0,
+          "min": 0,
+        },
+        "width": 128,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "fbb54cf5",
+          "stats": [
+            {
+              "max": 127.395,
+              "mean": 66.048,
+              "min": 1.594,
+            },
+            {
+              "max": 127.909,
+              "mean": 62.291,
+              "min": 0.008,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 33,
+      },
+    },
+  },
+  "render": {
+    "hash": "053db894",
+    "length": 246,
+  },
+}
+`;
+
+exports[`composite golden Over, CPU layers 1`] = `
+{
+  "nodes": {
+    "base": {
+      "buffer": {
+        "channels": 4,
+        "hash": "7b275c25",
+        "height": 32,
+        "kind": "buffer",
+        "stats": {
+          "max": 1,
+          "mean": 0.625,
+          "min": 0,
+        },
+        "width": 32,
+      },
+    },
+    "comp": {
+      "buffer": {
+        "channels": 4,
+        "hash": "7ca048ac",
+        "height": 32,
+        "kind": "buffer",
+        "stats": {
+          "max": 1,
+          "mean": 0.594,
+          "min": 0,
+        },
+        "width": 32,
+      },
+    },
+    "overlay": {
+      "buffer": {
+        "channels": 4,
+        "hash": "92f137e5",
+        "height": 32,
+        "kind": "buffer",
+        "stats": {
+          "max": 1,
+          "mean": 0.437,
+          "min": 0,
+        },
+        "width": 32,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`composite golden Add, canvas layers 1`] = `
+{
+  "nodes": {
+    "base": {
+      "buffer": {
+        "channels": 4,
+        "hash": "6abc9dc5",
+        "height": 128,
+        "kind": "buffer",
+        "stats": {
+          "max": 0,
+          "mean": 0,
+          "min": 0,
+        },
+        "width": 128,
+      },
+    },
+    "camera": {
+      "camera": {
+        "center": [
+          64,
+          64,
+        ],
+        "kind": "camera2d",
+        "rotation": 0,
+        "viewport": [
+          128,
+          128,
+        ],
+        "zoom": 1,
+      },
+    },
+    "comp": {
+      "buffer": {
+        "channels": 4,
+        "hash": "6abc9dc5",
+        "height": 128,
+        "kind": "buffer",
+        "stats": {
+          "max": 0,
+          "mean": 0,
+          "min": 0,
+        },
+        "width": 128,
+      },
+    },
+    "mesh": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": "cb9e1596",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "90b755ed",
+          "stats": [
+            {
+              "max": 128,
+              "mean": 64,
+              "min": 0,
+            },
+            {
+              "max": 128,
+              "mean": 64,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 25,
+      },
+    },
+    "overlay": {
+      "buffer": {
+        "channels": 4,
+        "hash": "6abc9dc5",
+        "height": 128,
+        "kind": "buffer",
+        "stats": {
+          "max": 0,
+          "mean": 0,
+          "min": 0,
+        },
+        "width": 128,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "fbb54cf5",
+          "stats": [
+            {
+              "max": 127.395,
+              "mean": 66.048,
+              "min": 1.594,
+            },
+            {
+              "max": 127.909,
+              "mean": 62.291,
+              "min": 0.008,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 33,
+      },
+    },
+  },
+  "render": {
+    "hash": "a158bf75",
+    "length": 246,
+  },
+}
+`;
+
+exports[`composite golden Add, CPU layers 1`] = `
+{
+  "nodes": {
+    "base": {
+      "buffer": {
+        "channels": 4,
+        "hash": "7b275c25",
+        "height": 32,
+        "kind": "buffer",
+        "stats": {
+          "max": 1,
+          "mean": 0.625,
+          "min": 0,
+        },
+        "width": 32,
+      },
+    },
+    "comp": {
+      "buffer": {
+        "channels": 4,
+        "hash": "1c751c6d",
+        "height": 32,
+        "kind": "buffer",
+        "stats": {
+          "max": 1,
+          "mean": 0.854,
+          "min": 0,
+        },
+        "width": 32,
+      },
+    },
+    "overlay": {
+      "buffer": {
+        "channels": 4,
+        "hash": "92f137e5",
+        "height": 32,
+        "kind": "buffer",
+        "stats": {
+          "max": 1,
+          "mean": 0.437,
+          "min": 0,
+        },
+        "width": 32,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`composite golden Multiply, canvas layers 1`] = `
+{
+  "nodes": {
+    "base": {
+      "buffer": {
+        "channels": 4,
+        "hash": "6abc9dc5",
+        "height": 128,
+        "kind": "buffer",
+        "stats": {
+          "max": 0,
+          "mean": 0,
+          "min": 0,
+        },
+        "width": 128,
+      },
+    },
+    "camera": {
+      "camera": {
+        "center": [
+          64,
+          64,
+        ],
+        "kind": "camera2d",
+        "rotation": 0,
+        "viewport": [
+          128,
+          128,
+        ],
+        "zoom": 1,
+      },
+    },
+    "comp": {
+      "buffer": {
+        "channels": 4,
+        "hash": "6abc9dc5",
+        "height": 128,
+        "kind": "buffer",
+        "stats": {
+          "max": 0,
+          "mean": 0,
+          "min": 0,
+        },
+        "width": 128,
+      },
+    },
+    "mesh": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": "cb9e1596",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "90b755ed",
+          "stats": [
+            {
+              "max": 128,
+              "mean": 64,
+              "min": 0,
+            },
+            {
+              "max": 128,
+              "mean": 64,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 25,
+      },
+    },
+    "overlay": {
+      "buffer": {
+        "channels": 4,
+        "hash": "6abc9dc5",
+        "height": 128,
+        "kind": "buffer",
+        "stats": {
+          "max": 0,
+          "mean": 0,
+          "min": 0,
+        },
+        "width": 128,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "fbb54cf5",
+          "stats": [
+            {
+              "max": 127.395,
+              "mean": 66.048,
+              "min": 1.594,
+            },
+            {
+              "max": 127.909,
+              "mean": 62.291,
+              "min": 0.008,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 33,
+      },
+    },
+  },
+  "render": {
+    "hash": "1e1d2144",
+    "length": 246,
+  },
+}
+`;
+
+exports[`composite golden Multiply, CPU layers 1`] = `
+{
+  "nodes": {
+    "base": {
+      "buffer": {
+        "channels": 4,
+        "hash": "7b275c25",
+        "height": 32,
+        "kind": "buffer",
+        "stats": {
+          "max": 1,
+          "mean": 0.625,
+          "min": 0,
+        },
+        "width": 32,
+      },
+    },
+    "comp": {
+      "buffer": {
+        "channels": 4,
+        "hash": "204e7a28",
+        "height": 32,
+        "kind": "buffer",
+        "stats": {
+          "max": 1,
+          "mean": 0.406,
+          "min": 0,
+        },
+        "width": 32,
+      },
+    },
+    "overlay": {
+      "buffer": {
+        "channels": 4,
+        "hash": "92f137e5",
+        "height": 32,
+        "kind": "buffer",
+        "stats": {
+          "max": 1,
+          "mean": 0.437,
+          "min": 0,
+        },
+        "width": 32,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`composite golden Screen, canvas layers 1`] = `
+{
+  "nodes": {
+    "base": {
+      "buffer": {
+        "channels": 4,
+        "hash": "6abc9dc5",
+        "height": 128,
+        "kind": "buffer",
+        "stats": {
+          "max": 0,
+          "mean": 0,
+          "min": 0,
+        },
+        "width": 128,
+      },
+    },
+    "camera": {
+      "camera": {
+        "center": [
+          64,
+          64,
+        ],
+        "kind": "camera2d",
+        "rotation": 0,
+        "viewport": [
+          128,
+          128,
+        ],
+        "zoom": 1,
+      },
+    },
+    "comp": {
+      "buffer": {
+        "channels": 4,
+        "hash": "6abc9dc5",
+        "height": 128,
+        "kind": "buffer",
+        "stats": {
+          "max": 0,
+          "mean": 0,
+          "min": 0,
+        },
+        "width": 128,
+      },
+    },
+    "mesh": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": "cb9e1596",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "90b755ed",
+          "stats": [
+            {
+              "max": 128,
+              "mean": 64,
+              "min": 0,
+            },
+            {
+              "max": 128,
+              "mean": 64,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 25,
+      },
+    },
+    "overlay": {
+      "buffer": {
+        "channels": 4,
+        "hash": "6abc9dc5",
+        "height": 128,
+        "kind": "buffer",
+        "stats": {
+          "max": 0,
+          "mean": 0,
+          "min": 0,
+        },
+        "width": 128,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "fbb54cf5",
+          "stats": [
+            {
+              "max": 127.395,
+              "mean": 66.048,
+              "min": 1.594,
+            },
+            {
+              "max": 127.909,
+              "mean": 62.291,
+              "min": 0.008,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 33,
+      },
+    },
+  },
+  "render": {
+    "hash": "652bfbf8",
+    "length": 246,
+  },
+}
+`;
+
+exports[`composite golden Screen, CPU layers 1`] = `
+{
+  "nodes": {
+    "base": {
+      "buffer": {
+        "channels": 4,
+        "hash": "7b275c25",
+        "height": 32,
+        "kind": "buffer",
+        "stats": {
+          "max": 1,
+          "mean": 0.625,
+          "min": 0,
+        },
+        "width": 32,
+      },
+    },
+    "comp": {
+      "buffer": {
+        "channels": 4,
+        "hash": "2cb6c275",
+        "height": 32,
+        "kind": "buffer",
+        "stats": {
+          "max": 1,
+          "mean": 0.781,
+          "min": 0,
+        },
+        "width": 32,
+      },
+    },
+    "overlay": {
+      "buffer": {
+        "channels": 4,
+        "hash": "92f137e5",
+        "height": 32,
+        "kind": "buffer",
+        "stats": {
+          "max": 1,
+          "mean": 0.437,
+          "min": 0,
+        },
+        "width": 32,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`composite golden Over, three canvas layers 1`] = `
+{
+  "nodes": {
+    "base": {
+      "buffer": {
+        "channels": 4,
+        "hash": "6abc9dc5",
+        "height": 128,
+        "kind": "buffer",
+        "stats": {
+          "max": 0,
+          "mean": 0,
+          "min": 0,
+        },
+        "width": 128,
+      },
+    },
+    "camera": {
+      "camera": {
+        "center": [
+          64,
+          64,
+        ],
+        "kind": "camera2d",
+        "rotation": 0,
+        "viewport": [
+          128,
+          128,
+        ],
+        "zoom": 1,
+      },
+    },
+    "comp": {
+      "buffer": {
+        "channels": 4,
+        "hash": "6abc9dc5",
+        "height": 128,
+        "kind": "buffer",
+        "stats": {
+          "max": 0,
+          "mean": 0,
+          "min": 0,
+        },
+        "width": 128,
+      },
+    },
+    "mesh": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": "cb9e1596",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "90b755ed",
+          "stats": [
+            {
+              "max": 128,
+              "mean": 64,
+              "min": 0,
+            },
+            {
+              "max": 128,
+              "mean": 64,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 25,
+      },
+    },
+    "overlay": {
+      "buffer": {
+        "channels": 4,
+        "hash": "6abc9dc5",
+        "height": 128,
+        "kind": "buffer",
+        "stats": {
+          "max": 0,
+          "mean": 0,
+          "min": 0,
+        },
+        "width": 128,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "fbb54cf5",
+          "stats": [
+            {
+              "max": 127.395,
+              "mean": 66.048,
+              "min": 1.594,
+            },
+            {
+              "max": 127.909,
+              "mean": 62.291,
+              "min": 0.008,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 33,
+      },
+    },
+    "top": {
+      "buffer": {
+        "channels": 4,
+        "hash": "6abc9dc5",
+        "height": 128,
+        "kind": "buffer",
+        "stats": {
+          "max": 0,
+          "mean": 0,
+          "min": 0,
+        },
+        "width": 128,
+      },
+    },
+  },
+  "render": {
+    "hash": "9ede1b41",
+    "length": 354,
+  },
+}
+`;
+
+exports[`composite golden Over, canvas layer under a CPU layer 1`] = `
+{
+  "nodes": {
+    "base": {
+      "buffer": {
+        "channels": 4,
+        "hash": "efb69dc5",
+        "height": 32,
+        "kind": "buffer",
+        "stats": {
+          "max": 0,
+          "mean": 0,
+          "min": 0,
+        },
+        "width": 32,
+      },
+    },
+    "camera": {
+      "camera": {
+        "center": [
+          16,
+          16,
+        ],
+        "kind": "camera2d",
+        "rotation": 0,
+        "viewport": [
+          32,
+          32,
+        ],
+        "zoom": 1,
+      },
+    },
+    "comp": {
+      "buffer": {
+        "channels": 4,
+        "hash": "f96ca6e5",
+        "height": 32,
+        "kind": "buffer",
+        "stats": {
+          "max": 1,
+          "mean": 0.432,
+          "min": 0,
+        },
+        "width": 32,
+      },
+    },
+    "mesh": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": "cb9e1596",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "10ce0ca5",
+          "stats": [
+            {
+              "max": 32,
+              "mean": 16,
+              "min": 0,
+            },
+            {
+              "max": 32,
+              "mean": 16,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 25,
+      },
+    },
+    "overlay": {
+      "buffer": {
+        "channels": 4,
+        "hash": "92f137e5",
+        "height": 32,
+        "kind": "buffer",
+        "stats": {
+          "max": 1,
+          "mean": 0.437,
+          "min": 0,
+        },
+        "width": 32,
+      },
+    },
+  },
+  "render": {
+    "hash": "c707083f",
+    "length": 136,
+  },
+}
+`;
+
+exports[`composite golden single layer passes through 1`] = `
+{
+  "nodes": {
+    "base": {
+      "buffer": {
+        "channels": 4,
+        "hash": "7b275c25",
+        "height": 32,
+        "kind": "buffer",
+        "stats": {
+          "max": 1,
+          "mean": 0.625,
+          "min": 0,
+        },
+        "width": 32,
+      },
+    },
+    "comp": {
+      "buffer": {
+        "channels": 4,
+        "hash": "7b275c25",
+        "height": 32,
+        "kind": "buffer",
+        "stats": {
+          "max": 1,
+          "mean": 0.625,
+          "min": 0,
+        },
+        "width": 32,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
