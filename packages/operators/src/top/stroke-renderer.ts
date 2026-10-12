@@ -78,6 +78,13 @@ export const strokeRenderer = defineOperator({
       sb = Math.round((palette.colors[2] ?? 0.85) * 255);
     }
 
+    // Nothing to draw into: an empty image, where a canvas would fail
+    if (pixelW <= 0 || pixelH <= 0) {
+      const width = Math.max(0, pixelW);
+      const height = Math.max(0, pixelH);
+      return { buffer: { data: new Float32Array(0), width, height, channels: 4 } };
+    }
+
     const createCanvas = env.createCanvas;
     if (!createCanvas) {
       throw new Error("stroke-renderer requires env.createCanvas");

@@ -51,3 +51,14 @@ describe("stroke-renderer camera", () => {
     ]);
   });
 });
+
+describe("stroke-renderer size", () => {
+  it("returns an empty image for a canvas with no pixels, making no canvas", () => {
+    for (const viewport of [[0, 80], [100, 0], [-5, 10]] as [number, number][]) {
+      const { buffer, log } = render({ ...camera([0, 0]), viewport });
+      expect(buffer.data.length).toBe(0);
+      expect(buffer.width * buffer.height).toBe(0);
+      expect(log).toEqual([]);
+    }
+  });
+});
