@@ -34,11 +34,11 @@ export const pointOrient = defineOperator({
     { key: "noiseScale",  label: "Field Sample Scale",min: 0.001,max: 1,      step: 0.001,default: 0.025 },
   ],
   evaluate({ geometry, field }, params) {
-    const baseAngle   = params.baseAngle   ?? 0;
-    const angleScale  = params.angleScale  ?? 3.14;
-    const baseLength  = params.baseLength  ?? 14;
+    const baseAngle   = params.baseAngle;
+    const angleScale  = params.angleScale;
+    const baseLength  = params.baseLength;
     const lengthScale = params.lengthScale;
-    const noiseScale  = params.noiseScale  ?? 0.025;
+    const noiseScale  = params.noiseScale;
 
     const n     = geometry.vertexCount;
     const attrs = geometry.attributes ?? {};
