@@ -1,4 +1,6 @@
 import { expect, test } from "bun:test";
+import { GraphValidationError, validateGraph } from "@node-td/kernel";
+import { createDefaultRegistry } from "@node-td/operators";
 import * as exported from "../src/index";
 import { patches } from "../src/index";
 
@@ -18,4 +20,18 @@ test("the registry lists every exported graph", () => {
   );
   expect(graphs.size).toBeGreaterThan(0);
   expect(new Set<unknown>(patches.map((p) => p.graph))).toEqual(graphs);
+});
+
+test("every patch validates against the default operators, port types included", () => {
+  const registry = createDefaultRegistry();
+  const issues = patches.flatMap((patch) => {
+    try {
+      validateGraph(patch.graph, registry);
+      return [];
+    } catch (err) {
+      if (!(err instanceof GraphValidationError)) throw err;
+      return err.issues.map((issue) => `${patch.id}: ${issue}`);
+    }
+  });
+  expect(issues).toEqual([]);
 });
