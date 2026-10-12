@@ -28,8 +28,8 @@ export interface CookResult {
 /**
  * Cook a graph headless, the way Frame does (frame.tsx draw()): a fresh
  * default registry and CookEngine, setParams, then one full cook with
- * env {width, height, dpr, rng, createCanvas}. There is no `_gl`, so
- * every field takes the CPU path, and canvases are RecordingCanvases.
+ * env {width, height, dpr, rng, createCanvas}. Canvases are
+ * RecordingCanvases.
  *
  * The render digest is taken before the node digests, because digesting
  * a lazily read-back buffer calls getImageData and would extend the log.
