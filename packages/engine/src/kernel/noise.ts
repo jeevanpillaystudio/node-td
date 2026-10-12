@@ -20,3 +20,95 @@ export const P: readonly number[] = (() => {
   ];
   return [...b, ...b];
 })();
+
+const FADE = (t: number) => t * t * t * (t * (t * 6 - 15) + 10);
+
+function lerp(a: number, b: number, t: number) {
+  return a + t * (b - a);
+}
+
+function grad(hash: number, x: number, y: number) {
+  const h = hash & 3;
+  const u = h < 2 ? x : y;
+  const v = h < 2 ? y : x;
+  return ((h & 1) === 0 ? u : -u) + ((h & 2) === 0 ? v : -v);
+}
+
+/** 2D Perlin noise, the CPU reference for the perlin FieldExpr. */
+export function pnoise(x: number, y: number): number {
+  const xi = Math.floor(x) & 255;
+  const yi = Math.floor(y) & 255;
+  const xf = x - Math.floor(x);
+  const yf = y - Math.floor(y);
+  const u = FADE(xf);
+  const v = FADE(yf);
+  const aa = P[(P[xi]! + yi) & 255]!;
+  const ab = P[(P[xi]! + yi + 1) & 255]!;
+  const ba = P[(P[(xi + 1) & 255]! + yi) & 255]!;
+  const bb = P[(P[(xi + 1) & 255]! + yi + 1) & 255]!;
+  return lerp(
+    lerp(grad(aa, xf, yf), grad(ba, xf - 1, yf), u),
+    lerp(grad(ab, xf, yf - 1), grad(bb, xf - 1, yf - 1), u),
+    v,
+  );
+}
+
+const F2 = 0.5 * (Math.sqrt(3) - 1);
+const G2 = (3 - Math.sqrt(3)) / 6;
+
+const GRAD2: readonly [number, number][] = [
+  [1, 1], [-1, 1], [1, -1], [-1, -1],
+  [1, 0], [-1, 0], [0, 1], [0, -1],
+];
+
+/** 2D simplex noise, the CPU reference for the simplex FieldExpr. */
+export function simplex2(x: number, y: number): number {
+  const s = (x + y) * F2;
+  const i = Math.floor(x + s);
+  const j = Math.floor(y + s);
+
+  const t = (i + j) * G2;
+  const x0 = x - (i - t);
+  const y0 = y - (j - t);
+
+  const i1 = x0 > y0 ? 1 : 0;
+  const j1 = x0 > y0 ? 0 : 1;
+
+  const x1 = x0 - i1 + G2;
+  const y1 = y0 - j1 + G2;
+  const x2 = x0 - 1 + 2 * G2;
+  const y2 = y0 - 1 + 2 * G2;
+
+  const ii = i & 255;
+  const jj = j & 255;
+  const gi0 = P[(ii + P[jj]!) & 255]! % 8;
+  const gi1 = P[(ii + i1 + P[(jj + j1) & 255]!) & 255]! % 8;
+  const gi2 = P[(ii + 1 + P[(jj + 1) & 255]!) & 255]! % 8;
+
+  let n0 = 0;
+  let n1 = 0;
+  let n2 = 0;
+
+  let t0 = 0.5 - x0 * x0 - y0 * y0;
+  if (t0 >= 0) {
+    t0 *= t0;
+    const g = GRAD2[gi0]!;
+    n0 = t0 * t0 * (g[0] * x0 + g[1] * y0);
+  }
+
+  let t1 = 0.5 - x1 * x1 - y1 * y1;
+  if (t1 >= 0) {
+    t1 *= t1;
+    const g = GRAD2[gi1]!;
+    n1 = t1 * t1 * (g[0] * x1 + g[1] * y1);
+  }
+
+  let t2 = 0.5 - x2 * x2 - y2 * y2;
+  if (t2 >= 0) {
+    t2 *= t2;
+    const g = GRAD2[gi2]!;
+    n2 = t2 * t2 * (g[0] * x2 + g[1] * y2);
+  }
+
+  return 70 * (n0 + n1 + n2);
+}

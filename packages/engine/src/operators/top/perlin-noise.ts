@@ -1,40 +1,8 @@
 import type { Operator, Field2D } from "../../kernel/types";
-import { P } from "../../kernel/noise";
 import { createField, X, Y, c, u, mul, add, perlin as pn } from "../../kernel/field-expr";
 
 type Inputs = Record<string, never>;
 type Outputs = { field: Field2D };
-
-const FADE = (t: number) => t * t * t * (t * (t * 6 - 15) + 10);
-
-function lerp(a: number, b: number, t: number) {
-  return a + t * (b - a);
-}
-
-function grad(hash: number, x: number, y: number) {
-  const h = hash & 3;
-  const u = h < 2 ? x : y;
-  const v = h < 2 ? y : x;
-  return ((h & 1) === 0 ? u : -u) + ((h & 2) === 0 ? v : -v);
-}
-
-export function pnoise(x: number, y: number): number {
-  const xi = Math.floor(x) & 255;
-  const yi = Math.floor(y) & 255;
-  const xf = x - Math.floor(x);
-  const yf = y - Math.floor(y);
-  const u = FADE(xf);
-  const v = FADE(yf);
-  const aa = P[(P[xi]! + yi) & 255]!;
-  const ab = P[(P[xi]! + yi + 1) & 255]!;
-  const ba = P[(P[(xi + 1) & 255]! + yi) & 255]!;
-  const bb = P[(P[(xi + 1) & 255]! + yi + 1) & 255]!;
-  return lerp(
-    lerp(grad(aa, xf, yf), grad(ba, xf - 1, yf), u),
-    lerp(grad(ab, xf, yf - 1), grad(bb, xf - 1, yf - 1), u),
-    v,
-  );
-}
 
 export const perlinNoise: Operator<Inputs, Outputs> = {
   id: "perlin-noise",

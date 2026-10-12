@@ -1,5 +1,4 @@
-import { pnoise } from "../operators/top/perlin-noise";
-import { simplex2 } from "../operators/top/simplex-noise";
+import { pnoise, simplex2 } from "./noise";
 import type { Field2D } from "./types";
 
 // ─── FieldExpr — Reified field computation as data ──────────────
