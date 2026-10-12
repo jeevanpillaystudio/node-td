@@ -1,5 +1,5 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
   "extends": ["//"],
-  "tags": ["layer-ui"]
+  "tags": ["layer-editor"]
 }
