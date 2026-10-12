@@ -1,5 +1,5 @@
 import { asOffscreen } from "../canvas-handle";
-import type { Geometry, Palette, Buffer2D } from "../kernel/types";
+import type { Geometry, Palette, Buffer2D } from "@node-td/kernel";
 
 export interface Canvas2DOptions {
   background?: string;

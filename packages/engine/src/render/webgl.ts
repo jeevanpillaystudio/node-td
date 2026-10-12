@@ -1,5 +1,5 @@
-import type { Buffer2D } from "../kernel/types";
-import type { CompiledField } from "../kernel/field-compiler";
+import type { Buffer2D } from "@node-td/kernel";
+import type { CompiledField } from "@node-td/kernel/field";
 
 // ─── WebGL Field Renderer ────────────────────────────────────────
 //

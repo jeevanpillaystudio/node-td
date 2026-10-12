@@ -1,4 +1,4 @@
-import type { Operator, Palette } from "../../kernel/types";
+import type { Operator, Palette } from "@node-td/kernel";
 
 type Inputs = { palette: Palette; reference: Palette };
 type Outputs = { palette: Palette };

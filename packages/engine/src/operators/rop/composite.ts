@@ -1,5 +1,5 @@
 import { asOffscreen } from "../../canvas-handle";
-import type { Operator, Buffer2D, GraphEnv } from "../../kernel/types";
+import type { Operator, Buffer2D, GraphEnv } from "@node-td/kernel";
 
 type Inputs = { layers: Buffer2D[] };
 type Outputs = { buffer: Buffer2D };

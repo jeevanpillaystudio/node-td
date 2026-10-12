@@ -1,5 +1,5 @@
-import type { Operator, Field2D } from "../../kernel/types";
-import { createField, X, Y, c, u, mul, add, simplex as sn } from "../../kernel/field-expr";
+import type { Operator, Field2D } from "@node-td/kernel";
+import { createField, X, Y, c, u, mul, add, simplex as sn } from "@node-td/kernel/field";
 
 type Inputs = Record<string, never>;
 type Outputs = { field: Field2D };

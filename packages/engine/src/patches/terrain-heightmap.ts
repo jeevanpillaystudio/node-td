@@ -1,4 +1,4 @@
-import type { Graph } from "../kernel/graph";
+import type { Graph } from "@node-td/kernel";
 
 /**
  * Terrain Heightmap patch — field visualization.

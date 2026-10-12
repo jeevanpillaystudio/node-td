@@ -15,7 +15,7 @@ export type {
   GraphEnv,
   Operator,
   NodeInstance,
-} from "./kernel/types";
+} from "@node-td/kernel";
 
 export {
   isEnumParam,
@@ -23,10 +23,10 @@ export {
   pathsGeometry,
   geometryToPaths,
   vertexAt,
-} from "./kernel/types";
+} from "@node-td/kernel";
 
 // ─── FieldExpr — reified field computation ──────────────────────
-export type { FieldExpr } from "./kernel/field-expr";
+export type { FieldExpr } from "@node-td/kernel/field";
 export {
   FIELD_EXPR,
   createField,
@@ -39,25 +39,25 @@ export {
   mix, clamp, smoothstep,
   abs, neg, floor, round,
   apply, fbmExpr, warpExpr,
-} from "./kernel/field-expr";
+} from "@node-td/kernel/field";
 
 // ─── GLSL field compiler ─────────────────────────────────────────
-export type { CompiledField } from "./kernel/field-compiler";
-export { compileField } from "./kernel/field-compiler";
+export type { CompiledField } from "@node-td/kernel/field";
+export { compileField } from "@node-td/kernel/field";
 
 // ─── Graph engine ────────────────────────────────────────────────
-export type { Wire, Graph } from "./kernel/graph";
-export { validateGraph, collectParams, topoSort } from "./kernel/graph";
+export type { Wire, Graph } from "@node-td/kernel";
+export { validateGraph, collectParams, topoSort } from "@node-td/kernel";
 
 // ─── Cook engine ─────────────────────────────────────────────────
-export type { CookStats } from "./kernel/cook";
-export { CookEngine } from "./kernel/cook";
+export type { CookStats } from "@node-td/kernel";
+export { CookEngine } from "@node-td/kernel";
 
 // ─── Registry ────────────────────────────────────────────────────
-export { OperatorRegistry } from "./kernel/registry";
+export { OperatorRegistry } from "@node-td/kernel";
 
 // ─── Seeded PRNG ─────────────────────────────────────────────────
-export { SeededRNG } from "./kernel/rng";
+export { SeededRNG } from "@node-td/kernel";
 
 // ─── All built-in operators ──────────────────────────────────────
 import { perlinNoise } from "./operators/top/perlin-noise";
@@ -96,9 +96,9 @@ import { camera3d } from "./operators/rop/camera-3d";
 import { strokeRenderer } from "./operators/rop/stroke-renderer";
 import { composite } from "./operators/rop/composite";
 import { fieldRender } from "./operators/top/field-render";
-import { OperatorRegistry } from "./kernel/registry";
+import { OperatorRegistry } from "@node-td/kernel";
 
-import type { Operator } from "./kernel/types";
+import type { Operator } from "@node-td/kernel";
 
 /** All built-in operators */
 export const allOperators: Operator[] = [

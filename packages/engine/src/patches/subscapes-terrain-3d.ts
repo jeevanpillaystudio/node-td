@@ -1,4 +1,4 @@
-import type { Graph } from "../kernel/graph";
+import type { Graph } from "@node-td/kernel";
 
 /**
  * Subscapes Terrain 3D patch — recreation of the Subscapes algorithm

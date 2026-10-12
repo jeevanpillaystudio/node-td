@@ -1,4 +1,4 @@
-import type { Operator, Camera3D } from "../../kernel/types";
+import type { Operator, Camera3D } from "@node-td/kernel";
 
 type Inputs = { width: number; height: number; sceneSize?: number };
 type Outputs = { camera3d: Camera3D };

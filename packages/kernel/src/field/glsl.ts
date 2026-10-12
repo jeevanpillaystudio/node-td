@@ -1,4 +1,4 @@
-import type { FieldExpr } from "./field-expr";
+import type { FieldExpr } from "./expr";
 
 // ─── GLSL Field Compiler ─────────────────────────────────────────
 //

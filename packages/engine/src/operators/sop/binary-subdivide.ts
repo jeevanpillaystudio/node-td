@@ -1,4 +1,4 @@
-import type { Operator, Geometry, GraphEnv } from "../../kernel/types";
+import type { Operator, Geometry, GraphEnv } from "@node-td/kernel";
 
 type Inputs = { width: number; height: number };
 type Outputs = { geometry: Geometry<2> };

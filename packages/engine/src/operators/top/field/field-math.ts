@@ -1,6 +1,6 @@
-import type { Operator, Field2D } from "../../../kernel/types";
-import { createField, getFieldExpr, add as fAdd, mul, fmin, fmax, mix as fMix, c, u } from "../../../kernel/field-expr";
-import type { FieldExpr } from "../../../kernel/field-expr";
+import type { Operator, Field2D } from "@node-td/kernel";
+import { createField, getFieldExpr, add as fAdd, mul, fmin, fmax, mix as fMix, c, u } from "@node-td/kernel/field";
+import type { FieldExpr } from "@node-td/kernel/field";
 
 type Inputs = { a: Field2D; b: Field2D };
 type Outputs = { field: Field2D };

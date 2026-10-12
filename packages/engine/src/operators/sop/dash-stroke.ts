@@ -1,5 +1,5 @@
-import type { Operator, Geometry, GraphEnv } from "../../kernel/types";
-import { geometryToPaths, pathsGeometry } from "../../kernel/types";
+import type { Operator, Geometry, GraphEnv } from "@node-td/kernel";
+import { geometryToPaths, pathsGeometry } from "@node-td/kernel";
 
 type Inputs = { geometry: Geometry<2> };
 type Outputs = { geometry: Geometry<2> };

@@ -1,4 +1,4 @@
-import type { Operator, Camera3D, Geometry } from "../../kernel/types";
+import type { Operator, Camera3D, Geometry } from "@node-td/kernel";
 
 type Inputs = { geometry: Geometry<3>; camera3d: Camera3D };
 type Outputs = { geometry: Geometry<2> };

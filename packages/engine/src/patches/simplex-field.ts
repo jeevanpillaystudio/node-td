@@ -1,4 +1,4 @@
-import type { Graph } from "../kernel/graph";
+import type { Graph } from "@node-td/kernel";
 
 /**
  * Simplex Field patch — Simplex noise → coarser angle grid →

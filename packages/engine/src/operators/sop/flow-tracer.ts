@@ -1,5 +1,5 @@
-import type { Operator, Buffer2D, Geometry } from "../../kernel/types";
-import { pathsGeometry } from "../../kernel/types";
+import type { Operator, Buffer2D, Geometry } from "@node-td/kernel";
+import { pathsGeometry } from "@node-td/kernel";
 
 type Inputs = { buffer: Buffer2D; geometry: Geometry<2>; width: number; height: number };
 type Outputs = { geometry: Geometry<2> };

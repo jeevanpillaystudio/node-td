@@ -1,4 +1,4 @@
-import type { Operator, Field2D, Geometry } from "../../kernel/types";
+import type { Operator, Field2D, Geometry } from "@node-td/kernel";
 
 type Inputs = { field?: Field2D; width: number; height: number };
 type Outputs = { geometry: Geometry<2> };

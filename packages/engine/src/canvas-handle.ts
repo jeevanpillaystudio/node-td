@@ -1,4 +1,4 @@
-import type { CanvasHandle } from "./kernel/types";
+import type { CanvasHandle } from "@node-td/kernel";
 
 /**
  * The kernel types canvases as opaque CanvasHandles so it compiles

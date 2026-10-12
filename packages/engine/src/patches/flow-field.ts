@@ -1,4 +1,4 @@
-import type { Graph } from "../kernel/graph";
+import type { Graph } from "@node-td/kernel";
 
 /**
  * Flow Field patch — Perlin noise → angle grid → circle-pack seeds →

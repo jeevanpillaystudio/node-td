@@ -29,7 +29,7 @@ import {
   warpExpr,
   X,
   Y,
-} from "./field-expr";
+} from "./expr";
 
 // Golden values are taken from the current CPU interpreter: they pin
 // today's behaviour, they do not judge it.

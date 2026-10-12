@@ -1,4 +1,4 @@
-import type { Operator, Geometry } from "../../kernel/types";
+import type { Operator, Geometry } from "@node-td/kernel";
 
 type Inputs = { geometry: Geometry<2> };
 type Outputs = { geometry: Geometry<2> };

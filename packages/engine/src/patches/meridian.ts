@@ -1,4 +1,4 @@
-import type { Graph } from "../kernel/graph";
+import type { Graph } from "@node-td/kernel";
 
 /**
  * Meridian patch — inspired by Matt Desl's "Meridian" (fxhash).
