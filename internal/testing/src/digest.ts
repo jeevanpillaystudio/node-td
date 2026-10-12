@@ -106,6 +106,11 @@ export interface GeometryDigest {
   /** One Stats per axis (x, y[, z]) */
   positions: { stats: Stats[]; hash: string };
   normals: string | null;
+  /**
+   * Present only when the geometry has colours, so the digests pinned
+   * before geometry carried colours stay as they were
+   */
+  colors?: string;
   /** Attribute name → hash, sorted by name */
   attributes: Record<string, string> | null;
 }
@@ -196,6 +201,7 @@ function digestGeometry(geo: Geometry<2 | 3>): GeometryDigest {
     indices: geo.indices ? hashValues(geo.indices) : null,
     positions: { stats: axes, hash: hashValues(geo.positions) },
     normals: geo.normals ? hashValues(geo.normals) : null,
+    ...(geo.colors && { colors: hashValues(geo.colors) }),
     attributes,
   };
 }
