@@ -2,7 +2,7 @@ import type { FieldExpr } from "./field-expr";
 
 // ─── GLSL Field Compiler ─────────────────────────────────────────
 //
-// Compiles a FieldExpr AST to a WebGL2 fragment shader that evaluates
+// Compiles a FieldExpr AST to a GLSL ES 3.00 fragment shader that evaluates
 // the field at every pixel. Output is a single float written to
 // gl_FragColor.r (grayscale).
 //
@@ -343,7 +343,7 @@ function genExprAsBody(expr: FieldExpr, ctx: CompileCtx, selfName: string): stri
 
 // ─── Public API ──────────────────────────────────────────────────
 
-/** Compile a FieldExpr to WebGL2 GLSL shaders. */
+/** Compile a FieldExpr to GLSL ES 3.00 shaders. */
 export function compileField(expr: FieldExpr): CompiledField {
   const ctx: CompileCtx = {
     needsPerlin: false,
