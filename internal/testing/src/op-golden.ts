@@ -9,7 +9,7 @@ import type {
   OperatorRegistry,
   Wire,
 } from "@node-td/kernel";
-import { isEnumParam, validateGraph } from "@node-td/kernel";
+import { validateGraph } from "@node-td/kernel";
 import type { FieldExpr } from "@node-td/kernel/field";
 import { type CookResult, cookGraph } from "./cook";
 import { cookedFields, fieldGlslIssues } from "./field-glsl";
@@ -20,8 +20,8 @@ import { cookedFields, fieldGlslIssues } from "./field-glsl";
  * operator (or one code path of it), cooked once at seed 42; the snapshot
  * holds a digest of every node output plus the canvas log digest.
  *
- * Fixtures must stay valid graphs with declared, in-range params, so
- * they keep cooking when the engine starts validating on construction.
+ * Fixtures must stay valid graphs with declared, legal params: the
+ * engine validates them (validateGraph, params included) on construction.
  *
  * An operator with a field output also gets a test that every FieldExpr
  * its fixtures cook compiles to GLSL (see field-glsl.ts).
@@ -155,28 +155,6 @@ export function fixtureRegistry(createRegistry: () => OperatorRegistry): Operato
   return registry;
 }
 
-// ─── Fixture checks ──────────────────────────────────────────────
-
-/** Instance params that are undeclared or outside their declared range. */
-function paramIssues(graph: Graph, registry: OperatorRegistry): string[] {
-  const issues: string[] = [];
-  for (const [key, instance] of Object.entries(graph.nodes)) {
-    const op = registry.resolve(instance.type);
-    for (const [k, v] of Object.entries(instance.params ?? {})) {
-      const def = op.params.find((p) => p.key === k);
-      if (!def) {
-        issues.push(`${key}.${k}: not a param of ${op.id}`);
-      } else if (isEnumParam(def)) {
-        if (!def.options.some((o) => o.value === v))
-          issues.push(`${key}.${k}: ${v} is not an option`);
-      } else if (v < def.min || v > def.max) {
-        issues.push(`${key}.${k}: ${v} is outside [${def.min}, ${def.max}]`);
-      }
-    }
-  }
-  return issues;
-}
-
 // ─── Fixture cooks ───────────────────────────────────────────────
 
 function fixtureGraph(op: Operator, name: string, fixture: OpFixture): Graph {
@@ -230,7 +208,6 @@ function opGolden(
         const graph = fixtureGraph(op, name, fixture);
         expect(Object.values(graph.nodes).some((n) => n.type === op.id)).toBe(true);
         validateGraph(graph, registry);
-        expect(paramIssues(graph, registry)).toEqual([]);
 
         const { nodes, render } = cookFixture(graph, fixture, registry);
         expect({ nodes, render }).toMatchSnapshot();
