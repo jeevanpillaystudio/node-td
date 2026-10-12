@@ -15,10 +15,9 @@ internal/typescript/  Shared TypeScript config
 
 ### @node-td/engine
 
-Zero-dependency generative engine with 5 export paths:
+Zero-dependency generative engine with 4 export paths:
 
-- `.` — kernel types, CookEngine, Graph, SeededRNG, OperatorRegistry
-- `./operators` — 39 operators across TOP, SOP, MAT, ROP categories
+- `.` — kernel types, CookEngine, Graph, SeededRNG, OperatorRegistry, and the built-in operators (`allOperators`, `createDefaultRegistry`) in the TOP, SOP, MAT and ROP categories. CHOP exists only as a category name: there are no CHOP operators.
 - `./render` — Canvas2D drawing, WebGL2 GPU field rendering
 - `./patches` — pre-built graph templates (meridian, terrain, subscapes)
 - `./editor` — React Flow graph conversion utilities
