@@ -1,4 +1,4 @@
-import { defineOperator } from "@node-td/kernel";
+import { defineOperator, pathsGeometry3 } from "@node-td/kernel";
 
 /**
  * Base Outline -- generates the visible base polygon of a terrain tile.
@@ -74,24 +74,6 @@ export const baseOutline = defineOperator({
       ...edgePts,                   // terrain surface boundary samples
     ];
 
-    // -- Pack into Geometry<3> ------------------------------------------
-    const vertexCount = polygon.length;
-    const positions = new Float32Array(vertexCount * 3);
-    for (let i = 0; i < vertexCount; i++) {
-      const p = polygon[i]!;
-      positions[i * 3] = p[0];
-      positions[i * 3 + 1] = p[1];
-      positions[i * 3 + 2] = p[2];
-    }
-
-    return {
-      geometry: {
-        positions,
-        vertexCount,
-        dim: 3,
-        topology: "line-strip",
-        stripOffsets: new Uint32Array([0]),
-      },
-    };
+    return { geometry: pathsGeometry3([polygon]) };
   },
 });

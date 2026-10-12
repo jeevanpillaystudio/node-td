@@ -1,4 +1,4 @@
-import { defineOperator } from "@node-td/kernel";
+import { defineOperator, pathsGeometry3 } from "@node-td/kernel";
 
 /**
  * Contour Ring -- generates elevation contour lines along the terrain boundary.
@@ -94,32 +94,6 @@ export const contourRing = defineOperator({
       [w, baseY, 0],
     ]);
 
-    // -- Pack into multi-strip Geometry<3> --------------------------------
-    let totalVerts = 0;
-    for (const p of paths) totalVerts += p.length;
-
-    const positions = new Float32Array(totalVerts * 3);
-    const stripOffsets = new Uint32Array(paths.length);
-    let vi = 0;
-
-    for (let s = 0; s < paths.length; s++) {
-      stripOffsets[s] = vi;
-      for (const [x, y, z] of paths[s]!) {
-        positions[vi * 3] = x;
-        positions[vi * 3 + 1] = y;
-        positions[vi * 3 + 2] = z;
-        vi++;
-      }
-    }
-
-    return {
-      geometry: {
-        positions,
-        vertexCount: totalVerts,
-        dim: 3,
-        topology: "line-strip",
-        stripOffsets,
-      },
-    };
+    return { geometry: pathsGeometry3(paths) };
   },
 });
