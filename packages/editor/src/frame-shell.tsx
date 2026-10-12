@@ -9,7 +9,10 @@ interface FrameShellProps {
 
 /**
  * Wraps a page with the Frame selection context and editor overlay, when
- * enabled. The host decides when, e.g. with import.meta.env.DEV under Vite.
+ * enabled. The host decides when. `enabled` is read at run time, so it does
+ * not take the editor out of a bundle: a host that wants it gone from
+ * production renders FrameShell only behind a build-time constant (such as
+ * import.meta.env.DEV under Vite).
  */
 export function FrameShell({ enabled, children }: FrameShellProps) {
   if (!enabled) {
