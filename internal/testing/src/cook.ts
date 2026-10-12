@@ -31,6 +31,10 @@ export interface CookResult {
  * env {width, height, dpr, rng, createCanvas}. Canvases are
  * RecordingCanvases.
  *
+ * A node that throws fails the cook loudly, with the first error as the
+ * cause: the engine itself records it and carries on, which would leave
+ * a golden to fail later on a missing node.
+ *
  * The render digest is taken before the node digests, because digesting
  * a lazily read-back buffer calls getImageData and would extend the log.
  */
@@ -47,6 +51,16 @@ export function cookGraph(graph: Graph, opts: CookOptions): CookResult {
     createCanvas,
   });
 
+  const thrown = [...engine.stats.errors].flatMap(([key, failure]) =>
+    failure.kind === "error" ? [{ key, error: failure.error }] : [],
+  );
+  if (thrown[0]) {
+    const lines = thrown.map(({ key, error }) => `node "${key}": ${errorMessage(error)}`);
+    throw new Error(`${graph.id}: the cook failed\n${lines.join("\n")}`, {
+      cause: thrown[0].error,
+    });
+  }
+
   const render = digestLog(log);
   const recorded = log.slice();
 
@@ -59,4 +73,8 @@ export function cookGraph(graph: Graph, opts: CookOptions): CookResult {
   }
 
   return { nodes, render, cooked, log: recorded, engine };
+}
+
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
 }
