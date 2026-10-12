@@ -104,8 +104,10 @@ const scatter: Operator = {
   evaluate: (_inputs, params, env) => {
     const rng = env?.rng;
     if (!rng) throw new Error("scatter needs env.rng");
+    const margin = params.margin;
+    if (margin === undefined) throw new Error("scatter needs params.margin");
     const points: number[] = [];
-    for (let i = 0; i < 8; i++) points.push(rng.random() * 1000 - params.margin);
+    for (let i = 0; i < 8; i++) points.push(rng.random() * 1000 - margin);
     return { points };
   },
 };
