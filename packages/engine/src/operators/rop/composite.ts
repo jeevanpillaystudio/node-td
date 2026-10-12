@@ -1,3 +1,4 @@
+import { asOffscreen } from "../../canvas-handle";
 import type { Operator, Buffer2D, GraphEnv } from "../../kernel/types";
 
 type Inputs = { layers: Buffer2D[] };
@@ -59,17 +60,17 @@ export const composite: Operator<Inputs, Outputs> = {
     // canvases are released when the host clears the cook cache.
     const createCanvas = (env as GraphEnv | undefined)?.createCanvas;
     if (createCanvas && layers.every(l => l._canvas)) {
-      const canvas = createCanvas(width, height);
+      const canvas = asOffscreen(createCanvas(width, height));
       const ctx = canvas.getContext("2d")!;
 
       // Bottom layer: direct copy
-      ctx.drawImage(layers[0]!._canvas!, 0, 0);
+      ctx.drawImage(asOffscreen(layers[0]!._canvas!), 0, 0);
 
       // Remaining layers: blend with globalCompositeOperation
       const op = BLEND_OPS[mode] ?? "source-over";
       for (let i = 1; i < layers.length; i++) {
         ctx.globalCompositeOperation = op;
-        ctx.drawImage(layers[i]!._canvas!, 0, 0);
+        ctx.drawImage(asOffscreen(layers[i]!._canvas!), 0, 0);
       }
 
       // Return with _canvas for fast blitBuffer2D path.

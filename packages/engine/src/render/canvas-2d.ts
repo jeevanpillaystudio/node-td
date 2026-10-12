@@ -1,3 +1,4 @@
+import { asOffscreen } from "../canvas-handle";
 import type { Geometry, Palette, Buffer2D } from "../kernel/types";
 
 export interface Canvas2DOptions {
@@ -136,7 +137,7 @@ export function blitBuffer2D(
 
   // Canvas-native fast path — hardware-accelerated blit, no conversion
   if (buffer._canvas) {
-    ctx.drawImage(buffer._canvas, 0, 0);
+    ctx.drawImage(asOffscreen(buffer._canvas), 0, 0);
     return;
   }
 

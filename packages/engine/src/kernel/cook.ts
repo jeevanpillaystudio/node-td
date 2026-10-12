@@ -292,7 +292,7 @@ export class CookEngine {
    * Drop all cached node outputs and mark everything dirty.
    *
    * Call after blitting the terminal output to free intermediate
-   * Float32Array buffers and OffscreenCanvases. Essential when many
+   * Float32Array buffers and canvases. Essential when many
    * Frame components coexist (e.g., debug page with 10 panels) —
    * without this, cached buffers from all panels persist simultaneously,
    * easily reaching 600 MB+ at 2× DPR and crashing the browser tab.

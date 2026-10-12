@@ -1,3 +1,4 @@
+import { asOffscreen } from "../../canvas-handle";
 import type { Operator, Geometry, Camera2D, Palette, Buffer2D, GraphEnv } from "../../kernel/types";
 
 type Inputs = { geometry: Geometry<2>; camera: Camera2D; palette?: Palette };
@@ -82,7 +83,7 @@ export const strokeRenderer: Operator<Inputs, Outputs> = {
       throw new Error("stroke-renderer requires env.createCanvas");
     }
 
-    const offscreen = createCanvas(pixelW, pixelH);
+    const offscreen = asOffscreen(createCanvas(pixelW, pixelH));
     const ctx = offscreen.getContext("2d")!;
     ctx.scale(dpr, dpr);
 

@@ -76,11 +76,21 @@ export function isEnumParam(p: ParamDef): p is EnumParamDef {
 export type Field2D = (x: number, y: number) => number;
 
 /**
+ * An opaque host canvas. The kernel knows only its size, so it compiles
+ * without DOM types; the host's createCanvas makes it (an offscreen canvas
+ * in the browser) and the renderers that draw into it cast it back.
+ */
+export interface CanvasHandle {
+  readonly width: number;
+  readonly height: number;
+}
+
+/**
  * Discretized 2D buffer — the universal TOP data currency.
  * Basis for textures, heightmaps, angle fields, density maps.
  *
  * On CPU: `data` is a Float32Array.
- * Canvas-native path: `_canvas` carries the source OffscreenCanvas,
+ * Canvas-native path: `_canvas` carries the source canvas,
  * enabling hardware-accelerated composite (drawImage) and blit.
  * When `_canvas` is present, `data` may be a lazy getter that
  * only triggers readback when pixel data is actually needed.
@@ -91,7 +101,7 @@ export interface Buffer2D {
   height: number; //  rows
   channels: number; // 1 = scalar, 2 = vec2, 3 = rgb, 4 = rgba
   /** Source canvas for GPU-accelerated composite/blit (canvas-native pipeline) */
-  _canvas?: OffscreenCanvas;
+  _canvas?: CanvasHandle;
 }
 
 /**
@@ -187,7 +197,7 @@ export interface Camera3D {
  * seeded PRNG for deterministic randomness.
  */
 export type GraphEnv = Record<string, unknown> & {
-  createCanvas?: (w: number, h: number) => OffscreenCanvas;
+  createCanvas?: (w: number, h: number) => CanvasHandle;
   /** Seeded PRNG — operators read from this for deterministic output. */
   rng?: { random(): number };
 };
