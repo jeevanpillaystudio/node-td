@@ -61,7 +61,7 @@ Rules for changes:
 - Commit messages: conventional style (feat/fix/refactor/chore/test/docs/style), descriptive, no plan item ids. End every commit message with a blank line then exactly: Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
 - Never amend, rebase, reset, stash, or push. Never commit to any other branch.
 - Golden snapshots (*.golden.test.ts snapshots, once they exist): never run bun test with -u / --update-snapshots unless your brief explicitly re-pins them, and then only in the commit and with the label the brief names. A snapshot changing unexpectedly is a regression in your change — fix the code, not the snapshot.
-- Do not touch LICENSE, .claude/, or .github/.
+- Do not touch LICENSE, .claude/, .github/, or docs/refactor-plan/ (the orchestrator keeps that folder).
 - Match surrounding code style and comment density. Prefer moving and deleting over rewriting.
 `
 
