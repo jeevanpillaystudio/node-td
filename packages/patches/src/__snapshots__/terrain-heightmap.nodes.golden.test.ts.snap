@@ -1,0 +1,268 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`terrain-heightmap nodes resolved params 1`] = `
+{
+  "noise": {
+    "params": {
+      "noiseScale": 0.025,
+    },
+    "type": "simplex-noise",
+  },
+  "render": {
+    "params": {
+      "scale": 1,
+    },
+    "type": "field-render",
+  },
+  "ridge": {
+    "params": {
+      "hi": 1,
+      "lo": 0,
+      "mode": 2,
+      "power": 1.5,
+      "steps": 6,
+    },
+    "type": "field-remap",
+  },
+  "terrain": {
+    "params": {
+      "amplitude": 1,
+      "domainRotation": 0,
+      "gain": 0.5,
+      "lacunarity": 2,
+      "octaves": 6,
+    },
+    "type": "fbm",
+  },
+}
+`;
+
+exports[`terrain-heightmap nodes 256x256 dpr1 1`] = `
+{
+  "noise": {
+    "field": {
+      "hash": "3a1353ae",
+      "kind": "field",
+      "max": 0.991,
+      "mean": 0.503,
+      "min": 0.038,
+    },
+  },
+  "render": {
+    "buffer": {
+      "channels": 1,
+      "hash": "c13625ac",
+      "height": 256,
+      "kind": "buffer",
+      "stats": {
+        "max": 0.838,
+        "mean": 0.215,
+        "min": 0,
+      },
+      "width": 256,
+    },
+  },
+  "ridge": {
+    "field": {
+      "hash": "8b905359",
+      "kind": "field",
+      "max": 0.697,
+      "mean": 0.218,
+      "min": 0,
+    },
+  },
+  "terrain": {
+    "field": {
+      "hash": "ce1670de",
+      "kind": "field",
+      "max": 0.848,
+      "mean": 0.502,
+      "min": 0.193,
+    },
+  },
+}
+`;
+
+exports[`terrain-heightmap nodes 400x400 dpr1 1`] = `
+{
+  "noise": {
+    "field": {
+      "hash": "631a768a",
+      "kind": "field",
+      "max": 0.961,
+      "mean": 0.522,
+      "min": 0.04,
+    },
+  },
+  "render": {
+    "buffer": {
+      "channels": 1,
+      "hash": "b10c403a",
+      "height": 400,
+      "kind": "buffer",
+      "stats": {
+        "max": 0.838,
+        "mean": 0.224,
+        "min": 0,
+      },
+      "width": 400,
+    },
+  },
+  "ridge": {
+    "field": {
+      "hash": "45869d37",
+      "kind": "field",
+      "max": 0.636,
+      "mean": 0.229,
+      "min": 0,
+    },
+  },
+  "terrain": {
+    "field": {
+      "hash": "d7bea6ca",
+      "kind": "field",
+      "max": 0.797,
+      "mean": 0.518,
+      "min": 0.182,
+    },
+  },
+}
+`;
+
+exports[`terrain-heightmap nodes 800x800 dpr1 1`] = `
+{
+  "noise": {
+    "field": {
+      "hash": "5c8dfcd4",
+      "kind": "field",
+      "max": 0.968,
+      "mean": 0.519,
+      "min": 0.008,
+    },
+  },
+  "render": {
+    "buffer": {
+      "channels": 1,
+      "hash": "49cb43f7",
+      "height": 800,
+      "kind": "buffer",
+      "stats": {
+        "max": 0.844,
+        "mean": 0.226,
+        "min": 0,
+      },
+      "width": 800,
+    },
+  },
+  "ridge": {
+    "field": {
+      "hash": "b473f8a1",
+      "kind": "field",
+      "max": 0.606,
+      "mean": 0.215,
+      "min": 0,
+    },
+  },
+  "terrain": {
+    "field": {
+      "hash": "ccb105c0",
+      "kind": "field",
+      "max": 0.803,
+      "mean": 0.513,
+      "min": 0.204,
+    },
+  },
+}
+`;
+
+exports[`terrain-heightmap nodes 640x400 dpr1 1`] = `
+{
+  "noise": {
+    "field": {
+      "hash": "df7f100e",
+      "kind": "field",
+      "max": 0.96,
+      "mean": 0.542,
+      "min": 0.001,
+    },
+  },
+  "render": {
+    "buffer": {
+      "channels": 1,
+      "hash": "3adc6202",
+      "height": 400,
+      "kind": "buffer",
+      "stats": {
+        "max": 0.844,
+        "mean": 0.225,
+        "min": 0,
+      },
+      "width": 640,
+    },
+  },
+  "ridge": {
+    "field": {
+      "hash": "edc71433",
+      "kind": "field",
+      "max": 0.697,
+      "mean": 0.222,
+      "min": 0,
+    },
+  },
+  "terrain": {
+    "field": {
+      "hash": "c1d0f26f",
+      "kind": "field",
+      "max": 0.849,
+      "mean": 0.525,
+      "min": 0.215,
+    },
+  },
+}
+`;
+
+exports[`terrain-heightmap nodes 400x400 dpr2 1`] = `
+{
+  "noise": {
+    "field": {
+      "hash": "631a768a",
+      "kind": "field",
+      "max": 0.961,
+      "mean": 0.522,
+      "min": 0.04,
+    },
+  },
+  "render": {
+    "buffer": {
+      "channels": 1,
+      "hash": "047d22fe",
+      "height": 800,
+      "kind": "buffer",
+      "stats": {
+        "max": 0.838,
+        "mean": 0.224,
+        "min": 0,
+      },
+      "width": 800,
+    },
+  },
+  "ridge": {
+    "field": {
+      "hash": "45869d37",
+      "kind": "field",
+      "max": 0.636,
+      "mean": 0.229,
+      "min": 0,
+    },
+  },
+  "terrain": {
+    "field": {
+      "hash": "d7bea6ca",
+      "kind": "field",
+      "max": 0.797,
+      "mean": 0.518,
+      "min": 0.182,
+    },
+  },
+}
+`;

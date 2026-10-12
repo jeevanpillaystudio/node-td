@@ -1,0 +1,115 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`circle-pack golden default 1`] = `
+{
+  "nodes": {
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "84beaba5",
+          "stats": [
+            {
+              "max": 353.425,
+              "mean": 124.718,
+              "min": -98.556,
+            },
+            {
+              "max": 352.355,
+              "mean": 128.908,
+              "min": -99.971,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 63,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`circle-pack golden minRadius 20, margin 0 1`] = `
+{
+  "nodes": {
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "e381787f",
+          "stats": [
+            {
+              "max": 255.807,
+              "mean": 129.355,
+              "min": 0.093,
+            },
+            {
+              "max": 255.557,
+              "mean": 127.711,
+              "min": 0.017,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 114,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`circle-pack golden landscape 1`] = `
+{
+  "nodes": {
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "80629048",
+          "stats": [
+            {
+              "max": 739.365,
+              "mean": 324.52,
+              "min": -99.694,
+            },
+            {
+              "max": 499.415,
+              "mean": 196.614,
+              "min": -99.961,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 133,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

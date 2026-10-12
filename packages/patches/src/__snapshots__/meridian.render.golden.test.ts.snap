@@ -1,0 +1,126 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`meridian render 256x256 dpr1 1`] = `
+{
+  "blit": {
+    "hash": "9b8b8de2",
+    "length": 2,
+  },
+  "cook": {
+    "hash": "e8553279",
+    "length": 245,
+  },
+  "terminal": {
+    "channels": 4,
+    "hash": "279c9dc5",
+    "height": 256,
+    "kind": "buffer",
+    "stats": {
+      "max": 0,
+      "mean": 0,
+      "min": 0,
+    },
+    "width": 256,
+  },
+}
+`;
+
+exports[`meridian render 400x400 dpr1 1`] = `
+{
+  "blit": {
+    "hash": "ebcfbd8a",
+    "length": 2,
+  },
+  "cook": {
+    "hash": "33379d00",
+    "length": 549,
+  },
+  "terminal": {
+    "channels": 4,
+    "hash": "229b1dc5",
+    "height": 400,
+    "kind": "buffer",
+    "stats": {
+      "max": 0,
+      "mean": 0,
+      "min": 0,
+    },
+    "width": 400,
+  },
+}
+`;
+
+exports[`meridian render 800x800 dpr1 1`] = `
+{
+  "blit": {
+    "hash": "60d911ca",
+    "length": 2,
+  },
+  "cook": {
+    "hash": "ecaa8559",
+    "length": 2081,
+  },
+  "terminal": {
+    "channels": 4,
+    "hash": "87169dc5",
+    "height": 800,
+    "kind": "buffer",
+    "stats": {
+      "max": 0,
+      "mean": 0,
+      "min": 0,
+    },
+    "width": 800,
+  },
+}
+`;
+
+exports[`meridian render 640x400 dpr1 1`] = `
+{
+  "blit": {
+    "hash": "0762ce10",
+    "length": 2,
+  },
+  "cook": {
+    "hash": "1d3229c6",
+    "length": 849,
+  },
+  "terminal": {
+    "channels": 4,
+    "hash": "83809dc5",
+    "height": 400,
+    "kind": "buffer",
+    "stats": {
+      "max": 0,
+      "mean": 0,
+      "min": 0,
+    },
+    "width": 640,
+  },
+}
+`;
+
+exports[`meridian render 400x400 dpr2 1`] = `
+{
+  "blit": {
+    "hash": "60d911ca",
+    "length": 2,
+  },
+  "cook": {
+    "hash": "27d4b520",
+    "length": 549,
+  },
+  "terminal": {
+    "channels": 4,
+    "hash": "87169dc5",
+    "height": 800,
+    "kind": "buffer",
+    "stats": {
+      "max": 0,
+      "mean": 0,
+      "min": 0,
+    },
+    "width": 800,
+  },
+}
+`;

@@ -1,0 +1,584 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`merge golden single input 1`] = `
+{
+  "nodes": {
+    "merge": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "84beaba5",
+          "stats": [
+            {
+              "max": 353.425,
+              "mean": 124.718,
+              "min": -98.556,
+            },
+            {
+              "max": 352.355,
+              "mean": 128.908,
+              "min": -99.971,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 63,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "84beaba5",
+          "stats": [
+            {
+              "max": 353.425,
+              "mean": 124.718,
+              "min": -98.556,
+            },
+            {
+              "max": 352.355,
+              "mean": 128.908,
+              "min": -99.971,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 63,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`merge golden two explicit strip sets 1`] = `
+{
+  "nodes": {
+    "dash": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "b89bc9bf",
+          "stats": [
+            {
+              "max": 337.397,
+              "mean": 106.842,
+              "min": -90.22,
+            },
+            {
+              "max": 337.005,
+              "mean": 132.268,
+              "min": -78.943,
+            },
+          ],
+        },
+        "stripOffsets": "3e667032",
+        "topology": "line-strip",
+        "vertexCount": 6932,
+      },
+    },
+    "grid": {
+      "buffer": {
+        "channels": 1,
+        "hash": "3dc40518",
+        "height": 13,
+        "kind": "buffer",
+        "stats": {
+          "max": 6.001,
+          "mean": 3.046,
+          "min": 0.305,
+        },
+        "width": 13,
+      },
+    },
+    "merge": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "697eb1b6",
+          "stats": [
+            {
+              "max": 337.397,
+              "mean": 106.308,
+              "min": -90.22,
+            },
+            {
+              "max": 337.005,
+              "mean": 132.077,
+              "min": -78.943,
+            },
+          ],
+        },
+        "stripOffsets": "996a4241",
+        "topology": "line-strip",
+        "vertexCount": 18405,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "84beaba5",
+          "stats": [
+            {
+              "max": 353.425,
+              "mean": 124.718,
+              "min": -98.556,
+            },
+            {
+              "max": 352.355,
+              "mean": 128.908,
+              "min": -99.971,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 63,
+      },
+    },
+    "trace": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "46749c58",
+          "stats": [
+            {
+              "max": 337.397,
+              "mean": 105.985,
+              "min": -90.22,
+            },
+            {
+              "max": 337.005,
+              "mean": 131.961,
+              "min": -78.943,
+            },
+          ],
+        },
+        "stripOffsets": "1b1866c7",
+        "topology": "line-strip",
+        "vertexCount": 11473,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`merge golden mixed strip offsets, implicit strip first 1`] = `
+{
+  "nodes": {
+    "grid": {
+      "buffer": {
+        "channels": 1,
+        "hash": "3dc40518",
+        "height": 13,
+        "kind": "buffer",
+        "stats": {
+          "max": 6.001,
+          "mean": 3.046,
+          "min": 0.305,
+        },
+        "width": 13,
+      },
+    },
+    "merge": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "47058393",
+          "stats": [
+            {
+              "max": 337.397,
+              "mean": 106.008,
+              "min": -90.22,
+            },
+            {
+              "max": 337.005,
+              "mean": 131.957,
+              "min": -78.943,
+            },
+          ],
+        },
+        "stripOffsets": "e4815ea9",
+        "topology": "line-strip",
+        "vertexCount": 11485,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "polyline": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "b0ead24a",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 192,
+              "mean": 128,
+              "min": 64,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "line-strip",
+        "vertexCount": 12,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "84beaba5",
+          "stats": [
+            {
+              "max": 353.425,
+              "mean": 124.718,
+              "min": -98.556,
+            },
+            {
+              "max": 352.355,
+              "mean": 128.908,
+              "min": -99.971,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 63,
+      },
+    },
+    "trace": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "46749c58",
+          "stats": [
+            {
+              "max": 337.397,
+              "mean": 105.985,
+              "min": -90.22,
+            },
+            {
+              "max": 337.005,
+              "mean": 131.961,
+              "min": -78.943,
+            },
+          ],
+        },
+        "stripOffsets": "1b1866c7",
+        "topology": "line-strip",
+        "vertexCount": 11473,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`merge golden mixed strip offsets, implicit strip last 1`] = `
+{
+  "nodes": {
+    "grid": {
+      "buffer": {
+        "channels": 1,
+        "hash": "3dc40518",
+        "height": 13,
+        "kind": "buffer",
+        "stats": {
+          "max": 6.001,
+          "mean": 3.046,
+          "min": 0.305,
+        },
+        "width": 13,
+      },
+    },
+    "merge": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "4314b3f7",
+          "stats": [
+            {
+              "max": 337.397,
+              "mean": 106.008,
+              "min": -90.22,
+            },
+            {
+              "max": 337.005,
+              "mean": 131.957,
+              "min": -78.943,
+            },
+          ],
+        },
+        "stripOffsets": "1e525878",
+        "topology": "line-strip",
+        "vertexCount": 11485,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "polyline": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "b0ead24a",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 192,
+              "mean": 128,
+              "min": 64,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "line-strip",
+        "vertexCount": 12,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "84beaba5",
+          "stats": [
+            {
+              "max": 353.425,
+              "mean": 124.718,
+              "min": -98.556,
+            },
+            {
+              "max": 352.355,
+              "mean": 128.908,
+              "min": -99.971,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 63,
+      },
+    },
+    "trace": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "46749c58",
+          "stats": [
+            {
+              "max": 337.397,
+              "mean": 105.985,
+              "min": -90.22,
+            },
+            {
+              "max": 337.005,
+              "mean": 131.961,
+              "min": -78.943,
+            },
+          ],
+        },
+        "stripOffsets": "1b1866c7",
+        "topology": "line-strip",
+        "vertexCount": 11473,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`merge golden indexed triangles 1`] = `
+{
+  "nodes": {
+    "merge": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": "b0613a3c",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "d95cfecf",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 60,
+      },
+    },
+    "meshA": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": "cb9e1596",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "96c85b4d",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 25,
+      },
+    },
+    "meshB": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": "95644b46",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "3887b9c7",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 35,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

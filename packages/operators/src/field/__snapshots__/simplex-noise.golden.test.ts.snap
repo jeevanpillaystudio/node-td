@@ -1,0 +1,41 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`simplex-noise golden default 1`] = `
+{
+  "nodes": {
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`simplex-noise golden noiseScale 0.012 1`] = `
+{
+  "nodes": {
+    "noise": {
+      "field": {
+        "hash": "0c909736",
+        "kind": "field",
+        "max": 0.962,
+        "mean": 0.511,
+        "min": 0.057,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

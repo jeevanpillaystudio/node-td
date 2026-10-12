@@ -1,0 +1,118 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`field-gradient golden epsilon 1 1`] = `
+{
+  "nodes": {
+    "grad": {
+      "dx": {
+        "hash": "8f77c84b",
+        "kind": "field",
+        "max": 0.095,
+        "mean": 0,
+        "min": -0.078,
+      },
+      "dy": {
+        "hash": "564854f4",
+        "kind": "field",
+        "max": 0.077,
+        "mean": 0.001,
+        "min": -0.095,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`field-gradient golden epsilon 0.25 1`] = `
+{
+  "nodes": {
+    "grad": {
+      "dx": {
+        "hash": "1e4ffcb3",
+        "kind": "field",
+        "max": 0.096,
+        "mean": 0,
+        "min": -0.079,
+      },
+      "dy": {
+        "hash": "0b1ebe9b",
+        "kind": "field",
+        "max": 0.078,
+        "mean": 0.001,
+        "min": -0.096,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`field-gradient golden opaque input 1`] = `
+{
+  "nodes": {
+    "grad": {
+      "dx": {
+        "hash": "8f77c84b",
+        "kind": "field",
+        "max": 0.095,
+        "mean": 0,
+        "min": -0.078,
+      },
+      "dy": {
+        "hash": "564854f4",
+        "kind": "field",
+        "max": 0.077,
+        "mean": 0.001,
+        "min": -0.095,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "opaque": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

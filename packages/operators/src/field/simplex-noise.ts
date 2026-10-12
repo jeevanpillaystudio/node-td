@@ -1,0 +1,29 @@
+import { defineOperator } from "@node-td/kernel";
+import { add, c, createField, mul, simplex as sn, u, X, Y } from "@node-td/kernel/field";
+
+export const simplexNoise = defineOperator({
+  id: "simplex-noise",
+  category: "field",
+  label: "Simplex Noise",
+  inputs: [],
+  outputs: [{ name: "field", type: "field" }],
+  params: [
+    {
+      key: "noiseScale",
+      label: "Noise Scale",
+      min: 0.0001,
+      max: 0.1,
+      step: 0.00005,
+      default: 0.03,
+    },
+  ],
+  evaluate(_inputs, params) {
+    const scale = params.noiseScale;
+
+    // (simplex2(x*scale, y*scale) + 1) * 0.5
+    const s = u("noiseScale", scale);
+    const expr = mul(add(sn(mul(X, s), mul(Y, s)), c(1)), c(0.5));
+
+    return { field: createField(expr) };
+  },
+});

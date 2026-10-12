@@ -1,25 +1,13 @@
 {
   "name": "@node-td/frame",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "private": true,
   "type": "module",
   "sideEffects": false,
   "exports": {
     ".": {
-      "types": "./src/frame.tsx",
-      "default": "./src/frame.tsx"
-    },
-    "./provider": {
-      "types": "./src/frame-provider.tsx",
-      "default": "./src/frame-provider.tsx"
-    },
-    "./shell": {
-      "types": "./src/frame-shell.tsx",
-      "default": "./src/frame-shell.tsx"
-    },
-    "./editor": {
-      "types": "./src/editor/frame-editor.tsx",
-      "default": "./src/editor/frame-editor.tsx"
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
     }
   },
   "scripts": {
@@ -27,14 +15,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@node-td/engine": "workspace:*",
-    "@radix-ui/react-label": "^2.1.0",
-    "@radix-ui/react-slider": "^1.2.1",
-    "@radix-ui/react-slot": "^1.1.0",
-    "@xyflow/react": "^12.10.2",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "tailwind-merge": "^3.0.0"
+    "@node-td/kernel": "workspace:*",
+    "@node-td/operators": "workspace:*",
+    "@node-td/render-web": "workspace:*"
   },
   "peerDependencies": {
     "react": "^19",
@@ -42,9 +25,8 @@
   },
   "devDependencies": {
     "@node-td/typescript-config": "workspace:*",
-    "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "typescript": "^5.9.0"
+    "typescript": "5.9.3"
   }
 }

@@ -2,20 +2,68 @@
   "$schema": "https://turborepo.dev/schema.json",
   "ui": "tui",
   "tasks": {
+    "transit": {
+      "dependsOn": ["^transit"]
+    },
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".cache/tsbuildinfo.json", "dist/**", ".output/**"]
+      "outputs": ["dist/**"]
     },
     "dev": {
       "cache": false,
       "persistent": true
     },
     "typecheck": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["transit"],
       "outputs": [".cache/tsbuildinfo.json"]
+    },
+    "test": {
+      "dependsOn": ["transit"],
+      "outputs": []
     },
     "clean": {
       "cache": false
+    }
+  },
+  "boundaries": {
+    "tags": {
+      "layer-tooling": {
+        "dependencies": { "allow": [] }
+      },
+      "layer-kernel": {
+        "dependencies": { "allow": ["layer-tooling"] }
+      },
+      "layer-ops": {
+        "dependencies": { "allow": ["layer-kernel", "layer-test", "layer-tooling"] }
+      },
+      "layer-render": {
+        "dependencies": { "allow": ["layer-kernel", "layer-tooling"] }
+      },
+      "layer-content": {
+        "dependencies": {
+          "allow": ["layer-kernel", "layer-ops", "layer-render", "layer-test", "layer-tooling"]
+        }
+      },
+      "layer-frame": {
+        "dependencies": {
+          "allow": ["layer-kernel", "layer-ops", "layer-render", "layer-test", "layer-tooling"]
+        }
+      },
+      "layer-editor": {
+        "dependencies": {
+          "allow": [
+            "layer-frame",
+            "layer-kernel",
+            "layer-ops",
+            "layer-render",
+            "layer-test",
+            "layer-tooling"
+          ]
+        }
+      },
+      "layer-test": {
+        "dependencies": { "allow": ["layer-kernel", "layer-ops", "layer-tooling"] }
+      }
     }
   }
 }

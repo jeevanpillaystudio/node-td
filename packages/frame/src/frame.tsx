@@ -1,85 +1,97 @@
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
-import { cn } from "./ui/utils";
-import type { Graph, Geometry, Buffer2D } from "@node-td/engine";
-import { collectParams, createDefaultRegistry, CookEngine, SeededRNG } from "@node-td/engine";
-import { drawCanvas2D, blitBuffer2D, createWebGL2 } from "@node-td/engine/render";
-import { useOptionalFrameContext } from "./frame-provider";
+import type { Buffer2D, Graph, NodeError, OperatorRegistry, ParamDef } from "@node-td/kernel";
+import { CookEngine, collectParams, GraphValidationError } from "@node-td/kernel";
+import { defaultRegistry } from "@node-td/operators";
+import { blitBuffer2D } from "@node-td/render-web";
+import {
+  Component,
+  type CSSProperties,
+  type ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { FrameHostContext } from "./frame-host";
 
-const registry = createDefaultRegistry();
-
-// ── Shared WebGL2 context (lazy singleton) ────────────────────
-// One GL context shared across ALL Frame instances. Eliminates the
-// browser's ~8-16 context limit issue. The field-render shader cache
-// is keyed by GL context, so sharing also shares the cache.
-let _sharedGL: WebGL2RenderingContext | null | undefined;
-function getSharedGL(): WebGL2RenderingContext | null {
-  if (_sharedGL !== undefined) return _sharedGL;
-  if (typeof OffscreenCanvas === "undefined") {
-    _sharedGL = null;
-    return null;
-  }
-  _sharedGL = createWebGL2(new OffscreenCanvas(1, 1));
-  return _sharedGL;
-}
-
-// ── Staggered cook scheduler ──────────────────────────────────
-// When many Frames mount simultaneously (e.g., debug page with 10
-// panels), each frame gets an increasing delay so cooks spread across
-// animation frames instead of all blocking the same tick.
-let _mountOrder = 0;
+/** The seed for a graph that names none: every gallery artwork was tuned with it. */
+const DEFAULT_SEED = 42;
 
 interface FrameProps {
   graph: Graph;
   id?: string;
   className?: string;
+  /** Inline styles for the outer element, which is `position: relative` unless this says otherwise. */
+  style?: CSSProperties;
+  /** Operators the graph's node types resolve against. Defaults to the built-in operators. */
+  registry?: OperatorRegistry;
+  /** Seed for the random stream the graph's operators draw from. Defaults to the graph's seed, then 42. */
+  seed?: number | string;
 }
 
-export function Frame({ graph, id: explicitId, className }: FrameProps) {
+export function Frame({
+  graph,
+  id: explicitId,
+  className,
+  style,
+  registry = defaultRegistry(),
+  seed: seedProp,
+}: FrameProps) {
+  const seed = seedProp ?? graph.seed ?? DEFAULT_SEED;
   const autoId = useId();
   const frameId = explicitId ?? `frame-${autoId}`;
-  const ctx = useOptionalFrameContext();
 
-  const ctxRegister = ctx?.register;
-  const ctxUnregister = ctx?.unregister;
-  const ctxSetActive = ctx?.setActive;
-  const ctxSetEditing = ctx?.setEditing;
-  const isActive = ctx?.activeId === frameId;
-
-  const params = useMemo(() => collectParams(graph, registry), [graph]);
-  const [values, setValues] = useState<Record<string, number>>(() =>
-    Object.fromEntries(params.map((p) => [p.key, p.default])),
+  return (
+    <div className={className} style={{ position: "relative", ...style }}>
+      <FrameErrorBoundary graph={graph} registry={registry}>
+        <FrameView graph={graph} frameId={frameId} registry={registry} seed={seed} />
+      </FrameErrorBoundary>
+    </div>
   );
+}
+
+interface FrameViewProps {
+  graph: Graph;
+  frameId: string;
+  registry: OperatorRegistry;
+  seed: number | string;
+}
+
+function FrameView({ graph, frameId, registry, seed }: FrameViewProps) {
+  const host = useContext(FrameHostContext);
+
+  const params = useMemo(() => collectParams(graph, registry), [graph, registry]);
+  const [values, setValues] = useState(() => defaultValues(params));
+
+  // Param overrides belong to the graph they were made on: a new graph (or
+  // registry) starts again from its own defaults.
+  const [valuesParams, setValuesParams] = useState(params);
+  if (valuesParams !== params) {
+    setValuesParams(params);
+    setValues(defaultValues(params));
+  }
 
   const set = useCallback(
     (key: string, v: number) => setValues((prev) => ({ ...prev, [key]: v })),
     [],
   );
 
-  const setRef = useRef(set);
-  setRef.current = set;
-
-  // Register with inspector context when available (dev only)
+  // Register with the host (the dev editor) when one is mounted
   useEffect(() => {
-    if (!ctxRegister) return;
-    ctxRegister({
-      id: frameId,
-      name: graph.name,
-      graph,
-      params,
-      values,
-      set: (k: string, v: number) => setRef.current(k, v),
-    });
-  }, [ctxRegister, frameId, graph, graph.name, params, values]);
+    host?.register({ id: frameId, name: graph.name, graph, registry, seed, params, values, set });
+  }, [host, frameId, graph, registry, seed, params, values, set]);
 
   useEffect(() => {
-    if (!ctxUnregister) return;
-    return () => ctxUnregister(frameId);
-  }, [ctxUnregister, frameId]);
+    if (!host) return;
+    return () => host.unregister(frameId);
+  }, [host, frameId]);
 
   // ── Visibility gating via IntersectionObserver ───────────────
-  // Off-screen frames don't cook at all. When the frame scrolls into
-  // view, it enters the cook queue. This is the most impactful
-  // optimization for pages with many panels.
+  // Off-screen frames don't cook at all; a frame cooks when it scrolls
+  // into view. This is the most impactful optimization for pages with
+  // many panels.
   const [isVisible, setVisible] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -87,158 +99,261 @@ export function Frame({ graph, id: explicitId, className }: FrameProps) {
     const el = wrapperRef.current;
     if (!el) return;
     const io = new IntersectionObserver(
-      ([entry]) => { if (entry) setVisible(entry.isIntersecting); },
+      ([entry]) => {
+        if (entry) setVisible(entry.isIntersecting);
+      },
       { threshold: 0 },
     );
     io.observe(el);
     return () => io.disconnect();
   }, []);
 
-  // Canvas rendering — persistent CookEngine for incremental evaluation
+  // ── Drawing ───────────────────────────────────────────────────
+  // Every draw is one full cook in a requestAnimationFrame callback, and a
+  // new request replaces a pending one. Two things request draws: the
+  // effect below, once per change of what the frame shows, and one
+  // ResizeObserver per mount, when the size or dpr changes.
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const overlayRef = useRef<HTMLDivElement>(null);
-  const engineRef = useRef<CookEngine | null>(null);
-  const engineGraphRef = useRef<Graph | null>(null);
-  const staggerRef = useRef(-1);
+  const coverRef = useRef<HTMLDivElement>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  /** What the next draw cooks; the effect below keeps it current. */
+  const inputsRef = useRef({ graph, registry, seed, values, isVisible });
+  /** The size and dpr of the last draw, or of the last resize seen since. */
+  const sizeRef = useRef<Size | null>(null);
+  const engineRef = useRef<{ graph: Graph; registry: OperatorRegistry; engine: CookEngine } | null>(
+    null,
+  );
+  const rafRef = useRef(0);
   const hasDrawnRef = useRef(false);
-  if (staggerRef.current === -1) staggerRef.current = _mountOrder++;
 
-  useEffect(() => {
-    // Don't cook until visible
-    if (!isVisible) return;
+  const draw = useCallback(() => {
+    const wrapper = wrapperRef.current;
+    const canvas = canvasRef.current;
+    const inputs = inputsRef.current;
+    if (!wrapper || !canvas || !inputs.isVisible) return;
 
-    // Create or replace engine when graph identity changes
-    if (engineGraphRef.current !== graph) {
-      engineRef.current = new CookEngine(graph, registry);
-      engineGraphRef.current = graph;
-    }
-    const engine = engineRef.current!;
+    const size = measure(wrapper);
+    sizeRef.current = size;
+    const { width, height, dpr } = size;
+    // A collapsed or hidden container has no pixels to draw, and the
+    // rasterisers cannot read back an empty canvas.
+    if (width === 0 || height === 0) return;
 
-    // Diff params — only marks changed nodes dirty
-    engine.setParams(values);
+    let message: string | null = null;
+    try {
+      const { graph, registry } = inputs;
+      const prev = engineRef.current;
+      const engine =
+        prev && prev.graph === graph && prev.registry === registry
+          ? prev.engine
+          : new CookEngine(graph, registry);
+      engineRef.current = { graph, registry, engine };
+      engine.setParams(inputs.values);
 
-    const canvas = canvasRef.current!;
-    const wrapper = wrapperRef.current!;
-    const overlay = overlayRef.current!;
-    const canvasCtx = canvas.getContext("2d")!;
-
-    let rafId = 0;
-    let staggerTimer: ReturnType<typeof setTimeout> | undefined;
-
-    function draw() {
-      const dpr = window.devicePixelRatio || 1;
-      const w = wrapper.clientWidth;
-      const h = wrapper.clientHeight;
-
-      canvas.width = w * dpr;
-      canvas.height = h * dpr;
-
-      // Cook — shared GL context, env diff auto-dirties on resize
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
       engine.cook({
-        width: w,
-        height: h,
+        width,
+        height,
         dpr,
-        rng: new SeededRNG(42),
-        _gl: getSharedGL(),
+        seed: inputs.seed,
         createCanvas: (cw: number, ch: number) => new OffscreenCanvas(cw, ch),
       });
 
-      // ROP path: buffer is already at full pixel resolution (DPR-aware)
-      const buf = engine.findTerminalOutput<Buffer2D>("buffer");
-      if (buf) {
-        blitBuffer2D(canvasCtx, buf);
-      } else {
-        // Legacy fallback: apply DPR transform for direct geometry drawing
-        canvasCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        const geo = engine.findTerminalOutput<Geometry<2>>("geometry");
-        if (geo) {
-          drawCanvas2D(canvasCtx, w, h, geo);
-        }
-      }
-
+      // A node that threw leaves the artwork incomplete: show the error
+      // instead, even if another branch still produced an image.
+      const failure = reportNodeErrors(graph.name, engine.stats.errors);
+      // The buffer is already at full pixel resolution (DPR-aware)
+      const buf = engine.findTerminalOutput<Buffer2D>("image");
+      const ctx = canvas.getContext("2d");
+      if (failure) message = failure;
+      else if (!buf) message = "Nothing to draw: the graph has no image output.";
+      else if (!ctx) message = "This browser gave the canvas no 2D context.";
+      else blitBuffer2D(ctx, buf);
+    } catch (err) {
+      console.error(err);
+      message =
+        err instanceof GraphValidationError
+          ? `Invalid graph: ${err.issues.join("; ")}`
+          : `Cook failed: ${errorMessage(err)}`;
+    } finally {
       // Free intermediate buffers — critical for multi-panel pages.
       // Without this, cached Float32Arrays from all panels persist
       // simultaneously (~100 MB per panel at 2× DPR), crashing the tab.
-      // Next resize triggers a full re-cook which is fine for static graphs.
-      engine.clearCache();
-
-      // Reveal after first draw
-      if (!hasDrawnRef.current) {
-        hasDrawnRef.current = true;
-        overlay.style.transition = "opacity 1.5s ease-in-out";
-        overlay.style.opacity = "0";
-      }
+      // The next draw is a full re-cook, which is fine for static graphs.
+      // An incremental cook would give the same image; the cache goes
+      // only to bound memory, until outputs have a retention policy.
+      engineRef.current?.engine.clearCache();
     }
+    setError(message);
 
-    function scheduleDraw() {
-      cancelAnimationFrame(rafId);
-      rafId = requestAnimationFrame(draw);
+    // Reveal after the first successful draw
+    const cover = coverRef.current;
+    if (message === null && !hasDrawnRef.current && cover) {
+      hasDrawnRef.current = true;
+      cover.style.transition = "opacity 1.5s ease-in-out";
+      cover.style.opacity = "0";
     }
+  }, []);
 
-    // First render: stagger by mount order (~32ms between each frame)
-    // Subsequent renders (resize, param change): immediate
-    if (!hasDrawnRef.current) {
-      const delay = staggerRef.current * 32;
-      staggerTimer = setTimeout(scheduleDraw, delay);
-    } else {
+  const scheduleDraw = useCallback(() => {
+    cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(draw);
+  }, [draw]);
+
+  // One observer for the life of the frame. It requests a draw only when
+  // the size or dpr differs from the last one recorded (by a draw or by
+  // itself), so the notification observe() sends adds no second cook.
+  useEffect(() => {
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+    const ro = new ResizeObserver(() => {
+      const next = measure(wrapper);
+      if (sameSize(sizeRef.current, next)) return;
+      sizeRef.current = next;
       scheduleDraw();
-    }
-
-    const ro = new ResizeObserver(scheduleDraw);
+    });
     ro.observe(wrapper);
-
     return () => {
-      cancelAnimationFrame(rafId);
-      if (staggerTimer !== undefined) clearTimeout(staggerTimer);
       ro.disconnect();
+      cancelAnimationFrame(rafRef.current);
     };
-  }, [values, graph, isVisible]);
+  }, [scheduleDraw]);
 
-  const canvasEl = (
-    <div
-      ref={wrapperRef}
-      style={{ position: "absolute", inset: 0, overflow: "clip", pointerEvents: "none" }}
-    >
-      <canvas ref={canvasRef} style={{ display: "block", width: "100%", height: "100%" }} />
-      <div
-        aria-hidden="true"
-        ref={overlayRef}
-        style={{ position: "absolute", inset: 0, background: "#1a1a1a", pointerEvents: "none", zIndex: 3 }}
-      />
-    </div>
-  );
-
-  if (!ctx) {
-    return <div className={className}>{canvasEl}</div>;
-  }
+  // One draw per change of the graph, its params or seed, or visibility
+  useEffect(() => {
+    inputsRef.current = { graph, registry, seed, values, isVisible };
+    if (isVisible) scheduleDraw();
+  }, [graph, registry, seed, values, isVisible, scheduleDraw]);
 
   return (
-    <div
-      role="button"
-      tabIndex={0}
-      onClick={() => ctxSetActive?.(frameId)}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") ctxSetActive?.(frameId);
-      }}
-      className={cn(
-        "relative cursor-pointer outline-2 outline-dashed outline-transparent transition-[outline-color]",
-        isActive ? "outline-ring" : "hover:outline-ring/50",
-        className,
-      )}
-    >
-      {canvasEl}
-      {/* Edit button — visible when frame is active */}
-      {isActive && (
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            ctxSetEditing?.(frameId);
+    <>
+      <div
+        ref={wrapperRef}
+        style={{ position: "absolute", inset: 0, overflow: "clip", pointerEvents: "none" }}
+      >
+        <canvas ref={canvasRef} style={{ display: "block", width: "100%", height: "100%" }} />
+        <div
+          aria-hidden="true"
+          ref={coverRef}
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "#1a1a1a",
+            pointerEvents: "none",
+            zIndex: 3,
           }}
-          className="absolute top-2 right-2 z-10 rounded-md border border-border/50 bg-card/80 px-2.5 py-1 font-mono text-xs text-muted-foreground backdrop-blur-md transition-colors hover:text-foreground"
-        >
-          Edit Graph
-        </button>
-      )}
+        />
+      </div>
+      {error !== null && <FrameError message={error} />}
+      {host?.renderOverlay?.(frameId)}
+    </>
+  );
+}
+
+interface BoundaryProps {
+  graph: Graph;
+  registry: OperatorRegistry;
+  children: ReactNode;
+}
+
+interface BoundaryState {
+  graph: Graph;
+  registry: OperatorRegistry;
+  error: Error | null;
+}
+
+/**
+ * Keeps an error thrown while rendering a Frame, such as a graph naming an
+ * operator the registry lacks, inside the Frame instead of unmounting the
+ * page. A new graph or registry gets a fresh try.
+ */
+class FrameErrorBoundary extends Component<BoundaryProps, BoundaryState> {
+  state: BoundaryState = { graph: this.props.graph, registry: this.props.registry, error: null };
+
+  static getDerivedStateFromError(error: unknown): Partial<BoundaryState> {
+    return { error: error instanceof Error ? error : new Error(String(error)) };
+  }
+
+  static getDerivedStateFromProps(
+    props: BoundaryProps,
+    state: BoundaryState,
+  ): Partial<BoundaryState> | null {
+    if (props.graph === state.graph && props.registry === state.registry) return null;
+    return { graph: props.graph, registry: props.registry, error: null };
+  }
+
+  render() {
+    const { error } = this.state;
+    if (error) {
+      return <FrameError message={`Cannot render ${this.props.graph.name}: ${error.message}`} />;
+    }
+    return this.props.children;
+  }
+}
+
+function FrameError({ message }: { message: string }) {
+  return (
+    <div
+      role="alert"
+      style={{
+        position: "absolute",
+        inset: 0,
+        zIndex: 4,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 16,
+        background: "#1a1a1a",
+        color: "#a3a3a3",
+        font: "12px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace",
+        textAlign: "center",
+        overflowWrap: "anywhere",
+      }}
+    >
+      {message}
     </div>
   );
+}
+
+interface Size {
+  width: number;
+  height: number;
+  dpr: number;
+}
+
+function measure(el: HTMLElement): Size {
+  return { width: el.clientWidth, height: el.clientHeight, dpr: window.devicePixelRatio || 1 };
+}
+
+function sameSize(a: Size | null, b: Size): boolean {
+  return a !== null && a.width === b.width && a.height === b.height && a.dpr === b.dpr;
+}
+
+function defaultValues(params: ParamDef[]): Record<string, number> {
+  return Object.fromEntries(params.map((p) => [p.key, p.default]));
+}
+
+function errorMessage(err: unknown): string {
+  return err instanceof Error ? err.message : String(err);
+}
+
+/**
+ * Log each node that threw in the last cook, and describe the first for
+ * the error state. Null when no node threw.
+ */
+function reportNodeErrors(
+  graphName: string,
+  errors: ReadonlyMap<string, NodeError>,
+): string | null {
+  const thrown: string[] = [];
+  for (const [key, failure] of errors) {
+    if (failure.kind !== "error") continue;
+    console.error(`${graphName}: node "${key}" failed`, failure.error);
+    thrown.push(`Cook failed in node "${key}": ${errorMessage(failure.error)}`);
+  }
+  const [first] = thrown;
+  if (first === undefined) return null;
+  return thrown.length > 1 ? `${first} (and ${thrown.length - 1} more)` : first;
 }

@@ -1,0 +1,393 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`project-3d golden grid mesh, orthographic 1`] = `
+{
+  "nodes": {
+    "cam": {
+      "camera3d": {
+        "kind": "camera3d",
+        "project": "dd2bebdd",
+        "unproject": "f1880d0f",
+        "viewport": [
+          256,
+          256,
+        ],
+      },
+    },
+    "lift": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "072c7da6",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 116.282,
+              "mean": 56.602,
+              "min": 3.908,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "mesh": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "9c0a8925",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "proj": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "122b34a2",
+          "stats": [
+            {
+              "max": 272.815,
+              "mean": 128,
+              "min": -16.815,
+            },
+            {
+              "max": 210.049,
+              "mean": 95.053,
+              "min": -8.259,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`project-3d golden grid mesh, perspective 1`] = `
+{
+  "nodes": {
+    "cam": {
+      "camera3d": {
+        "kind": "camera3d",
+        "project": "e5c7d249",
+        "unproject": "d21385da",
+        "viewport": [
+          256,
+          256,
+        ],
+      },
+    },
+    "lift": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "072c7da6",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 116.282,
+              "mean": 56.602,
+              "min": 3.908,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "mesh": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "9c0a8925",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+            {
+              "max": 256,
+              "mean": 128,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "proj": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": "7cb8bb68",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "98b92a9a",
+          "stats": [
+            {
+              "max": 248.873,
+              "mean": 128.348,
+              "min": 14.147,
+            },
+            {
+              "max": 230.846,
+              "mean": 106.301,
+              "min": 40.178,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 81,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`project-3d golden strips, isometric camera 1`] = `
+{
+  "nodes": {
+    "cam": {
+      "camera3d": {
+        "kind": "camera3d",
+        "project": "5488f632",
+        "unproject": "237e4d3c",
+        "viewport": [
+          256,
+          256,
+        ],
+      },
+    },
+    "grid": {
+      "buffer": {
+        "channels": 1,
+        "hash": "3dc40518",
+        "height": 13,
+        "kind": "buffer",
+        "stats": {
+          "max": 6.001,
+          "mean": 3.046,
+          "min": 0.305,
+        },
+        "width": 13,
+      },
+    },
+    "lift": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "048689f3",
+          "stats": [
+            {
+              "max": 337.397,
+              "mean": 105.985,
+              "min": -90.22,
+            },
+            {
+              "max": 119.871,
+              "mean": 61.487,
+              "min": 4.404,
+            },
+            {
+              "max": 337.005,
+              "mean": 131.961,
+              "min": -78.943,
+            },
+          ],
+        },
+        "stripOffsets": "1b1866c7",
+        "topology": "line-strip",
+        "vertexCount": 11473,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "proj": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "ba8fb803",
+          "stats": [
+            {
+              "max": 396.337,
+              "mean": 108.25,
+              "min": -177.74,
+            },
+            {
+              "max": 272.195,
+              "mean": 66.092,
+              "min": -120.778,
+            },
+          ],
+        },
+        "stripOffsets": "1b1866c7",
+        "topology": "line-strip",
+        "vertexCount": 11473,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "84beaba5",
+          "stats": [
+            {
+              "max": 353.425,
+              "mean": 124.718,
+              "min": -98.556,
+            },
+            {
+              "max": 352.355,
+              "mean": 128.908,
+              "min": -99.971,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 63,
+      },
+    },
+    "trace": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "46749c58",
+          "stats": [
+            {
+              "max": 337.397,
+              "mean": 105.985,
+              "min": -90.22,
+            },
+            {
+              "max": 337.005,
+              "mean": 131.961,
+              "min": -78.943,
+            },
+          ],
+        },
+        "stripOffsets": "1b1866c7",
+        "topology": "line-strip",
+        "vertexCount": 11473,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

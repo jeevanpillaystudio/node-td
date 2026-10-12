@@ -1,17 +1,18 @@
 {
   "name": "@node-td/examples",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "build": "vite build",
     "dev": "vite dev",
     "typecheck": "tsc --noEmit",
-    "clean": "git clean -xdf .cache .turbo .output node_modules"
+    "clean": "git clean -xdf .cache .turbo .output .tanstack dist node_modules"
   },
   "dependencies": {
-    "@node-td/engine": "workspace:*",
+    "@node-td/editor": "workspace:*",
     "@node-td/frame": "workspace:*",
+    "@node-td/patches": "workspace:*",
     "@tanstack/react-router": "^1.157.0",
     "@tanstack/react-start": "^1.157.0",
     "react": "^19.0.0",
@@ -20,13 +21,11 @@
   "devDependencies": {
     "@node-td/typescript-config": "workspace:*",
     "@tailwindcss/vite": "^4.0.0",
-    "@tanstack/router-plugin": "^1.157.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^4.0.0",
-    "nitro": "^3.0.0",
     "tailwindcss": "^4.0.0",
-    "typescript": "^5.9.0",
+    "typescript": "5.9.3",
     "vite": "^6.0.0",
     "vite-tsconfig-paths": "^4.0.0"
   }

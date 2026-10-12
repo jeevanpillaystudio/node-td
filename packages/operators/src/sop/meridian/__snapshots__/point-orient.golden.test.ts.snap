@@ -1,0 +1,288 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`point-orient golden raymarch hits 1`] = `
+{
+  "nodes": {
+    "angle": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "cam": {
+      "camera3d": {
+        "kind": "camera3d",
+        "project": "b7bd729c",
+        "unproject": "ea711e8c",
+        "viewport": [
+          256,
+          256,
+        ],
+      },
+    },
+    "march": {
+      "geometry": {
+        "attributes": {
+          "ao": "3e0d2bbc",
+          "depth": "3f0a9e38",
+          "worldX": "eea25ced",
+          "worldZ": "b1fdead0",
+        },
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "f614e083",
+          "stats": [
+            {
+              "max": 255.904,
+              "mean": 129,
+              "min": 0.602,
+            },
+            {
+              "max": 255.782,
+              "mean": 131.57,
+              "min": 0.63,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 113,
+      },
+    },
+    "orient": {
+      "geometry": {
+        "attributes": {
+          "angle": "d84442dd",
+          "ao": "3e0d2bbc",
+          "depth": "3f0a9e38",
+          "length": "ea6a977b",
+          "worldX": "eea25ced",
+          "worldZ": "b1fdead0",
+        },
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "f614e083",
+          "stats": [
+            {
+              "max": 255.904,
+              "mean": 129,
+              "min": 0.602,
+            },
+            {
+              "max": 255.782,
+              "mean": 131.57,
+              "min": 0.63,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 113,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "f614e083",
+          "stats": [
+            {
+              "max": 255.904,
+              "mean": 129,
+              "min": 0.602,
+            },
+            {
+              "max": 255.782,
+              "mean": 131.57,
+              "min": 0.63,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 113,
+      },
+    },
+    "terrain": {
+      "field": {
+        "hash": "f0653aa7",
+        "kind": "field",
+        "max": 0.952,
+        "mean": 0.506,
+        "min": 0.047,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`point-orient golden plain points 1`] = `
+{
+  "nodes": {
+    "angle": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "orient": {
+      "geometry": {
+        "attributes": {
+          "angle": "ec767f0f",
+          "length": "8b121078",
+        },
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "84beaba5",
+          "stats": [
+            {
+              "max": 353.425,
+              "mean": 124.718,
+              "min": -98.556,
+            },
+            {
+              "max": 352.355,
+              "mean": 128.908,
+              "min": -99.971,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 63,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "84beaba5",
+          "stats": [
+            {
+              "max": 353.425,
+              "mean": 124.718,
+              "min": -98.556,
+            },
+            {
+              "max": 352.355,
+              "mean": 128.908,
+              "min": -99.971,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 63,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`point-orient golden plain points, custom params 1`] = `
+{
+  "nodes": {
+    "angle": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "orient": {
+      "geometry": {
+        "attributes": {
+          "angle": "e1b3201e",
+          "length": "8b44599f",
+        },
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "84beaba5",
+          "stats": [
+            {
+              "max": 353.425,
+              "mean": 124.718,
+              "min": -98.556,
+            },
+            {
+              "max": 352.355,
+              "mean": 128.908,
+              "min": -99.971,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 63,
+      },
+    },
+    "seeds": {
+      "geometry": {
+        "attributes": null,
+        "dim": 2,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "84beaba5",
+          "stats": [
+            {
+              "max": 353.425,
+              "mean": 124.718,
+              "min": -98.556,
+            },
+            {
+              "max": 352.355,
+              "mean": 128.908,
+              "min": -99.971,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "points",
+        "vertexCount": 63,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

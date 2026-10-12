@@ -1,0 +1,3048 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`subscapes-terrain-3d nodes resolved params 1`] = `
+{
+  "base": {
+    "params": {
+      "amplitude": 120,
+      "baseY": 6,
+      "samples": 150,
+    },
+    "type": "base-outline",
+  },
+  "cam3d": {
+    "params": {
+      "eyeX": 1,
+      "eyeY": 1,
+      "eyeZ": 1,
+      "far": 5000,
+      "fov": 60,
+      "near": 0.1,
+      "orthoSize": 0.93,
+      "projection": 0,
+      "targetX": 0,
+      "targetY": 0,
+      "targetZ": 0,
+    },
+    "type": "camera-3d",
+  },
+  "camera": {
+    "params": {
+      "centerX": 0,
+      "centerY": 0,
+      "rotation": 0,
+      "zoom": 1,
+    },
+    "type": "camera-2d",
+  },
+  "colmesh": {
+    "params": {
+      "amplitude": 0,
+      "uSegments": 42,
+      "vSegments": 42,
+    },
+    "type": "parametric-surface",
+  },
+  "comp": {
+    "params": {
+      "mode": 0,
+    },
+    "type": "composite",
+  },
+  "contour": {
+    "params": {
+      "amplitude": 120,
+      "baseY": 6,
+      "levels": 5,
+      "samples": 150,
+    },
+    "type": "contour-ring",
+  },
+  "cull": {
+    "params": {
+      "bypass": 0,
+    },
+    "type": "visibility-cull",
+  },
+  "flow": {
+    "params": {
+      "noiseScale": 0.00025,
+    },
+    "type": "simplex-noise",
+  },
+  "grid": {
+    "params": {
+      "resolution": 18,
+    },
+    "type": "grid-sampler",
+  },
+  "lift": {
+    "params": {
+      "amplitude": 120,
+      "baseY": 6,
+    },
+    "type": "surface-lift",
+  },
+  "liftmesh": {
+    "params": {
+      "amplitude": 120,
+      "baseY": 6,
+    },
+    "type": "surface-lift",
+  },
+  "noise": {
+    "params": {
+      "noiseScale": 0.012,
+    },
+    "type": "simplex-noise",
+  },
+  "normals": {
+    "params": {
+      "amplitude": 120,
+      "epsilon": 1,
+    },
+    "type": "geometric-normal",
+  },
+  "palette": {
+    "params": {
+      "chroma": 0,
+      "count": 1,
+      "hueOffset": 0,
+      "hueSpread": 0,
+      "lightness": 0.2,
+    },
+    "type": "oklab-palette",
+  },
+  "partitions": {
+    "params": {
+      "maxDepth": 5,
+      "minSize": 20,
+      "splitJitter": 0.15,
+    },
+    "type": "binary-subdivide",
+  },
+  "proj": {
+    "params": {},
+    "type": "project-3d",
+  },
+  "proj-base": {
+    "params": {},
+    "type": "project-3d",
+  },
+  "proj-cont": {
+    "params": {},
+    "type": "project-3d",
+  },
+  "render": {
+    "params": {
+      "bgAlpha": 0,
+      "bgB": 0,
+      "bgG": 0,
+      "bgR": 0,
+      "fillB": 26,
+      "fillG": 26,
+      "fillR": 26,
+      "lineWidth": 1.8,
+      "renderMode": 0,
+      "strokeAlpha": 1,
+    },
+    "type": "stroke-renderer",
+  },
+  "render-base": {
+    "params": {
+      "bgAlpha": 1,
+      "bgB": 249,
+      "bgG": 249,
+      "bgR": 249,
+      "fillB": 249,
+      "fillG": 249,
+      "fillR": 249,
+      "lineWidth": 1.8,
+      "renderMode": 1,
+      "strokeAlpha": 1,
+    },
+    "type": "stroke-renderer",
+  },
+  "render-cont": {
+    "params": {
+      "bgAlpha": 0,
+      "bgB": 0,
+      "bgG": 0,
+      "bgR": 0,
+      "fillB": 26,
+      "fillG": 26,
+      "fillR": 26,
+      "lineWidth": 0.8,
+      "renderMode": 0,
+      "strokeAlpha": 0.5,
+    },
+    "type": "stroke-renderer",
+  },
+  "seeds": {
+    "params": {
+      "densityScale": 1.5,
+      "margin": 100,
+      "minRadius": 5,
+    },
+    "type": "poisson-disc",
+  },
+  "shade": {
+    "params": {
+      "ambient": 0.7,
+      "lightX": 0.5,
+      "lightY": -0.707,
+      "lightZ": 0.5,
+      "steps": 4,
+    },
+    "type": "diffuse-shade",
+  },
+  "shape": {
+    "params": {
+      "hi": 1,
+      "lo": 0,
+      "mode": 4,
+      "power": 2,
+      "steps": 6,
+    },
+    "type": "field-remap",
+  },
+  "terrain": {
+    "params": {
+      "amplitude": 1,
+      "domainRotation": 0,
+      "gain": 0.5,
+      "lacunarity": 2,
+      "octaves": 6,
+    },
+    "type": "fbm",
+  },
+  "trace": {
+    "params": {
+      "exitMargin": 10,
+      "numSteps": 7,
+      "stepLength": 8,
+    },
+    "type": "flow-tracer",
+  },
+}
+`;
+
+exports[`subscapes-terrain-3d nodes 256x256 dpr1 1`] = `
+{
+  "base": {
+    "geometry": {
+      "attributes": null,
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "672c0e4e",
+        "stats": [
+          {
+            "max": 256,
+            "mean": 191.789,
+            "min": 0,
+          },
+          {
+            "max": 89.618,
+            "mean": 45.882,
+            "min": 6,
+          },
+          {
+            "max": 256,
+            "mean": 190.944,
+            "min": 0,
+          },
+        ],
+      },
+      "stripOffsets": "9be17165",
+      "topology": "line-strip",
+      "vertexCount": 303,
+    },
+  },
+  "cam3d": {
+    "camera3d": {
+      "kind": "camera3d",
+      "project": "5488f632",
+      "unproject": "237e4d3c",
+      "viewport": [
+        256,
+        256,
+      ],
+    },
+  },
+  "camera": {
+    "camera": {
+      "center": [
+        128,
+        128,
+      ],
+      "kind": "camera2d",
+      "rotation": 0,
+      "viewport": [
+        256,
+        256,
+      ],
+      "zoom": 1,
+    },
+  },
+  "colmesh": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": "800eca4a",
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "73ee6239",
+        "stats": [
+          {
+            "max": 256,
+            "mean": 128,
+            "min": 0,
+          },
+          {
+            "max": 256,
+            "mean": 128,
+            "min": 0,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "triangles",
+      "vertexCount": 1849,
+    },
+  },
+  "comp": {
+    "buffer": {
+      "channels": 4,
+      "hash": "279c9dc5",
+      "height": 256,
+      "kind": "buffer",
+      "stats": {
+        "max": 0,
+        "mean": 0,
+        "min": 0,
+      },
+      "width": 256,
+    },
+  },
+  "contour": {
+    "geometry": {
+      "attributes": null,
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "b35c3c81",
+        "stats": [
+          {
+            "max": 256,
+            "mean": 191.616,
+            "min": 0,
+          },
+          {
+            "max": 89.618,
+            "mean": 17.17,
+            "min": 6,
+          },
+          {
+            "max": 256,
+            "mean": 191.616,
+            "min": 0,
+          },
+        ],
+      },
+      "stripOffsets": "d06d91f3",
+      "topology": "line-strip",
+      "vertexCount": 1499,
+    },
+  },
+  "cull": {
+    "geometry": {
+      "attributes": null,
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": "e7608586",
+      "positions": {
+        "hash": "3d12c6e4",
+        "stats": [
+          {
+            "max": 255.955,
+            "mean": 129.727,
+            "min": 0.008,
+          },
+          {
+            "max": 88.826,
+            "mean": 40.618,
+            "min": 8.443,
+          },
+          {
+            "max": 255.993,
+            "mean": 134.389,
+            "min": 0.29,
+          },
+        ],
+      },
+      "stripOffsets": "b6ca11de",
+      "topology": "line-strip",
+      "vertexCount": 8472,
+    },
+  },
+  "flow": {
+    "field": {
+      "hash": "2a2ec424",
+      "kind": "field",
+      "max": 0.635,
+      "mean": 0.5,
+      "min": 0.365,
+    },
+  },
+  "grid": {
+    "buffer": {
+      "channels": 1,
+      "hash": "6645eb47",
+      "height": 15,
+      "kind": "buffer",
+      "stats": {
+        "max": 3.98,
+        "mean": 3.142,
+        "min": 2.303,
+      },
+      "width": 15,
+    },
+  },
+  "lift": {
+    "geometry": {
+      "attributes": null,
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "620256a9",
+        "stats": [
+          {
+            "max": 273.39,
+            "mean": 126.622,
+            "min": -17.782,
+          },
+          {
+            "max": 94.04,
+            "mean": 38.5,
+            "min": 7.663,
+          },
+          {
+            "max": 271.724,
+            "mean": 128.246,
+            "min": -15.2,
+          },
+        ],
+      },
+      "stripOffsets": "0e5c88bf",
+      "topology": "line-strip",
+      "vertexCount": 25790,
+    },
+  },
+  "liftmesh": {
+    "geometry": {
+      "attributes": null,
+      "dim": 3,
+      "indices": "800eca4a",
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "b1526e96",
+        "stats": [
+          {
+            "max": 256,
+            "mean": 128,
+            "min": 0,
+          },
+          {
+            "max": 88.904,
+            "mean": 38.452,
+            "min": 8.483,
+          },
+          {
+            "max": 256,
+            "mean": 128,
+            "min": 0,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "triangles",
+      "vertexCount": 1849,
+    },
+  },
+  "noise": {
+    "field": {
+      "hash": "0c909736",
+      "kind": "field",
+      "max": 0.962,
+      "mean": 0.511,
+      "min": 0.057,
+    },
+  },
+  "normals": {
+    "geometry": {
+      "attributes": null,
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": "08fb42ba",
+      "positions": {
+        "hash": "620256a9",
+        "stats": [
+          {
+            "max": 273.39,
+            "mean": 126.622,
+            "min": -17.782,
+          },
+          {
+            "max": 94.04,
+            "mean": 38.5,
+            "min": 7.663,
+          },
+          {
+            "max": 271.724,
+            "mean": 128.246,
+            "min": -15.2,
+          },
+        ],
+      },
+      "stripOffsets": "0e5c88bf",
+      "topology": "line-strip",
+      "vertexCount": 25790,
+    },
+  },
+  "palette": {
+    "palette": {
+      "colors": "993890f6",
+      "count": 1,
+      "kind": "palette",
+    },
+  },
+  "partitions": {
+    "geometry": {
+      "attributes": {
+        "cellId": "463ce525",
+        "depth": "6af365c5",
+      },
+      "dim": 2,
+      "indices": "feabe268",
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "7249953d",
+        "stats": [
+          {
+            "max": 256,
+            "mean": 125.755,
+            "min": 0,
+          },
+          {
+            "max": 256,
+            "mean": 127.668,
+            "min": 0,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "triangles",
+      "vertexCount": 128,
+    },
+  },
+  "proj": {
+    "geometry": {
+      "attributes": null,
+      "colors": "d3286c3a",
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": "e7608586",
+      "positions": {
+        "hash": "25ff8604",
+        "stats": [
+          {
+            "max": 319.501,
+            "mean": 124.455,
+            "min": -55.222,
+          },
+          {
+            "max": 219.073,
+            "mean": 95.902,
+            "min": -38.272,
+          },
+        ],
+      },
+      "stripOffsets": "b6ca11de",
+      "topology": "line-strip",
+      "vertexCount": 8472,
+    },
+  },
+  "proj-base": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "b153a64f",
+        "stats": [
+          {
+            "max": 322.644,
+            "mean": 128.642,
+            "min": -66.644,
+          },
+          {
+            "max": 235.11,
+            "mean": 143.351,
+            "min": 53.845,
+          },
+        ],
+      },
+      "stripOffsets": "9be17165",
+      "topology": "line-strip",
+      "vertexCount": 303,
+    },
+  },
+  "proj-cont": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "5fc50e3c",
+        "stats": [
+          {
+            "max": 322.644,
+            "mean": 128,
+            "min": -66.644,
+          },
+          {
+            "max": 235.11,
+            "mean": 168.777,
+            "min": 53.845,
+          },
+        ],
+      },
+      "stripOffsets": "d06d91f3",
+      "topology": "line-strip",
+      "vertexCount": 1499,
+    },
+  },
+  "render": {
+    "buffer": {
+      "channels": 4,
+      "hash": "279c9dc5",
+      "height": 256,
+      "kind": "buffer",
+      "stats": {
+        "max": 0,
+        "mean": 0,
+        "min": 0,
+      },
+      "width": 256,
+    },
+  },
+  "render-base": {
+    "buffer": {
+      "channels": 4,
+      "hash": "279c9dc5",
+      "height": 256,
+      "kind": "buffer",
+      "stats": {
+        "max": 0,
+        "mean": 0,
+        "min": 0,
+      },
+      "width": 256,
+    },
+  },
+  "render-cont": {
+    "buffer": {
+      "channels": 4,
+      "hash": "279c9dc5",
+      "height": 256,
+      "kind": "buffer",
+      "stats": {
+        "max": 0,
+        "mean": 0,
+        "min": 0,
+      },
+      "width": 256,
+    },
+  },
+  "seeds": {
+    "geometry": {
+      "attributes": {
+        "cellId": "2ece6198",
+      },
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "0dac1fba",
+        "stats": [
+          {
+            "max": 356,
+            "mean": 127.73,
+            "min": -99.944,
+          },
+          {
+            "max": 355.969,
+            "mean": 127.067,
+            "min": -99.988,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "points",
+      "vertexCount": 5269,
+    },
+  },
+  "shade": {
+    "geometry": {
+      "attributes": null,
+      "colors": "d3286c3a",
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": "e7608586",
+      "positions": {
+        "hash": "3d12c6e4",
+        "stats": [
+          {
+            "max": 255.955,
+            "mean": 129.727,
+            "min": 0.008,
+          },
+          {
+            "max": 88.826,
+            "mean": 40.618,
+            "min": 8.443,
+          },
+          {
+            "max": 255.993,
+            "mean": 134.389,
+            "min": 0.29,
+          },
+        ],
+      },
+      "stripOffsets": "b6ca11de",
+      "topology": "line-strip",
+      "vertexCount": 8472,
+    },
+  },
+  "shape": {
+    "field": {
+      "hash": "97a4c421",
+      "kind": "field",
+      "max": 0.69,
+      "mean": 0.274,
+      "min": 0.036,
+    },
+  },
+  "terrain": {
+    "field": {
+      "hash": "31a020ef",
+      "kind": "field",
+      "max": 0.831,
+      "mean": 0.509,
+      "min": 0.19,
+    },
+  },
+  "trace": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "0a6437e0",
+        "stats": [
+          {
+            "max": 273.39,
+            "mean": 126.622,
+            "min": -17.782,
+          },
+          {
+            "max": 271.724,
+            "mean": 128.246,
+            "min": -15.2,
+          },
+        ],
+      },
+      "stripOffsets": "0e5c88bf",
+      "topology": "line-strip",
+      "vertexCount": 25790,
+    },
+  },
+}
+`;
+
+exports[`subscapes-terrain-3d nodes 400x400 dpr1 1`] = `
+{
+  "base": {
+    "geometry": {
+      "attributes": null,
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "13047f4a",
+        "stats": [
+          {
+            "max": 400,
+            "mean": 299.67,
+            "min": 0,
+          },
+          {
+            "max": 86.805,
+            "mean": 33.562,
+            "min": 6,
+          },
+          {
+            "max": 400,
+            "mean": 298.35,
+            "min": 0,
+          },
+        ],
+      },
+      "stripOffsets": "9be17165",
+      "topology": "line-strip",
+      "vertexCount": 303,
+    },
+  },
+  "cam3d": {
+    "camera3d": {
+      "kind": "camera3d",
+      "project": "5224cbf9",
+      "unproject": "eca4f681",
+      "viewport": [
+        400,
+        400,
+      ],
+    },
+  },
+  "camera": {
+    "camera": {
+      "center": [
+        200,
+        200,
+      ],
+      "kind": "camera2d",
+      "rotation": 0,
+      "viewport": [
+        400,
+        400,
+      ],
+      "zoom": 1,
+    },
+  },
+  "colmesh": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": "800eca4a",
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "d707d179",
+        "stats": [
+          {
+            "max": 400,
+            "mean": 200,
+            "min": 0,
+          },
+          {
+            "max": 400,
+            "mean": 200,
+            "min": 0,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "triangles",
+      "vertexCount": 1849,
+    },
+  },
+  "comp": {
+    "buffer": {
+      "channels": 4,
+      "hash": "229b1dc5",
+      "height": 400,
+      "kind": "buffer",
+      "stats": {
+        "max": 0,
+        "mean": 0,
+        "min": 0,
+      },
+      "width": 400,
+    },
+  },
+  "contour": {
+    "geometry": {
+      "attributes": null,
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "e07eb4c7",
+        "stats": [
+          {
+            "max": 400,
+            "mean": 299.4,
+            "min": 0,
+          },
+          {
+            "max": 86.805,
+            "mean": 13.707,
+            "min": 6,
+          },
+          {
+            "max": 400,
+            "mean": 299.4,
+            "min": 0,
+          },
+        ],
+      },
+      "stripOffsets": "d06d91f3",
+      "topology": "line-strip",
+      "vertexCount": 1499,
+    },
+  },
+  "cull": {
+    "geometry": {
+      "attributes": null,
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": "0f59f0cb",
+      "positions": {
+        "hash": "e87448a7",
+        "stats": [
+          {
+            "max": 399.989,
+            "mean": 200.179,
+            "min": 0.018,
+          },
+          {
+            "max": 95.218,
+            "mean": 40.438,
+            "min": 8.678,
+          },
+          {
+            "max": 399.998,
+            "mean": 208.478,
+            "min": 0.027,
+          },
+        ],
+      },
+      "stripOffsets": "5979d2db",
+      "topology": "line-strip",
+      "vertexCount": 26203,
+    },
+  },
+  "flow": {
+    "field": {
+      "hash": "c2154378",
+      "kind": "field",
+      "max": 0.702,
+      "mean": 0.5,
+      "min": 0.298,
+    },
+  },
+  "grid": {
+    "buffer": {
+      "channels": 1,
+      "hash": "a71a5ca6",
+      "height": 23,
+      "kind": "buffer",
+      "stats": {
+        "max": 4.399,
+        "mean": 3.142,
+        "min": 1.884,
+      },
+      "width": 23,
+    },
+  },
+  "lift": {
+    "geometry": {
+      "attributes": null,
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "93f0e224",
+        "stats": [
+          {
+            "max": 417.598,
+            "mean": 199.404,
+            "min": -17.648,
+          },
+          {
+            "max": 95.218,
+            "mean": 38.148,
+            "min": 8.31,
+          },
+          {
+            "max": 417.347,
+            "mean": 201.007,
+            "min": -16.505,
+          },
+        ],
+      },
+      "stripOffsets": "4473a946",
+      "topology": "line-strip",
+      "vertexCount": 61661,
+    },
+  },
+  "liftmesh": {
+    "geometry": {
+      "attributes": null,
+      "dim": 3,
+      "indices": "800eca4a",
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "65196922",
+        "stats": [
+          {
+            "max": 400,
+            "mean": 200,
+            "min": 0,
+          },
+          {
+            "max": 94.341,
+            "mean": 38.16,
+            "min": 9.121,
+          },
+          {
+            "max": 400,
+            "mean": 200,
+            "min": 0,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "triangles",
+      "vertexCount": 1849,
+    },
+  },
+  "noise": {
+    "field": {
+      "hash": "da32c148",
+      "kind": "field",
+      "max": 0.946,
+      "mean": 0.5,
+      "min": 0.049,
+    },
+  },
+  "normals": {
+    "geometry": {
+      "attributes": null,
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": "0d4b36b5",
+      "positions": {
+        "hash": "93f0e224",
+        "stats": [
+          {
+            "max": 417.598,
+            "mean": 199.404,
+            "min": -17.648,
+          },
+          {
+            "max": 95.218,
+            "mean": 38.148,
+            "min": 8.31,
+          },
+          {
+            "max": 417.347,
+            "mean": 201.007,
+            "min": -16.505,
+          },
+        ],
+      },
+      "stripOffsets": "4473a946",
+      "topology": "line-strip",
+      "vertexCount": 61661,
+    },
+  },
+  "palette": {
+    "palette": {
+      "colors": "993890f6",
+      "count": 1,
+      "kind": "palette",
+    },
+  },
+  "partitions": {
+    "geometry": {
+      "attributes": {
+        "cellId": "463ce525",
+        "depth": "6af365c5",
+      },
+      "dim": 2,
+      "indices": "feabe268",
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "15735695",
+        "stats": [
+          {
+            "max": 400,
+            "mean": 196.493,
+            "min": 0,
+          },
+          {
+            "max": 400,
+            "mean": 199.481,
+            "min": 0,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "triangles",
+      "vertexCount": 128,
+    },
+  },
+  "proj": {
+    "geometry": {
+      "attributes": null,
+      "colors": "ed46b066",
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": "0f59f0cb",
+      "positions": {
+        "hash": "d5c5fabe",
+        "stats": [
+          {
+            "max": 500.224,
+            "mean": 193.69,
+            "min": -98.902,
+          },
+          {
+            "max": 362.926,
+            "mean": 168.298,
+            "min": -32.839,
+          },
+        ],
+      },
+      "stripOffsets": "5979d2db",
+      "topology": "line-strip",
+      "vertexCount": 26203,
+    },
+  },
+  "proj-base": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "bda4e4c9",
+        "stats": [
+          {
+            "max": 504.132,
+            "mean": 201.004,
+            "min": -104.132,
+          },
+          {
+            "max": 370.323,
+            "mean": 257.461,
+            "min": 162.721,
+          },
+        ],
+      },
+      "stripOffsets": "9be17165",
+      "topology": "line-strip",
+      "vertexCount": 303,
+    },
+  },
+  "proj-cont": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "3a2f73e9",
+        "stats": [
+          {
+            "max": 504.132,
+            "mean": 200,
+            "min": -104.132,
+          },
+          {
+            "max": 370.323,
+            "mean": 275.234,
+            "min": 162.721,
+          },
+        ],
+      },
+      "stripOffsets": "d06d91f3",
+      "topology": "line-strip",
+      "vertexCount": 1499,
+    },
+  },
+  "render": {
+    "buffer": {
+      "channels": 4,
+      "hash": "229b1dc5",
+      "height": 400,
+      "kind": "buffer",
+      "stats": {
+        "max": 0,
+        "mean": 0,
+        "min": 0,
+      },
+      "width": 400,
+    },
+  },
+  "render-base": {
+    "buffer": {
+      "channels": 4,
+      "hash": "229b1dc5",
+      "height": 400,
+      "kind": "buffer",
+      "stats": {
+        "max": 0,
+        "mean": 0,
+        "min": 0,
+      },
+      "width": 400,
+    },
+  },
+  "render-cont": {
+    "buffer": {
+      "channels": 4,
+      "hash": "229b1dc5",
+      "height": 400,
+      "kind": "buffer",
+      "stats": {
+        "max": 0,
+        "mean": 0,
+        "min": 0,
+      },
+      "width": 400,
+    },
+  },
+  "seeds": {
+    "geometry": {
+      "attributes": {
+        "cellId": "215d2898",
+      },
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "fb5dc15f",
+        "stats": [
+          {
+            "max": 499.997,
+            "mean": 200.748,
+            "min": -99.946,
+          },
+          {
+            "max": 499.997,
+            "mean": 200.845,
+            "min": -99.942,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "points",
+      "vertexCount": 9111,
+    },
+  },
+  "shade": {
+    "geometry": {
+      "attributes": null,
+      "colors": "ed46b066",
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": "0f59f0cb",
+      "positions": {
+        "hash": "e87448a7",
+        "stats": [
+          {
+            "max": 399.989,
+            "mean": 200.179,
+            "min": 0.018,
+          },
+          {
+            "max": 95.218,
+            "mean": 40.438,
+            "min": 8.678,
+          },
+          {
+            "max": 399.998,
+            "mean": 208.478,
+            "min": 0.027,
+          },
+        ],
+      },
+      "stripOffsets": "5979d2db",
+      "topology": "line-strip",
+      "vertexCount": 26203,
+    },
+  },
+  "shape": {
+    "field": {
+      "hash": "4127cb9b",
+      "kind": "field",
+      "max": 0.688,
+      "mean": 0.262,
+      "min": 0.037,
+    },
+  },
+  "terrain": {
+    "field": {
+      "hash": "84a0a155",
+      "kind": "field",
+      "max": 0.829,
+      "mean": 0.496,
+      "min": 0.193,
+    },
+  },
+  "trace": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "3f4117b9",
+        "stats": [
+          {
+            "max": 417.598,
+            "mean": 199.404,
+            "min": -17.648,
+          },
+          {
+            "max": 417.347,
+            "mean": 201.007,
+            "min": -16.505,
+          },
+        ],
+      },
+      "stripOffsets": "4473a946",
+      "topology": "line-strip",
+      "vertexCount": 61661,
+    },
+  },
+}
+`;
+
+exports[`subscapes-terrain-3d nodes 800x800 dpr1 1`] = `
+{
+  "base": {
+    "geometry": {
+      "attributes": null,
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "ce81b99e",
+        "stats": [
+          {
+            "max": 800,
+            "mean": 599.34,
+            "min": 0,
+          },
+          {
+            "max": 90.183,
+            "mean": 36.479,
+            "min": 6,
+          },
+          {
+            "max": 800,
+            "mean": 596.7,
+            "min": 0,
+          },
+        ],
+      },
+      "stripOffsets": "9be17165",
+      "topology": "line-strip",
+      "vertexCount": 303,
+    },
+  },
+  "cam3d": {
+    "camera3d": {
+      "kind": "camera3d",
+      "project": "931169cc",
+      "unproject": "f5520e13",
+      "viewport": [
+        800,
+        800,
+      ],
+    },
+  },
+  "camera": {
+    "camera": {
+      "center": [
+        400,
+        400,
+      ],
+      "kind": "camera2d",
+      "rotation": 0,
+      "viewport": [
+        800,
+        800,
+      ],
+      "zoom": 1,
+    },
+  },
+  "colmesh": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": "800eca4a",
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "a215d965",
+        "stats": [
+          {
+            "max": 800,
+            "mean": 400,
+            "min": 0,
+          },
+          {
+            "max": 800,
+            "mean": 400,
+            "min": 0,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "triangles",
+      "vertexCount": 1849,
+    },
+  },
+  "comp": {
+    "buffer": {
+      "channels": 4,
+      "hash": "87169dc5",
+      "height": 800,
+      "kind": "buffer",
+      "stats": {
+        "max": 0,
+        "mean": 0,
+        "min": 0,
+      },
+      "width": 800,
+    },
+  },
+  "contour": {
+    "geometry": {
+      "attributes": null,
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "d71ac09d",
+        "stats": [
+          {
+            "max": 800,
+            "mean": 598.799,
+            "min": 0,
+          },
+          {
+            "max": 90.183,
+            "mean": 14.527,
+            "min": 6,
+          },
+          {
+            "max": 800,
+            "mean": 598.799,
+            "min": 0,
+          },
+        ],
+      },
+      "stripOffsets": "d06d91f3",
+      "topology": "line-strip",
+      "vertexCount": 1499,
+    },
+  },
+  "cull": {
+    "geometry": {
+      "attributes": null,
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": "5f4328a5",
+      "positions": {
+        "hash": "8d100781",
+        "stats": [
+          {
+            "max": 799.997,
+            "mean": 398.293,
+            "min": 0.006,
+          },
+          {
+            "max": 106.266,
+            "mean": 39.994,
+            "min": 7.387,
+          },
+          {
+            "max": 799.998,
+            "mean": 399.985,
+            "min": 0,
+          },
+        ],
+      },
+      "stripOffsets": "a3a1e54d",
+      "topology": "line-strip",
+      "vertexCount": 130750,
+    },
+  },
+  "flow": {
+    "field": {
+      "hash": "a79c0a6a",
+      "kind": "field",
+      "max": 0.816,
+      "mean": 0.496,
+      "min": 0.188,
+    },
+  },
+  "grid": {
+    "buffer": {
+      "channels": 1,
+      "hash": "8f77e0e5",
+      "height": 45,
+      "kind": "buffer",
+      "stats": {
+        "max": 5.121,
+        "mean": 3.12,
+        "min": 1.184,
+      },
+      "width": 45,
+    },
+  },
+  "lift": {
+    "geometry": {
+      "attributes": null,
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "ec158a33",
+        "stats": [
+          {
+            "max": 817.326,
+            "mean": 398.729,
+            "min": -17.664,
+          },
+          {
+            "max": 106.266,
+            "mean": 38.476,
+            "min": 7.387,
+          },
+          {
+            "max": 817.91,
+            "mean": 400.516,
+            "min": -17.565,
+          },
+        ],
+      },
+      "stripOffsets": "b7e71fb3",
+      "topology": "line-strip",
+      "vertexCount": 244320,
+    },
+  },
+  "liftmesh": {
+    "geometry": {
+      "attributes": null,
+      "dim": 3,
+      "indices": "800eca4a",
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "0fccd38b",
+        "stats": [
+          {
+            "max": 800,
+            "mean": 400,
+            "min": 0,
+          },
+          {
+            "max": 98.332,
+            "mean": 38.454,
+            "min": 8.919,
+          },
+          {
+            "max": 800,
+            "mean": 400,
+            "min": 0,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "triangles",
+      "vertexCount": 1849,
+    },
+  },
+  "noise": {
+    "field": {
+      "hash": "e7ef0a50",
+      "kind": "field",
+      "max": 0.955,
+      "mean": 0.492,
+      "min": 0.049,
+    },
+  },
+  "normals": {
+    "geometry": {
+      "attributes": null,
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": "7b4cb232",
+      "positions": {
+        "hash": "ec158a33",
+        "stats": [
+          {
+            "max": 817.326,
+            "mean": 398.729,
+            "min": -17.664,
+          },
+          {
+            "max": 106.266,
+            "mean": 38.476,
+            "min": 7.387,
+          },
+          {
+            "max": 817.91,
+            "mean": 400.516,
+            "min": -17.565,
+          },
+        ],
+      },
+      "stripOffsets": "b7e71fb3",
+      "topology": "line-strip",
+      "vertexCount": 244320,
+    },
+  },
+  "palette": {
+    "palette": {
+      "colors": "993890f6",
+      "count": 1,
+      "kind": "palette",
+    },
+  },
+  "partitions": {
+    "geometry": {
+      "attributes": {
+        "cellId": "463ce525",
+        "depth": "6af365c5",
+      },
+      "dim": 2,
+      "indices": "feabe268",
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "275942e5",
+        "stats": [
+          {
+            "max": 800,
+            "mean": 392.985,
+            "min": 0,
+          },
+          {
+            "max": 800,
+            "mean": 398.961,
+            "min": 0,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "triangles",
+      "vertexCount": 128,
+    },
+  },
+  "proj": {
+    "geometry": {
+      "attributes": null,
+      "colors": "605dc55a",
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": "5f4328a5",
+      "positions": {
+        "hash": "e3525dad",
+        "stats": [
+          {
+            "max": 1005.586,
+            "mean": 398.714,
+            "min": -205.709,
+          },
+          {
+            "max": 724.305,
+            "mean": 364.131,
+            "min": -5.543,
+          },
+        ],
+      },
+      "stripOffsets": "a3a1e54d",
+      "topology": "line-strip",
+      "vertexCount": 130750,
+    },
+  },
+  "proj-base": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "13afdb16",
+        "stats": [
+          {
+            "max": 1008.264,
+            "mean": 402.007,
+            "min": -208.264,
+          },
+          {
+            "max": 745.914,
+            "mean": 541.825,
+            "min": 364.861,
+          },
+        ],
+      },
+      "stripOffsets": "9be17165",
+      "topology": "line-strip",
+      "vertexCount": 303,
+    },
+  },
+  "proj-cont": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "103a9aa9",
+        "stats": [
+          {
+            "max": 1008.264,
+            "mean": 400,
+            "min": -208.264,
+          },
+          {
+            "max": 745.914,
+            "mean": 561.782,
+            "min": 364.861,
+          },
+        ],
+      },
+      "stripOffsets": "d06d91f3",
+      "topology": "line-strip",
+      "vertexCount": 1499,
+    },
+  },
+  "render": {
+    "buffer": {
+      "channels": 4,
+      "hash": "87169dc5",
+      "height": 800,
+      "kind": "buffer",
+      "stats": {
+        "max": 0,
+        "mean": 0,
+        "min": 0,
+      },
+      "width": 800,
+    },
+  },
+  "render-base": {
+    "buffer": {
+      "channels": 4,
+      "hash": "87169dc5",
+      "height": 800,
+      "kind": "buffer",
+      "stats": {
+        "max": 0,
+        "mean": 0,
+        "min": 0,
+      },
+      "width": 800,
+    },
+  },
+  "render-cont": {
+    "buffer": {
+      "channels": 4,
+      "hash": "87169dc5",
+      "height": 800,
+      "kind": "buffer",
+      "stats": {
+        "max": 0,
+        "mean": 0,
+        "min": 0,
+      },
+      "width": 800,
+    },
+  },
+  "seeds": {
+    "geometry": {
+      "attributes": {
+        "cellId": "0116874b",
+      },
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "df09ea9d",
+        "stats": [
+          {
+            "max": 899.996,
+            "mean": 399.534,
+            "min": -99.973,
+          },
+          {
+            "max": 899.991,
+            "mean": 399.539,
+            "min": -99.988,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "points",
+      "vertexCount": 25110,
+    },
+  },
+  "shade": {
+    "geometry": {
+      "attributes": null,
+      "colors": "605dc55a",
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": "5f4328a5",
+      "positions": {
+        "hash": "8d100781",
+        "stats": [
+          {
+            "max": 799.997,
+            "mean": 398.293,
+            "min": 0.006,
+          },
+          {
+            "max": 106.266,
+            "mean": 39.994,
+            "min": 7.387,
+          },
+          {
+            "max": 799.998,
+            "mean": 399.985,
+            "min": 0,
+          },
+        ],
+      },
+      "stripOffsets": "a3a1e54d",
+      "topology": "line-strip",
+      "vertexCount": 130750,
+    },
+  },
+  "shape": {
+    "field": {
+      "hash": "ec7334ea",
+      "kind": "field",
+      "max": 0.753,
+      "mean": 0.259,
+      "min": 0.037,
+    },
+  },
+  "terrain": {
+    "field": {
+      "hash": "db28d08f",
+      "kind": "field",
+      "max": 0.868,
+      "mean": 0.492,
+      "min": 0.193,
+    },
+  },
+  "trace": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "97ded682",
+        "stats": [
+          {
+            "max": 817.326,
+            "mean": 398.729,
+            "min": -17.664,
+          },
+          {
+            "max": 817.91,
+            "mean": 400.516,
+            "min": -17.565,
+          },
+        ],
+      },
+      "stripOffsets": "b7e71fb3",
+      "topology": "line-strip",
+      "vertexCount": 244320,
+    },
+  },
+}
+`;
+
+exports[`subscapes-terrain-3d nodes 640x400 dpr1 1`] = `
+{
+  "base": {
+    "geometry": {
+      "attributes": null,
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "13047f4a",
+        "stats": [
+          {
+            "max": 400,
+            "mean": 299.67,
+            "min": 0,
+          },
+          {
+            "max": 86.805,
+            "mean": 33.562,
+            "min": 6,
+          },
+          {
+            "max": 400,
+            "mean": 298.35,
+            "min": 0,
+          },
+        ],
+      },
+      "stripOffsets": "9be17165",
+      "topology": "line-strip",
+      "vertexCount": 303,
+    },
+  },
+  "cam3d": {
+    "camera3d": {
+      "kind": "camera3d",
+      "project": "f5dc7b7f",
+      "unproject": "f450a32c",
+      "viewport": [
+        640,
+        400,
+      ],
+    },
+  },
+  "camera": {
+    "camera": {
+      "center": [
+        320,
+        200,
+      ],
+      "kind": "camera2d",
+      "rotation": 0,
+      "viewport": [
+        640,
+        400,
+      ],
+      "zoom": 1,
+    },
+  },
+  "colmesh": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": "800eca4a",
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "d707d179",
+        "stats": [
+          {
+            "max": 400,
+            "mean": 200,
+            "min": 0,
+          },
+          {
+            "max": 400,
+            "mean": 200,
+            "min": 0,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "triangles",
+      "vertexCount": 1849,
+    },
+  },
+  "comp": {
+    "buffer": {
+      "channels": 4,
+      "hash": "83809dc5",
+      "height": 400,
+      "kind": "buffer",
+      "stats": {
+        "max": 0,
+        "mean": 0,
+        "min": 0,
+      },
+      "width": 640,
+    },
+  },
+  "contour": {
+    "geometry": {
+      "attributes": null,
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "e07eb4c7",
+        "stats": [
+          {
+            "max": 400,
+            "mean": 299.4,
+            "min": 0,
+          },
+          {
+            "max": 86.805,
+            "mean": 13.707,
+            "min": 6,
+          },
+          {
+            "max": 400,
+            "mean": 299.4,
+            "min": 0,
+          },
+        ],
+      },
+      "stripOffsets": "d06d91f3",
+      "topology": "line-strip",
+      "vertexCount": 1499,
+    },
+  },
+  "cull": {
+    "geometry": {
+      "attributes": null,
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": "0f59f0cb",
+      "positions": {
+        "hash": "e87448a7",
+        "stats": [
+          {
+            "max": 399.989,
+            "mean": 200.179,
+            "min": 0.018,
+          },
+          {
+            "max": 95.218,
+            "mean": 40.438,
+            "min": 8.678,
+          },
+          {
+            "max": 399.998,
+            "mean": 208.478,
+            "min": 0.027,
+          },
+        ],
+      },
+      "stripOffsets": "5979d2db",
+      "topology": "line-strip",
+      "vertexCount": 26203,
+    },
+  },
+  "flow": {
+    "field": {
+      "hash": "d7c48cd3",
+      "kind": "field",
+      "max": 0.702,
+      "mean": 0.445,
+      "min": 0.216,
+    },
+  },
+  "grid": {
+    "buffer": {
+      "channels": 1,
+      "hash": "a71a5ca6",
+      "height": 23,
+      "kind": "buffer",
+      "stats": {
+        "max": 4.399,
+        "mean": 3.142,
+        "min": 1.884,
+      },
+      "width": 23,
+    },
+  },
+  "lift": {
+    "geometry": {
+      "attributes": null,
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "93f0e224",
+        "stats": [
+          {
+            "max": 417.598,
+            "mean": 199.404,
+            "min": -17.648,
+          },
+          {
+            "max": 95.218,
+            "mean": 38.148,
+            "min": 8.31,
+          },
+          {
+            "max": 417.347,
+            "mean": 201.007,
+            "min": -16.505,
+          },
+        ],
+      },
+      "stripOffsets": "4473a946",
+      "topology": "line-strip",
+      "vertexCount": 61661,
+    },
+  },
+  "liftmesh": {
+    "geometry": {
+      "attributes": null,
+      "dim": 3,
+      "indices": "800eca4a",
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "65196922",
+        "stats": [
+          {
+            "max": 400,
+            "mean": 200,
+            "min": 0,
+          },
+          {
+            "max": 94.341,
+            "mean": 38.16,
+            "min": 9.121,
+          },
+          {
+            "max": 400,
+            "mean": 200,
+            "min": 0,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "triangles",
+      "vertexCount": 1849,
+    },
+  },
+  "noise": {
+    "field": {
+      "hash": "9c3e234d",
+      "kind": "field",
+      "max": 0.942,
+      "mean": 0.494,
+      "min": 0.032,
+    },
+  },
+  "normals": {
+    "geometry": {
+      "attributes": null,
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": "0d4b36b5",
+      "positions": {
+        "hash": "93f0e224",
+        "stats": [
+          {
+            "max": 417.598,
+            "mean": 199.404,
+            "min": -17.648,
+          },
+          {
+            "max": 95.218,
+            "mean": 38.148,
+            "min": 8.31,
+          },
+          {
+            "max": 417.347,
+            "mean": 201.007,
+            "min": -16.505,
+          },
+        ],
+      },
+      "stripOffsets": "4473a946",
+      "topology": "line-strip",
+      "vertexCount": 61661,
+    },
+  },
+  "palette": {
+    "palette": {
+      "colors": "993890f6",
+      "count": 1,
+      "kind": "palette",
+    },
+  },
+  "partitions": {
+    "geometry": {
+      "attributes": {
+        "cellId": "463ce525",
+        "depth": "6af365c5",
+      },
+      "dim": 2,
+      "indices": "feabe268",
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "15735695",
+        "stats": [
+          {
+            "max": 400,
+            "mean": 196.493,
+            "min": 0,
+          },
+          {
+            "max": 400,
+            "mean": 199.481,
+            "min": 0,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "triangles",
+      "vertexCount": 128,
+    },
+  },
+  "proj": {
+    "geometry": {
+      "attributes": null,
+      "colors": "ed46b066",
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": "0f59f0cb",
+      "positions": {
+        "hash": "e8a51933",
+        "stats": [
+          {
+            "max": 620.224,
+            "mean": 313.69,
+            "min": 21.098,
+          },
+          {
+            "max": 362.926,
+            "mean": 168.298,
+            "min": -32.839,
+          },
+        ],
+      },
+      "stripOffsets": "5979d2db",
+      "topology": "line-strip",
+      "vertexCount": 26203,
+    },
+  },
+  "proj-base": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "977073c4",
+        "stats": [
+          {
+            "max": 624.132,
+            "mean": 321.004,
+            "min": 15.868,
+          },
+          {
+            "max": 370.323,
+            "mean": 257.461,
+            "min": 162.721,
+          },
+        ],
+      },
+      "stripOffsets": "9be17165",
+      "topology": "line-strip",
+      "vertexCount": 303,
+    },
+  },
+  "proj-cont": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "e5612b41",
+        "stats": [
+          {
+            "max": 624.132,
+            "mean": 320,
+            "min": 15.868,
+          },
+          {
+            "max": 370.323,
+            "mean": 275.234,
+            "min": 162.721,
+          },
+        ],
+      },
+      "stripOffsets": "d06d91f3",
+      "topology": "line-strip",
+      "vertexCount": 1499,
+    },
+  },
+  "render": {
+    "buffer": {
+      "channels": 4,
+      "hash": "83809dc5",
+      "height": 400,
+      "kind": "buffer",
+      "stats": {
+        "max": 0,
+        "mean": 0,
+        "min": 0,
+      },
+      "width": 640,
+    },
+  },
+  "render-base": {
+    "buffer": {
+      "channels": 4,
+      "hash": "83809dc5",
+      "height": 400,
+      "kind": "buffer",
+      "stats": {
+        "max": 0,
+        "mean": 0,
+        "min": 0,
+      },
+      "width": 640,
+    },
+  },
+  "render-cont": {
+    "buffer": {
+      "channels": 4,
+      "hash": "83809dc5",
+      "height": 400,
+      "kind": "buffer",
+      "stats": {
+        "max": 0,
+        "mean": 0,
+        "min": 0,
+      },
+      "width": 640,
+    },
+  },
+  "seeds": {
+    "geometry": {
+      "attributes": {
+        "cellId": "215d2898",
+      },
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "fb5dc15f",
+        "stats": [
+          {
+            "max": 499.997,
+            "mean": 200.748,
+            "min": -99.946,
+          },
+          {
+            "max": 499.997,
+            "mean": 200.845,
+            "min": -99.942,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "points",
+      "vertexCount": 9111,
+    },
+  },
+  "shade": {
+    "geometry": {
+      "attributes": null,
+      "colors": "ed46b066",
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": "0f59f0cb",
+      "positions": {
+        "hash": "e87448a7",
+        "stats": [
+          {
+            "max": 399.989,
+            "mean": 200.179,
+            "min": 0.018,
+          },
+          {
+            "max": 95.218,
+            "mean": 40.438,
+            "min": 8.678,
+          },
+          {
+            "max": 399.998,
+            "mean": 208.478,
+            "min": 0.027,
+          },
+        ],
+      },
+      "stripOffsets": "5979d2db",
+      "topology": "line-strip",
+      "vertexCount": 26203,
+    },
+  },
+  "shape": {
+    "field": {
+      "hash": "00d557a4",
+      "kind": "field",
+      "max": 0.674,
+      "mean": 0.265,
+      "min": 0.049,
+    },
+  },
+  "terrain": {
+    "field": {
+      "hash": "bfd510ff",
+      "kind": "field",
+      "max": 0.821,
+      "mean": 0.499,
+      "min": 0.222,
+    },
+  },
+  "trace": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "3f4117b9",
+        "stats": [
+          {
+            "max": 417.598,
+            "mean": 199.404,
+            "min": -17.648,
+          },
+          {
+            "max": 417.347,
+            "mean": 201.007,
+            "min": -16.505,
+          },
+        ],
+      },
+      "stripOffsets": "4473a946",
+      "topology": "line-strip",
+      "vertexCount": 61661,
+    },
+  },
+}
+`;
+
+exports[`subscapes-terrain-3d nodes 400x400 dpr2 1`] = `
+{
+  "base": {
+    "geometry": {
+      "attributes": null,
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "13047f4a",
+        "stats": [
+          {
+            "max": 400,
+            "mean": 299.67,
+            "min": 0,
+          },
+          {
+            "max": 86.805,
+            "mean": 33.562,
+            "min": 6,
+          },
+          {
+            "max": 400,
+            "mean": 298.35,
+            "min": 0,
+          },
+        ],
+      },
+      "stripOffsets": "9be17165",
+      "topology": "line-strip",
+      "vertexCount": 303,
+    },
+  },
+  "cam3d": {
+    "camera3d": {
+      "kind": "camera3d",
+      "project": "5224cbf9",
+      "unproject": "eca4f681",
+      "viewport": [
+        400,
+        400,
+      ],
+    },
+  },
+  "camera": {
+    "camera": {
+      "center": [
+        200,
+        200,
+      ],
+      "kind": "camera2d",
+      "rotation": 0,
+      "viewport": [
+        400,
+        400,
+      ],
+      "zoom": 1,
+    },
+  },
+  "colmesh": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": "800eca4a",
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "d707d179",
+        "stats": [
+          {
+            "max": 400,
+            "mean": 200,
+            "min": 0,
+          },
+          {
+            "max": 400,
+            "mean": 200,
+            "min": 0,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "triangles",
+      "vertexCount": 1849,
+    },
+  },
+  "comp": {
+    "buffer": {
+      "channels": 4,
+      "hash": "87169dc5",
+      "height": 800,
+      "kind": "buffer",
+      "stats": {
+        "max": 0,
+        "mean": 0,
+        "min": 0,
+      },
+      "width": 800,
+    },
+  },
+  "contour": {
+    "geometry": {
+      "attributes": null,
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "e07eb4c7",
+        "stats": [
+          {
+            "max": 400,
+            "mean": 299.4,
+            "min": 0,
+          },
+          {
+            "max": 86.805,
+            "mean": 13.707,
+            "min": 6,
+          },
+          {
+            "max": 400,
+            "mean": 299.4,
+            "min": 0,
+          },
+        ],
+      },
+      "stripOffsets": "d06d91f3",
+      "topology": "line-strip",
+      "vertexCount": 1499,
+    },
+  },
+  "cull": {
+    "geometry": {
+      "attributes": null,
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": "0f59f0cb",
+      "positions": {
+        "hash": "e87448a7",
+        "stats": [
+          {
+            "max": 399.989,
+            "mean": 200.179,
+            "min": 0.018,
+          },
+          {
+            "max": 95.218,
+            "mean": 40.438,
+            "min": 8.678,
+          },
+          {
+            "max": 399.998,
+            "mean": 208.478,
+            "min": 0.027,
+          },
+        ],
+      },
+      "stripOffsets": "5979d2db",
+      "topology": "line-strip",
+      "vertexCount": 26203,
+    },
+  },
+  "flow": {
+    "field": {
+      "hash": "c2154378",
+      "kind": "field",
+      "max": 0.702,
+      "mean": 0.5,
+      "min": 0.298,
+    },
+  },
+  "grid": {
+    "buffer": {
+      "channels": 1,
+      "hash": "a71a5ca6",
+      "height": 23,
+      "kind": "buffer",
+      "stats": {
+        "max": 4.399,
+        "mean": 3.142,
+        "min": 1.884,
+      },
+      "width": 23,
+    },
+  },
+  "lift": {
+    "geometry": {
+      "attributes": null,
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "93f0e224",
+        "stats": [
+          {
+            "max": 417.598,
+            "mean": 199.404,
+            "min": -17.648,
+          },
+          {
+            "max": 95.218,
+            "mean": 38.148,
+            "min": 8.31,
+          },
+          {
+            "max": 417.347,
+            "mean": 201.007,
+            "min": -16.505,
+          },
+        ],
+      },
+      "stripOffsets": "4473a946",
+      "topology": "line-strip",
+      "vertexCount": 61661,
+    },
+  },
+  "liftmesh": {
+    "geometry": {
+      "attributes": null,
+      "dim": 3,
+      "indices": "800eca4a",
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "65196922",
+        "stats": [
+          {
+            "max": 400,
+            "mean": 200,
+            "min": 0,
+          },
+          {
+            "max": 94.341,
+            "mean": 38.16,
+            "min": 9.121,
+          },
+          {
+            "max": 400,
+            "mean": 200,
+            "min": 0,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "triangles",
+      "vertexCount": 1849,
+    },
+  },
+  "noise": {
+    "field": {
+      "hash": "da32c148",
+      "kind": "field",
+      "max": 0.946,
+      "mean": 0.5,
+      "min": 0.049,
+    },
+  },
+  "normals": {
+    "geometry": {
+      "attributes": null,
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": "0d4b36b5",
+      "positions": {
+        "hash": "93f0e224",
+        "stats": [
+          {
+            "max": 417.598,
+            "mean": 199.404,
+            "min": -17.648,
+          },
+          {
+            "max": 95.218,
+            "mean": 38.148,
+            "min": 8.31,
+          },
+          {
+            "max": 417.347,
+            "mean": 201.007,
+            "min": -16.505,
+          },
+        ],
+      },
+      "stripOffsets": "4473a946",
+      "topology": "line-strip",
+      "vertexCount": 61661,
+    },
+  },
+  "palette": {
+    "palette": {
+      "colors": "993890f6",
+      "count": 1,
+      "kind": "palette",
+    },
+  },
+  "partitions": {
+    "geometry": {
+      "attributes": {
+        "cellId": "463ce525",
+        "depth": "6af365c5",
+      },
+      "dim": 2,
+      "indices": "feabe268",
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "15735695",
+        "stats": [
+          {
+            "max": 400,
+            "mean": 196.493,
+            "min": 0,
+          },
+          {
+            "max": 400,
+            "mean": 199.481,
+            "min": 0,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "triangles",
+      "vertexCount": 128,
+    },
+  },
+  "proj": {
+    "geometry": {
+      "attributes": null,
+      "colors": "ed46b066",
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": "0f59f0cb",
+      "positions": {
+        "hash": "d5c5fabe",
+        "stats": [
+          {
+            "max": 500.224,
+            "mean": 193.69,
+            "min": -98.902,
+          },
+          {
+            "max": 362.926,
+            "mean": 168.298,
+            "min": -32.839,
+          },
+        ],
+      },
+      "stripOffsets": "5979d2db",
+      "topology": "line-strip",
+      "vertexCount": 26203,
+    },
+  },
+  "proj-base": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "bda4e4c9",
+        "stats": [
+          {
+            "max": 504.132,
+            "mean": 201.004,
+            "min": -104.132,
+          },
+          {
+            "max": 370.323,
+            "mean": 257.461,
+            "min": 162.721,
+          },
+        ],
+      },
+      "stripOffsets": "9be17165",
+      "topology": "line-strip",
+      "vertexCount": 303,
+    },
+  },
+  "proj-cont": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "3a2f73e9",
+        "stats": [
+          {
+            "max": 504.132,
+            "mean": 200,
+            "min": -104.132,
+          },
+          {
+            "max": 370.323,
+            "mean": 275.234,
+            "min": 162.721,
+          },
+        ],
+      },
+      "stripOffsets": "d06d91f3",
+      "topology": "line-strip",
+      "vertexCount": 1499,
+    },
+  },
+  "render": {
+    "buffer": {
+      "channels": 4,
+      "hash": "87169dc5",
+      "height": 800,
+      "kind": "buffer",
+      "stats": {
+        "max": 0,
+        "mean": 0,
+        "min": 0,
+      },
+      "width": 800,
+    },
+  },
+  "render-base": {
+    "buffer": {
+      "channels": 4,
+      "hash": "87169dc5",
+      "height": 800,
+      "kind": "buffer",
+      "stats": {
+        "max": 0,
+        "mean": 0,
+        "min": 0,
+      },
+      "width": 800,
+    },
+  },
+  "render-cont": {
+    "buffer": {
+      "channels": 4,
+      "hash": "87169dc5",
+      "height": 800,
+      "kind": "buffer",
+      "stats": {
+        "max": 0,
+        "mean": 0,
+        "min": 0,
+      },
+      "width": 800,
+    },
+  },
+  "seeds": {
+    "geometry": {
+      "attributes": {
+        "cellId": "215d2898",
+      },
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "fb5dc15f",
+        "stats": [
+          {
+            "max": 499.997,
+            "mean": 200.748,
+            "min": -99.946,
+          },
+          {
+            "max": 499.997,
+            "mean": 200.845,
+            "min": -99.942,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "points",
+      "vertexCount": 9111,
+    },
+  },
+  "shade": {
+    "geometry": {
+      "attributes": null,
+      "colors": "ed46b066",
+      "dim": 3,
+      "indices": null,
+      "kind": "geometry",
+      "normals": "0f59f0cb",
+      "positions": {
+        "hash": "e87448a7",
+        "stats": [
+          {
+            "max": 399.989,
+            "mean": 200.179,
+            "min": 0.018,
+          },
+          {
+            "max": 95.218,
+            "mean": 40.438,
+            "min": 8.678,
+          },
+          {
+            "max": 399.998,
+            "mean": 208.478,
+            "min": 0.027,
+          },
+        ],
+      },
+      "stripOffsets": "5979d2db",
+      "topology": "line-strip",
+      "vertexCount": 26203,
+    },
+  },
+  "shape": {
+    "field": {
+      "hash": "4127cb9b",
+      "kind": "field",
+      "max": 0.688,
+      "mean": 0.262,
+      "min": 0.037,
+    },
+  },
+  "terrain": {
+    "field": {
+      "hash": "84a0a155",
+      "kind": "field",
+      "max": 0.829,
+      "mean": 0.496,
+      "min": 0.193,
+    },
+  },
+  "trace": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "3f4117b9",
+        "stats": [
+          {
+            "max": 417.598,
+            "mean": 199.404,
+            "min": -17.648,
+          },
+          {
+            "max": 417.347,
+            "mean": 201.007,
+            "min": -16.505,
+          },
+        ],
+      },
+      "stripOffsets": "4473a946",
+      "topology": "line-strip",
+      "vertexCount": 61661,
+    },
+  },
+}
+`;

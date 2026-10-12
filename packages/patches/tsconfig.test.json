@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "lib": ["ES2022", "DOM"],
+    "types": ["bun"],
+    "tsBuildInfoFile": "${configDir}/.cache/tsbuildinfo.test.json"
+  },
+  "include": ["src/**/*.test.ts", "test"],
+  "exclude": ["node_modules"]
+}

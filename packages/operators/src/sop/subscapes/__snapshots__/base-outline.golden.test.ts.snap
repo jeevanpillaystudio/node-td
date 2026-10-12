@@ -1,0 +1,157 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`base-outline golden default 1`] = `
+{
+  "nodes": {
+    "base": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "8066cd68",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 191.789,
+              "min": 0,
+            },
+            {
+              "max": 71.495,
+              "mean": 35.08,
+              "min": 0,
+            },
+            {
+              "max": 256,
+              "mean": 190.944,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": "9be17165",
+        "topology": "line-strip",
+        "vertexCount": 303,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`base-outline golden samples 150, amplitude 120, baseY 6 1`] = `
+{
+  "nodes": {
+    "base": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "47e45997",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 191.789,
+              "min": 0,
+            },
+            {
+              "max": 113.242,
+              "mean": 58.62,
+              "min": 6,
+            },
+            {
+              "max": 256,
+              "mean": 190.944,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": "9be17165",
+        "topology": "line-strip",
+        "vertexCount": 303,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`base-outline golden landscape, samples 10 1`] = `
+{
+  "nodes": {
+    "base": {
+      "geometry": {
+        "attributes": null,
+        "dim": 3,
+        "indices": null,
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "68fbbfe1",
+          "stats": [
+            {
+              "max": 640,
+              "mean": 473.043,
+              "min": 0,
+            },
+            {
+              "max": 64.176,
+              "mean": 30.606,
+              "min": 0,
+            },
+            {
+              "max": 400,
+              "mean": 278.261,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": "9be17165",
+        "topology": "line-strip",
+        "vertexCount": 23,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "242cd17f",
+        "kind": "field",
+        "max": 0.961,
+        "mean": 0.523,
+        "min": 0.03,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

@@ -1,0 +1,101 @@
+import { defineOperator, type Field2D } from "@node-td/kernel";
+import type { FieldExpr } from "@node-td/kernel/field";
+import {
+  c,
+  createField,
+  add as fAdd,
+  mix as fMix,
+  fmax,
+  fmin,
+  getFieldExpr,
+  mul,
+  u,
+} from "@node-td/kernel/field";
+
+/** Binary operations on two Field2D inputs */
+const MODES = [
+  { label: "Add", value: 0 },
+  { label: "Multiply", value: 1 },
+  { label: "Min", value: 2 },
+  { label: "Max", value: 3 },
+  { label: "Lerp", value: 4 },
+] as const;
+
+/**
+ * Field Math — combines two Field2D inputs with a selectable
+ * binary operation: add, multiply, min, max, or lerp.
+ *
+ * For lerp mode, the `mix` parameter controls the blend factor
+ * (0 = field A, 1 = field B).
+ */
+export const fieldMath = defineOperator({
+  id: "field-math",
+  category: "field",
+  label: "Field Math",
+  inputs: [
+    { name: "a", type: "field" },
+    { name: "b", type: "field" },
+  ],
+  outputs: [{ name: "field", type: "field" }],
+  params: [
+    {
+      key: "mode",
+      label: "Mode",
+      kind: "enum",
+      options: [...MODES],
+      default: 0,
+    },
+    { key: "mix", label: "Mix (Lerp)", min: 0, max: 1, step: 0.01, default: 0.5 },
+  ],
+  evaluate({ a, b }, params) {
+    const mode = Math.round(params.mode);
+    const mixVal = params.mix;
+
+    const aExpr = getFieldExpr(a);
+    const bExpr = getFieldExpr(b);
+    if (aExpr && bExpr) {
+      let expr: FieldExpr;
+      switch (mode) {
+        case 0:
+          expr = fmin(fAdd(aExpr, bExpr), c(1));
+          break; // add (clamped)
+        case 1:
+          expr = mul(aExpr, bExpr);
+          break; // multiply
+        case 2:
+          expr = fmin(aExpr, bExpr);
+          break; // min
+        case 3:
+          expr = fmax(aExpr, bExpr);
+          break; // max
+        case 4:
+          expr = fMix(aExpr, bExpr, u("mix", mixVal));
+          break; // lerp
+        default:
+          expr = aExpr;
+      }
+      return { field: createField(expr) };
+    }
+
+    const field: Field2D = (x, y) => {
+      const va = a(x, y);
+      const vb = b(x, y);
+      switch (mode) {
+        case 0:
+          return Math.min(va + vb, 1); // add (clamped)
+        case 1:
+          return va * vb; // multiply
+        case 2:
+          return Math.min(va, vb); // min
+        case 3:
+          return Math.max(va, vb); // max
+        case 4:
+          return va + (vb - va) * mixVal; // lerp
+        default:
+          return va;
+      }
+    };
+
+    return { field };
+  },
+});

@@ -1,0 +1,124 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`binary-subdivide golden default 1`] = `
+{
+  "nodes": {
+    "cells": {
+      "geometry": {
+        "attributes": {
+          "cellId": "463ce525",
+          "depth": "6af365c5",
+        },
+        "dim": 2,
+        "indices": "feabe268",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "7249953d",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 125.755,
+              "min": 0,
+            },
+            {
+              "max": 256,
+              "mean": 127.668,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 128,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`binary-subdivide golden maxDepth 8, minSize 20, splitJitter 0.3 1`] = `
+{
+  "nodes": {
+    "cells": {
+      "geometry": {
+        "attributes": {
+          "cellId": "1443fa45",
+          "depth": "9e889505",
+        },
+        "dim": 2,
+        "indices": "7a605d5d",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "c3ad8e35",
+          "stats": [
+            {
+              "max": 256,
+              "mean": 142.1,
+              "min": 0,
+            },
+            {
+              "max": 256,
+              "mean": 132.654,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 212,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`binary-subdivide golden landscape, splitJitter 0 1`] = `
+{
+  "nodes": {
+    "cells": {
+      "geometry": {
+        "attributes": {
+          "cellId": "463ce525",
+          "depth": "6af365c5",
+        },
+        "dim": 2,
+        "indices": "feabe268",
+        "kind": "geometry",
+        "normals": null,
+        "positions": {
+          "hash": "ec7bffbd",
+          "stats": [
+            {
+              "max": 320,
+              "mean": 160,
+              "min": 0,
+            },
+            {
+              "max": 200,
+              "mean": 100,
+              "min": 0,
+            },
+          ],
+        },
+        "stripOffsets": null,
+        "topology": "triangles",
+        "vertexCount": 128,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

@@ -1,0 +1,126 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`fbm golden domainRotation 0 1`] = `
+{
+  "nodes": {
+    "fbm": {
+      "field": {
+        "hash": "638a3070",
+        "kind": "field",
+        "max": 0.826,
+        "mean": 0.496,
+        "min": 0.173,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`fbm golden domainRotation 0.646 1`] = `
+{
+  "nodes": {
+    "fbm": {
+      "field": {
+        "hash": "e1e924d0",
+        "kind": "field",
+        "max": 0.845,
+        "mean": 0.494,
+        "min": 0.151,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`fbm golden octaves 3, lacunarity 2.5, gain 0.6, amplitude 2 1`] = `
+{
+  "nodes": {
+    "fbm": {
+      "field": {
+        "hash": "ee7a8568",
+        "kind": "field",
+        "max": 1.659,
+        "mean": 0.99,
+        "min": 0.221,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`fbm golden opaque input 1`] = `
+{
+  "nodes": {
+    "fbm": {
+      "field": {
+        "hash": "638a3070",
+        "kind": "field",
+        "max": 0.826,
+        "mean": 0.496,
+        "min": 0.173,
+      },
+    },
+    "noise": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+    "opaque": {
+      "field": {
+        "hash": "65dcf2b9",
+        "kind": "field",
+        "max": 0.969,
+        "mean": 0.495,
+        "min": 0.033,
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

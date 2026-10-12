@@ -1,0 +1,111 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`camera-3d golden orthographic, defaults 1`] = `
+{
+  "nodes": {
+    "cam": {
+      "camera3d": {
+        "kind": "camera3d",
+        "project": "dd2bebdd",
+        "unproject": "f1880d0f",
+        "viewport": [
+          256,
+          256,
+        ],
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`camera-3d golden meridian, sceneSize = height 1`] = `
+{
+  "nodes": {
+    "cam": {
+      "camera3d": {
+        "kind": "camera3d",
+        "project": "b7bd729c",
+        "unproject": "ea711e8c",
+        "viewport": [
+          256,
+          256,
+        ],
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`camera-3d golden isometric (subscapes), sceneSize = height 1`] = `
+{
+  "nodes": {
+    "cam": {
+      "camera3d": {
+        "kind": "camera3d",
+        "project": "5488f632",
+        "unproject": "237e4d3c",
+        "viewport": [
+          256,
+          256,
+        ],
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`camera-3d golden perspective, fov 45 1`] = `
+{
+  "nodes": {
+    "cam": {
+      "camera3d": {
+        "kind": "camera3d",
+        "project": "32fc2c1e",
+        "unproject": "1cb5f418",
+        "viewport": [
+          256,
+          256,
+        ],
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;
+
+exports[`camera-3d golden landscape, meridian 1`] = `
+{
+  "nodes": {
+    "cam": {
+      "camera3d": {
+        "kind": "camera3d",
+        "project": "ee062aea",
+        "unproject": "dcc0c420",
+        "viewport": [
+          640,
+          400,
+        ],
+      },
+    },
+  },
+  "render": {
+    "hash": "811c9dc5",
+    "length": 0,
+  },
+}
+`;

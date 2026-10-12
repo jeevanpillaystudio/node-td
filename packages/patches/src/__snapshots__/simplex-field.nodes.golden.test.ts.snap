@@ -1,0 +1,613 @@
+// Bun Snapshot v1, https://bun.sh/docs/test/snapshots
+
+exports[`simplex-field nodes resolved params 1`] = `
+{
+  "camera": {
+    "params": {
+      "centerX": 0,
+      "centerY": 0,
+      "rotation": 0,
+      "zoom": 1,
+    },
+    "type": "camera-2d",
+  },
+  "grid": {
+    "params": {
+      "resolution": 25,
+    },
+    "type": "grid-sampler",
+  },
+  "noise": {
+    "params": {
+      "noiseScale": 0.03,
+    },
+    "type": "simplex-noise",
+  },
+  "render": {
+    "params": {
+      "bgAlpha": 1,
+      "bgB": 26,
+      "bgG": 26,
+      "bgR": 26,
+      "fillB": 26,
+      "fillG": 26,
+      "fillR": 26,
+      "lineWidth": 1.8,
+      "renderMode": 0,
+      "strokeAlpha": 0.65,
+    },
+    "type": "stroke-renderer",
+  },
+  "seeds": {
+    "params": {
+      "densityScale": 1.5,
+      "margin": 100,
+      "minRadius": 40,
+    },
+    "type": "poisson-disc",
+  },
+  "trace": {
+    "params": {
+      "exitMargin": 80,
+      "numSteps": 250,
+      "stepLength": 15,
+    },
+    "type": "flow-tracer",
+  },
+}
+`;
+
+exports[`simplex-field nodes 256x256 dpr1 1`] = `
+{
+  "camera": {
+    "camera": {
+      "center": [
+        128,
+        128,
+      ],
+      "kind": "camera2d",
+      "rotation": 0,
+      "viewport": [
+        256,
+        256,
+      ],
+      "zoom": 1,
+    },
+  },
+  "grid": {
+    "buffer": {
+      "channels": 1,
+      "hash": "91513562",
+      "height": 11,
+      "kind": "buffer",
+      "stats": {
+        "max": 6.001,
+        "mean": 3.259,
+        "min": 0.528,
+      },
+      "width": 11,
+    },
+  },
+  "noise": {
+    "field": {
+      "hash": "65dcf2b9",
+      "kind": "field",
+      "max": 0.969,
+      "mean": 0.495,
+      "min": 0.033,
+    },
+  },
+  "render": {
+    "buffer": {
+      "channels": 4,
+      "hash": "279c9dc5",
+      "height": 256,
+      "kind": "buffer",
+      "stats": {
+        "max": 0,
+        "mean": 0,
+        "min": 0,
+      },
+      "width": 256,
+    },
+  },
+  "seeds": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "797ddaa2",
+        "stats": [
+          {
+            "max": 354.908,
+            "mean": 128.813,
+            "min": -98.968,
+          },
+          {
+            "max": 354.77,
+            "mean": 130.227,
+            "min": -98.365,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "points",
+      "vertexCount": 92,
+    },
+  },
+  "trace": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "d9560fff",
+        "stats": [
+          {
+            "max": 350.618,
+            "mean": 84.565,
+            "min": -93.357,
+          },
+          {
+            "max": 345.763,
+            "mean": 144.052,
+            "min": -92.131,
+          },
+        ],
+      },
+      "stripOffsets": "a06d1754",
+      "topology": "line-strip",
+      "vertexCount": 17205,
+    },
+  },
+}
+`;
+
+exports[`simplex-field nodes 400x400 dpr1 1`] = `
+{
+  "camera": {
+    "camera": {
+      "center": [
+        200,
+        200,
+      ],
+      "kind": "camera2d",
+      "rotation": 0,
+      "viewport": [
+        400,
+        400,
+      ],
+      "zoom": 1,
+    },
+  },
+  "grid": {
+    "buffer": {
+      "channels": 1,
+      "hash": "f462d45d",
+      "height": 16,
+      "kind": "buffer",
+      "stats": {
+        "max": 6.002,
+        "mean": 3.205,
+        "min": 0.281,
+      },
+      "width": 16,
+    },
+  },
+  "noise": {
+    "field": {
+      "hash": "f856a0c6",
+      "kind": "field",
+      "max": 0.955,
+      "mean": 0.506,
+      "min": 0.045,
+    },
+  },
+  "render": {
+    "buffer": {
+      "channels": 4,
+      "hash": "229b1dc5",
+      "height": 400,
+      "kind": "buffer",
+      "stats": {
+        "max": 0,
+        "mean": 0,
+        "min": 0,
+      },
+      "width": 400,
+    },
+  },
+  "seeds": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "761cad2d",
+        "stats": [
+          {
+            "max": 499.925,
+            "mean": 198.988,
+            "min": -98.846,
+          },
+          {
+            "max": 499.219,
+            "mean": 204.468,
+            "min": -96.319,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "points",
+      "vertexCount": 152,
+    },
+  },
+  "trace": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "469a8f5f",
+        "stats": [
+          {
+            "max": 482.208,
+            "mean": 202.183,
+            "min": -87.951,
+          },
+          {
+            "max": 483.114,
+            "mean": 179.14,
+            "min": -86.802,
+          },
+        ],
+      },
+      "stripOffsets": "8219516c",
+      "topology": "line-strip",
+      "vertexCount": 39214,
+    },
+  },
+}
+`;
+
+exports[`simplex-field nodes 800x800 dpr1 1`] = `
+{
+  "camera": {
+    "camera": {
+      "center": [
+        400,
+        400,
+      ],
+      "kind": "camera2d",
+      "rotation": 0,
+      "viewport": [
+        800,
+        800,
+      ],
+      "zoom": 1,
+    },
+  },
+  "grid": {
+    "buffer": {
+      "channels": 1,
+      "hash": "0b691853",
+      "height": 32,
+      "kind": "buffer",
+      "stats": {
+        "max": 6.274,
+        "mean": 3.11,
+        "min": 0.023,
+      },
+      "width": 32,
+    },
+  },
+  "noise": {
+    "field": {
+      "hash": "e873e16e",
+      "kind": "field",
+      "max": 0.968,
+      "mean": 0.497,
+      "min": 0.031,
+    },
+  },
+  "render": {
+    "buffer": {
+      "channels": 4,
+      "hash": "87169dc5",
+      "height": 800,
+      "kind": "buffer",
+      "stats": {
+        "max": 0,
+        "mean": 0,
+        "min": 0,
+      },
+      "width": 800,
+    },
+  },
+  "seeds": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "a8f2911f",
+        "stats": [
+          {
+            "max": 899.414,
+            "mean": 401.405,
+            "min": -99.576,
+          },
+          {
+            "max": 899.963,
+            "mean": 399.423,
+            "min": -99.756,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "points",
+      "vertexCount": 404,
+    },
+  },
+  "trace": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "b968ac19",
+        "stats": [
+          {
+            "max": 888.554,
+            "mean": 412.008,
+            "min": -90.559,
+          },
+          {
+            "max": 887.871,
+            "mean": 402.907,
+            "min": -88.153,
+          },
+        ],
+      },
+      "stripOffsets": "fde137b1",
+      "topology": "line-strip",
+      "vertexCount": 132392,
+    },
+  },
+}
+`;
+
+exports[`simplex-field nodes 640x400 dpr1 1`] = `
+{
+  "camera": {
+    "camera": {
+      "center": [
+        320,
+        200,
+      ],
+      "kind": "camera2d",
+      "rotation": 0,
+      "viewport": [
+        640,
+        400,
+      ],
+      "zoom": 1,
+    },
+  },
+  "grid": {
+    "buffer": {
+      "channels": 1,
+      "hash": "8d6d36ef",
+      "height": 16,
+      "kind": "buffer",
+      "stats": {
+        "max": 6.002,
+        "mean": 3.152,
+        "min": 0.202,
+      },
+      "width": 26,
+    },
+  },
+  "noise": {
+    "field": {
+      "hash": "242cd17f",
+      "kind": "field",
+      "max": 0.961,
+      "mean": 0.523,
+      "min": 0.03,
+    },
+  },
+  "render": {
+    "buffer": {
+      "channels": 4,
+      "hash": "83809dc5",
+      "height": 400,
+      "kind": "buffer",
+      "stats": {
+        "max": 0,
+        "mean": 0,
+        "min": 0,
+      },
+      "width": 640,
+    },
+  },
+  "seeds": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "2dd35996",
+        "stats": [
+          {
+            "max": 739.987,
+            "mean": 320.555,
+            "min": -98.56,
+          },
+          {
+            "max": 497.332,
+            "mean": 196.161,
+            "min": -99.381,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "points",
+      "vertexCount": 212,
+    },
+  },
+  "trace": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "53c2da2c",
+        "stats": [
+          {
+            "max": 726.134,
+            "mean": 291.707,
+            "min": -93.175,
+          },
+          {
+            "max": 491.712,
+            "mean": 193.867,
+            "min": -84.339,
+          },
+        ],
+      },
+      "stripOffsets": "e16bbc42",
+      "topology": "line-strip",
+      "vertexCount": 57534,
+    },
+  },
+}
+`;
+
+exports[`simplex-field nodes 400x400 dpr2 1`] = `
+{
+  "camera": {
+    "camera": {
+      "center": [
+        200,
+        200,
+      ],
+      "kind": "camera2d",
+      "rotation": 0,
+      "viewport": [
+        400,
+        400,
+      ],
+      "zoom": 1,
+    },
+  },
+  "grid": {
+    "buffer": {
+      "channels": 1,
+      "hash": "f462d45d",
+      "height": 16,
+      "kind": "buffer",
+      "stats": {
+        "max": 6.002,
+        "mean": 3.205,
+        "min": 0.281,
+      },
+      "width": 16,
+    },
+  },
+  "noise": {
+    "field": {
+      "hash": "f856a0c6",
+      "kind": "field",
+      "max": 0.955,
+      "mean": 0.506,
+      "min": 0.045,
+    },
+  },
+  "render": {
+    "buffer": {
+      "channels": 4,
+      "hash": "87169dc5",
+      "height": 800,
+      "kind": "buffer",
+      "stats": {
+        "max": 0,
+        "mean": 0,
+        "min": 0,
+      },
+      "width": 800,
+    },
+  },
+  "seeds": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "761cad2d",
+        "stats": [
+          {
+            "max": 499.925,
+            "mean": 198.988,
+            "min": -98.846,
+          },
+          {
+            "max": 499.219,
+            "mean": 204.468,
+            "min": -96.319,
+          },
+        ],
+      },
+      "stripOffsets": null,
+      "topology": "points",
+      "vertexCount": 152,
+    },
+  },
+  "trace": {
+    "geometry": {
+      "attributes": null,
+      "dim": 2,
+      "indices": null,
+      "kind": "geometry",
+      "normals": null,
+      "positions": {
+        "hash": "469a8f5f",
+        "stats": [
+          {
+            "max": 482.208,
+            "mean": 202.183,
+            "min": -87.951,
+          },
+          {
+            "max": 483.114,
+            "mean": 179.14,
+            "min": -86.802,
+          },
+        ],
+      },
+      "stripOffsets": "8219516c",
+      "topology": "line-strip",
+      "vertexCount": 39214,
+    },
+  },
+}
+`;
