@@ -319,7 +319,8 @@ function genFunction(expr: FieldExpr, name: string, gen: GenCtx): string[] {
     body.push(`  float freq = 1.0;`);
     body.push(`  float amp = 1.0;`);
     body.push(`  float maxAmp = 0.0;`);
-    body.push(`  for (int i = 0; i < int(octaves); i++) {`);
+    // Rounded as Math.round, as evalExpr rounds the octave count
+    body.push(`  for (int i = 0; i < int(floor(octaves + 0.5)); i++) {`);
     body.push(`    sum += ${srcFn}(x * freq, y * freq) * amp;`);
     body.push(`    maxAmp += amp;`);
     body.push(`    freq *= lacunarity;`);
