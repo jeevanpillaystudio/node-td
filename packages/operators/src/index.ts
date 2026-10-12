@@ -13,7 +13,7 @@ import { fieldMath } from "./field/field-math";
 import { fieldRemap } from "./field/field-remap";
 import { fieldGradient } from "./field/field-gradient";
 import { curlAngle } from "./field/curl-angle";
-import { diffuseShade } from "./mat/diffuse-shade";
+import { diffuseShade } from "./sop/diffuse-shade";
 import { circlePack } from "./sop/circle-pack";
 import { poissonDisc } from "./sop/poisson-disc";
 import { flowTracer } from "./sop/flow-tracer";
