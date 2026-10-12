@@ -152,7 +152,8 @@ export interface Geometry<D extends 2 | 3 = 2> {
    * Arbitrary per-vertex attributes — one Float32Array per named channel.
    * Each array has exactly `vertexCount` elements (1 scalar per vertex).
    *
-   * Convention: depth, ao, worldX/Y/Z, normalX/Y/Z, angle, length
+   * In use: depth, ao, worldX, worldZ, angle, length, cellId. Normals and
+   * colours have their own fields.
    */
   attributes?: Record<string, Float32Array>;
 }
