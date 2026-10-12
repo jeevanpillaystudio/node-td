@@ -3,8 +3,10 @@ import { defineOperator } from "@node-td/kernel";
 /**
  * Camera 2D — produces a Camera2D currency from viewport dimensions.
  *
- * centerX/centerY default to 0, meaning the camera is centered on the canvas.
- * The evaluate function offsets by width/2, height/2 so (0,0) maps to canvas center.
+ * The camera looks at the world point (width/2 + centerX, height/2 + centerY),
+ * which lands at the middle of the canvas: Center X/Y pan the view, and
+ * zoom and rotation turn it about that point. At centerX = centerY = 0 the
+ * view is the canvas as it is.
  */
 export const camera2d = defineOperator({
   id: "camera-2d",

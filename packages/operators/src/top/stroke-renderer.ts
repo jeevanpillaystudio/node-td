@@ -95,12 +95,17 @@ export const strokeRenderer = defineOperator({
       ctx.fillRect(0, 0, worldW, worldH);
     }
 
-    // Camera transform
+    // Camera transform: the world point at camera.center lands at the
+    // middle of the canvas, rotated and zoomed about it. At camera-2d's
+    // defaults the center is the middle of the canvas and this is the
+    // identity, so nothing is applied.
     const [cx, cy] = camera.center;
     const zoom = camera.zoom;
     const rot = camera.rotation;
-    if (zoom !== 1 || rot !== 0) {
-      ctx.translate(cx, cy);
+    const midX = worldW / 2;
+    const midY = worldH / 2;
+    if (zoom !== 1 || rot !== 0 || cx !== midX || cy !== midY) {
+      ctx.translate(midX, midY);
       if (rot !== 0) ctx.rotate(rot);
       if (zoom !== 1) ctx.scale(zoom, zoom);
       ctx.translate(-cx, -cy);
